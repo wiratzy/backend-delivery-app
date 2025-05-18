@@ -76,17 +76,19 @@ class ItemController extends Controller
 
         try {
             $items = Item::where('item_category_id', $categoryId)
-                ->select('id', 'name', 'image', 'rate', 'rating', 'type', 'price')
+                ->select('id', 'name', 'image', 'rate', 'rating', 'type', 'price', 'item_category_id', 'restaurant_id')
                 ->get()
                 ->map(function ($item) {
                     return [
                         'id' => $item->id,
                         'name' => $item->name,
-                        'image' => $item->image ?? 'default_item.png',
+                        'image' => $item->image ? \Storage::url('items/' . $item->image) : 'default_category.png',
                         'rate' => $item->rate,
                         'rating' => $item->rating,
                         'type' => $item->type,
                         'price' => $item->price,
+                        'item_category_id' => $item->item_category_id,
+                        'restaurant_id' => $item->restaurant_id,
                     ];
                 });
 

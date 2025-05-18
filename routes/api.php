@@ -41,7 +41,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/user/home', [HomeController::class,'fetchHomeData']);
         // Route::get('/user/home/categories', [HomeController::class, 'getCategories']);
         Route::get('/user/items/categories', [HomeController::class, 'getAllCategories']);
-        // Route::get('/user/home/categories/{categoryId}/items', [ItemController::class, 'getItemsByCategory']);
+        Route::get('/user/items/category/{category_id}', [ItemController::class,'getItemsByCategory']);
         // Route::get('/user/popular-restaurants', [HomeController::class, 'getPopularRestaurants']);
         // Route::get('/user/most-popular-restaurants', [HomeController::class, 'getMostPopularRestaurants']);
         // Route::get('/user/recent-items', [ItemController::class, 'recent']);

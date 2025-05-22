@@ -159,7 +159,7 @@ class HomeController extends Controller
                 });
 
             // Ambil item terbaru (tetap sama)
-            $recentItems = Item::select('id', 'name', 'image', 'rate', 'rating', 'type', 'location', 'price', 'item_category_id', 'restaurant_id', 'created_at', 'updated_at')
+            $recentItems = Item::select('id', 'name', 'image', 'rate', 'rating', 'type', 'price', 'item_category_id', 'restaurant_id', 'created_at', 'updated_at')
                 ->orderBy('created_at', 'desc')
                 ->take(10)
                 ->get()
@@ -171,10 +171,18 @@ class HomeController extends Controller
                         'rate' => number_format((float) $item->rate, 1),
                         'rating' => $item->rating,
                         'type' => $item->type ?? 'Unknown',
-                        'location' => $item->location ?? 'Unknown',
-                        'price' => number_format((float) $item->price, 2),
+                        'price' =>  $item->price, 2,
                         'item_category_id' => $item->item_category_id,
                         'restaurant_id' => $item->restaurant_id,
+                        'restaurant' => $item->restaurant ? [
+                        'id' => $item->restaurant->id,
+                        'name' => $item->restaurant->name,
+                        'image' => $item->restaurant->image ? \Storage::url('restaurants/' . $item->restaurant->image) : 'default_restaurant.png',
+                        'rate' => number_format((float) $item->restaurant->rate, 1),
+                        'rating' => $item->restaurant->rating,
+                        'type' => $item->restaurant->type ?? 'Unknown',
+                        'food_type' => $item->restaurant->food_type ?? 'Unknown',
+                    ] : null,
                         'created_at' => $item->created_at->toIso8601String(),
                         'updated_at' => $item->updated_at->toIso8601String(),
                     ];
@@ -187,6 +195,7 @@ class HomeController extends Controller
                     'popular' => $popularRestaurants,
                     'recent_items' => $recentItems,
                 ],
+                'message' => "Berhasil Mengambil Data"
             ], 200);
         } catch (\Exception $e) {
             Log::error('Failed to fetch home data', ['error' => $e->getMessage()]);

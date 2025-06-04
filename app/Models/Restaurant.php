@@ -17,15 +17,9 @@ class Restaurant extends Model
         'type',
         'food_type',
         'location',
-        'is_most_popular',
-        'restaurant_category_id',
         'owner_id'
     ];
 
-    public function category()
-    {
-        return $this->belongsTo(RestaurantCategory::class, 'restaurant_category_id');
-    }
 
     public function items()
     {

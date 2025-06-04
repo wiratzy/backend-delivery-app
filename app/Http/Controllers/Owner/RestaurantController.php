@@ -115,7 +115,6 @@ class RestaurantController extends Controller
             'food_type' => 'nullable|string|max:255',
             'location' => 'nullable|string|max:255',
             'is_most_popular' => 'nullable|boolean',
-            'restaurant_category_id' => 'nullable|exists:restaurant_categories,id',
         ]);
     } catch (\Illuminate\Validation\ValidationException $e) {
         Log::error('Validation failed', ['errors' => $e->errors()]);
@@ -136,7 +135,6 @@ class RestaurantController extends Controller
         'food_type' => $request->food_type ?? null,
         'location' => $request->location ?? null,
         'is_most_popular' => $request->is_most_popular ?? false,
-        'restaurant_category_id' => $request->restaurant_category_id ?? null,
     ];
 
     // Tangani upload gambar
@@ -181,13 +179,14 @@ class RestaurantController extends Controller
 }
 
 
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
+        $id = $request->user()->id;
         Log::info('update called', ['id' => $id, 'user_id' => $request->user()->id, 'request' => $request->all()]);
 
         $request->validate([
-            'name' => 'required|string|max:255',
-            'type' => 'required|string|max:255',
+            'name' => 'string|max:255',
+            'type' => 'string|max:255',
             'food_type' => 'nullable|string|max:255',
             'location' => 'nullable|string|max:255',
             'restaurant_category_id' => 'nullable|exists:restaurant_categories,id',

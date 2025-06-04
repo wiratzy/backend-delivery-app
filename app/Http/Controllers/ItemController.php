@@ -211,24 +211,28 @@ class ItemController extends Controller
         }
     }
 
- public function show(Request $request, $id) {
-    try {
-        $item = Item::with(['restaurant' => function ($query) {
-            $query->select('id', 'name', 'image', 'rate', 'rating', 'type', 'food_type', 'location', 'delivery_fee');
-        }])->findOrFail($id);
+    public function show(Request $request, $id)
+    {
+        try {
+            $item = Item::with([
+                'restaurant' => function ($query) {
+                    $query->select('id', 'name', 'image', 'rate', 'rating', 'type', 'food_type', 'location', 'delivery_fee');
+                }
+            ])->findOrFail($id);
 
-$item->image = $item->image ? \Storage::url('items/' . $item->image) : \Storage::url('default_item.png');
-        return response()->json([
-            'success' => true,
-            'data' => $item
-        ], 200);
-    } catch (\Exception $e) {
-        return response()->json([
-            'success' => false,
-            'message' => 'Item not found'
-        ], 404);
+            $item->image = $item->image ? \Storage::url('items/' . $item->image) : \Storage::url('default_item.png');
+            $item->restaurant->image = $item->restaurant->image ? \Storage::url('restaurants/' . $item->restaurant->image) : \Storage::url('default_item.png');
+            return response()->json([
+                'success' => true,
+                'data' => $item
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Item not found'
+            ], 404);
+        }
     }
-}
     public function update(Request $request, $id)
     {
         Log::info('update called', ['item_id' => $id, 'user_id' => $request->user()->id, 'role' => $request->user()->role, 'request' => $request->all()]);

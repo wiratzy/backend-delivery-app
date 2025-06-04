@@ -46,6 +46,10 @@ Route::middleware('auth:sanctum')->group(function () {
         // Route::get('/user/popular-restaurants', [HomeController::class, 'getPopularRestaurants']);
         // Route::get('/user/most-popular-restaurants', [HomeController::class, 'getMostPopularRestaurants']);
         // Route::get('/user/recent-items', [ItemController::class, 'recent']);
+
+        Route::get('/user/cart', [CartController::class, 'index']);
+        Route::post('/user/cart', [CartController::class, 'store']);
+        Route::delete('/user/cart', [CartController::class, 'destroy']);
         Route::get('/user/restaurants', [RestaurantController::class, 'index']);
         Route::get('/user/popular', [RestaurantController::class, 'popular']);
         Route::get('/user/most-popular', [RestaurantController::class, 'mostPopular']);
@@ -88,7 +92,7 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::get('/', [RestaurantController::class, 'index']);
             Route::get('/{id}', [RestaurantController::class, 'showOwnerRestaurant']);
             Route::post('/', [RestaurantController::class, 'storeRestaurant']);
-            Route::put('/{id}', [RestaurantController::class, 'update']);
+            Route::put('/', [RestaurantController::class, 'update']);
             Route::delete('/{id}', [RestaurantController::class, 'destroy']);
         });
         Route::prefix('restaurants-items')->group(function () {

@@ -161,7 +161,7 @@ class HomeController extends Controller
             // Ambil item terbaru (tetap sama)
             $recentItems = Item::select('id', 'name', 'image', 'rate', 'rating', 'type', 'price', 'item_category_id', 'restaurant_id', 'created_at', 'updated_at')
                 ->orderBy('created_at', 'desc')
-                ->take(10)
+                ->take(2)
                 ->get()
                 ->map(function ($item) {
                     return [

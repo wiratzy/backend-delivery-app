@@ -10,8 +10,16 @@ class Order extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id', 'driver_id', 'total_price', 'address', 'payment_method', 'status', 'notes'
+        'user_id',
+        'restaurant_id',
+        'driver_id',
+        'total_price',
+        'delivery_fee',
+        'status',
+        'payment_method',
+        'order_timeout_at',
     ];
+
 
     protected $casts = ['status' => 'string'];
 
@@ -29,4 +37,9 @@ class Order extends Model
     {
         return $this->hasMany(OrderItem::class);
     }
+    public function restaurant()
+    {
+        return $this->belongsTo(Restaurant::class);
+    }
+
 }

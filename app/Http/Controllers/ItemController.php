@@ -70,6 +70,17 @@ class ItemController extends Controller
 
     }
 
+    public function getAllItems()
+    {
+        $items = Item::all();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Items retrieved successfully',
+            'data' => $items
+        ]);
+    }
+
     public function getItemsByCategory($categoryId)
     {
         Log::info('Items by category accessed', ['category_id' => $categoryId]);
@@ -82,7 +93,7 @@ class ItemController extends Controller
                     return [
                         'id' => $item->id,
                         'name' => $item->name,
-                        'image' => $item->image ? \Storage::url('items/' . $item->image) : 'default_category.png',
+                        'image' => $item->image ? url('storage/items/' . $item->image) : 'default_category.png',
                         'rate' => $item->rate,
                         'rating' => $item->rating,
                         'type' => $item->type,

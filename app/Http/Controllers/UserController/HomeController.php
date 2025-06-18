@@ -133,7 +133,7 @@ class HomeController extends Controller
                     return [
                         'id' => $category->id,
                         'name' => $category->name,
-                        'image' => $category->image ? \Storage::url('item_categories/' . $category->image) : 'default_category.png',
+                        'image' => $category->image ? url('storage/item_categories/' . $category->image) : 'default_category.png',
                     ];
                 });
 
@@ -144,13 +144,12 @@ class HomeController extends Controller
                 ->groupBy('restaurants.id')
                 ->orderByRaw('COUNT(order_items.id) DESC')
                 ->take(10)
-                ->with(['category'])
                 ->get()
                 ->map(function ($restaurant) {
                     return [
                         'id' => $restaurant->id,
                         'name' => $restaurant->name,
-                        'image' => $restaurant->image ? \Storage::url('restaurants/' . $restaurant->image) : 'default_restaurant.png',
+                        'image' => $restaurant->image ? url('storage/restaurants/' . $restaurant->image) : 'default_restaurant.png',
                         'rate' => number_format((float) $restaurant->rate, 1),
                         'rating' => $restaurant->rating,
                         'type' => $restaurant->type ?? 'Unknown',
@@ -167,7 +166,7 @@ class HomeController extends Controller
                     return [
                         'id' => $item->id,
                         'name' => $item->name,
-                        'image' => $item->image ? \Storage::url('items/' . $item->image) : 'default_item.png',
+                        'image' => $item->image ? \url('storage/items/' . $item->image) : 'default_item.png',
                         'rate' => number_format((float) $item->rate, 1),
                         'rating' => $item->rating,
                         'type' => $item->type ?? 'Unknown',
@@ -177,7 +176,7 @@ class HomeController extends Controller
                         'restaurant' => $item->restaurant ? [
                         'id' => $item->restaurant->id,
                         'name' => $item->restaurant->name,
-                        'image' => $item->restaurant->image ? \Storage::url('restaurants/' . $item->restaurant->image) : 'default_restaurant.png',
+                        'image' => $item->restaurant->image ? url('storage/restaurants/' . $item->restaurant->image) : 'default_restaurant.png',
                         'rate' => number_format((float) $item->restaurant->rate, 1),
                         'rating' => $item->restaurant->rating,
                         'type' => $item->restaurant->type ?? 'Unknown',

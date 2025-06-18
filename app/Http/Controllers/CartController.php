@@ -12,12 +12,18 @@ class CartController extends Controller
     {
         $user = $request->user();
         $cartItems = Cart::with(['item', 'item.restaurant'])->where('user_id', $user->id)->get();
-         $cartItems->each(function ($cartItem) {
-        if (isset($cartItem->item->restaurant)) {
-            $restaurant = $cartItem->item->restaurant;
-            $restaurant->image = url('storage/restaurants/' . $restaurant->image);
-        }
-    });
+        $cartItems->each(function ($cartItem) {
+            if (isset($cartItem->item->restaurant)) {
+                $restaurant = $cartItem->item->restaurant;
+                $restaurant->image = url('storage/restaurants/' . $restaurant->image);
+            }
+        });
+        $cartItems->each(function ($cartItem) {
+            if (isset($cartItem->item)) {
+                $cartItem->item->image = url('storage/items/' . $cartItem->item->image); // <-- Simpan URL ke objek
+
+            }
+        });
         return response()->json([
             'success' => true,
             'data' => $cartItems
@@ -102,4 +108,41 @@ class CartController extends Controller
             'message' => 'Cart cleared successfully'
         ], 200);
     }
+
+    public function increase(Request $request)
+    {
+        $user = $request->user();
+        $itemId = $request->input('item_id');
+
+        $cartItem = Cart::where('user_id', $user->id)->where('item_id', $itemId)->first();
+
+        if ($cartItem) {
+            $cartItem->quantity += 1;
+            $cartItem->save();
+        }
+
+        return response()->json(['success' => true, 'message' => 'Quantity increased']);
+    }
+
+    public function decrease(Request $request)
+    {
+        $user = $request->user();
+        $itemId = $request->input('item_id');
+
+        $cartItem = Cart::where('user_id', $user->id)->where('item_id', $itemId)->first();
+
+        if ($cartItem) {
+            $cartItem->quantity -= 1;
+            if ($cartItem->quantity <= 0) {
+                $cartItem->delete();
+            } else {
+                $cartItem->save();
+            }
+        }
+
+        return response()->json(['success' => true, 'message' => 'Quantity decreased']);
+    }
+
+
+
 }

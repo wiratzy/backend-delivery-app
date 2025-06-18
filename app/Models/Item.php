@@ -34,7 +34,7 @@ class Item extends Model
     {
         return $this->hasMany(OrderItem::class);
     }
-    public function Itemcategory()
+    public function ItemCategory()
     {
         return $this->belongsTo(ItemCategory::class, 'item_category_id');
     }

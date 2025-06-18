@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\RestaurantItemController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CartController;
@@ -38,10 +39,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/user/photo', [UserController::class, 'uploadPhoto']);
     // Routes untuk Customer
     Route::middleware('role:customer')->group(function () {
-        Route::get('/user/home', [HomeController::class,'fetchHomeData']);
+        Route::get('/user/home', [HomeController::class, 'fetchHomeData']);
         // Route::get('/user/home/categories', [HomeController::class, 'getCategories']);
         Route::get('/user/items/categories', [HomeController::class, 'getAllCategories']);
-        Route::get('/user/items/category/{category_id}', [ItemController::class,'getItemsByCategory']);
+        Route::get('/user/items/category/{category_id}', [ItemController::class, 'getItemsByCategory']);
         Route::get('user/item/{item_id}', [ItemController::class, 'show']);
         // Route::get('/user/popular-restaurants', [HomeController::class, 'getPopularRestaurants']);
         // Route::get('/user/most-popular-restaurants', [HomeController::class, 'getMostPopularRestaurants']);
@@ -50,12 +51,17 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/user/cart', [CartController::class, 'index']);
         Route::post('/user/cart', [CartController::class, 'store']);
         Route::delete('/user/cart', [CartController::class, 'destroy']);
+        Route::post('/user/cart/increase', [CartController::class, 'increase']);
+        Route::post('/user/cart/decrease', [CartController::class, 'decrease']);
+
         Route::get('/user/restaurants', [RestaurantController::class, 'index']);
         Route::get('/user/popular', [RestaurantController::class, 'popular']);
         Route::get('/user/most-popular', [RestaurantController::class, 'mostPopular']);
         Route::get('/user/recent', [ItemController::class, 'recent']);
-        Route::apiResource('cart', CartController::class)->except(['show']);
-        Route::apiResource('orders', OrderController::class)->only(['index', 'store', 'show']);
+        // Route::apiResource('cart', CartController::class)->except(['show']);
+
+        //alur checkout
+        Route::post('/checkout', [OrderController::class, 'checkout']);
     });
 
     // Routes untuk Admin
@@ -66,9 +72,9 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::delete('/{id}', [CategoryController::class, 'destroyRestaurantCategory']);
         });
         Route::apiResource('admin-item-categories', ItemCategoryController::class);
-        Route::get('/users/customer', [AdminAccountController::class,'getAllCustomer']);
-        Route::get('/users', [AdminAccountController::class,'index']);
-        Route::get('/admin/restaurants', [AdminRestaurantController::class,'index']);
+        Route::get('/users/customer', [AdminAccountController::class, 'getAllCustomer']);
+        Route::get('/users', [AdminAccountController::class, 'index']);
+        Route::get('/admin/restaurants', [AdminRestaurantController::class, 'index']);
         Route::prefix('admin-restaurant-owner')->group(function () {
             Route::get('/', [AdminRestaurantController::class, 'index']);
             Route::get('/{id}', [AdminRestaurantController::class, 'showRestaurantOwner']);
@@ -77,10 +83,10 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::delete('/{id}', [AdminAccountController::class, 'DestroyRestaurantOwner']);
         });
         Route::prefix('admin-items')->group(function () {
-            Route::get('/', [ItemController::class,'index']);
-            Route::get('/{id}', [ItemController::class,'show']);
-            Route::post('/{id}', [ItemController::class,'storeForAdmin']);
-            Route::put('/{id}', [ItemController::class,'update']);
+            Route::get('/', [ItemController::class, 'index']);
+            Route::get('/{id}', [ItemController::class, 'show']);
+            Route::post('/{id}', [ItemController::class, 'storeForAdmin']);
+            Route::put('/{id}', [ItemController::class, 'update']);
         });
         // Route::apiResource('orders', OrderController::class)->only(['index', 'show']);
         Route::put('/orders/{id}/assign-driver', [OrderController::class, 'assignDriver']);
@@ -96,9 +102,9 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::delete('/{id}', [RestaurantController::class, 'destroy']);
         });
         Route::prefix('restaurants-items')->group(function () {
-            Route::get('/{id}', [ItemController::class,'index']);
-            Route::get('/detail/{itemId}', [ItemController::class,'show']);
-            Route::post('/', [ItemController::class,'store']);
+            Route::get('/', [RestaurantItemController::class, 'index']);
+            Route::get('/detail/{itemId}', [ItemController::class, 'show']);
+            Route::post('/', [ItemController::class, 'store']);
         });
         Route::apiResource('orders', OrderController::class)->only(['index', 'show']);
         Route::put('/orders/{id}/status', [OrderController::class, 'updateStatus']);

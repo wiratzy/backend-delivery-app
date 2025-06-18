@@ -27,9 +27,9 @@ class User extends Authenticatable
         return $this->hasMany(Order::class);
     }
 
-    public function restaurants()
+    public function restaurant()
     {
-        return $this->hasMany(Restaurant::class, 'owner_id');
+        return $this->hasOne(Restaurant::class, 'owner_id');
     }
 
     public function driverOrders()

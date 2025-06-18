@@ -12,145 +12,79 @@ use Illuminate\Http\Request;
 
 class OrderController extends Controller
 {
-    public function index(Request $request)
+    public function checkout(Request $request)
     {
-        if ($request->user()->role === 'customer') {
-            return response()->json(Order::where('user_id', $request->user()->id)->with('items')->get());
-        } elseif ($request->user()->role === 'restaurant_owner') {
-            $restaurantIds = Restaurant::where('owner_id', $request->user()->id)->pluck('id');
-            return response()->json(
-                Order::whereHas('items', function ($query) use ($restaurantIds) {
-                    $query->whereIn('restaurant_id', $restaurantIds);
-                })->with('items')->get()
-            );
-        } elseif ($request->user()->role === 'driver') {
-            return response()->json(Order::where('driver_id', $request->user()->id)->with('items')->get());
-        }
-        return response()->json(Order::with('items')->get());
-    }
+        $user = $request->user();
 
-    public function store(Request $request)
-    {
-        $request->validate([
-            'address' => 'required',
-            'payment_method' => 'required',
-        ]);
+        // Ambil isi cart user
+        $cartItems = Cart::with('item.restaurant')
+            ->where('user_id', $user->id)
+            ->get();
 
-        $carts = Cart::where('user_id', $request->user()->id)->with('item')->get();
-        if ($carts->isEmpty()) {
-            return response()->json(['message' => 'Cart is empty'], 400);
+
+        if ($cartItems->isEmpty()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Keranjang kosong',
+            ], 400);
         }
 
-        $totalPrice = $carts->sum(function ($cart) {
-            return $cart->item->price * $cart->quantity;
-        });
+        // Hitung subtotal
+        $subtotal = $cartItems->reduce(function ($carry, $cartItem) {
+            return $carry + ($cartItem->quantity * $cartItem->price);
+        }, 0);
 
+        // Ambil info restoran dari item pertama
+        $restaurant = optional($cartItems->first()->item)->restaurant;
+
+        if (!$restaurant) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Item dalam keranjang tidak memiliki data restoran.',
+            ], 400);
+        }
+
+
+        $deliveryFee = (float) ($restaurant->delivery_fee ?? 0);
+        $total = (float) ($subtotal + $deliveryFee);
+
+        // dd([
+        //     'restaurant_id' => $restaurant->id,
+        //     'delivery_fee' => $deliveryFee,
+        //     'user_id' => $user->id,
+        //     'total_price' => $total,
+        //     'status' => 'pending_confirmation',
+        //     'order_timeout_at' => now()->addMinutes(5),
+        // ]);
+
+        // Buat order
         $order = Order::create([
-            'user_id' => $request->user()->id,
-            'total_price' => $totalPrice,
-            'address' => $request->address,
-            'payment_method' => $request->payment_method,
-            'status' => 'pending',
-            'notes' => $request->notes,
+            'user_id' => $user->id,
+            'restaurant_id' => $restaurant->id,
+            'total_price' => $total,
+            'delivery_fee' => $deliveryFee,
+            'status' => 'pending_confirmation',
+            'payment_method' => 'COD',
+            'order_timeout_at' => now()->addMinutes(5),
         ]);
 
-        foreach ($carts as $cart) {
+        // Tambahkan order items
+        foreach ($cartItems as $cartItem) {
             OrderItem::create([
                 'order_id' => $order->id,
-                'item_id' => $cart->item_id,
-                'quantity' => $cart->quantity,
-                'price' => $cart->item->price,
+                'item_id' => $cartItem->item_id,
+                'quantity' => $cartItem->quantity,
+                'price' => $cartItem->price,
             ]);
         }
 
-        // Kirim notifikasi ke Restaurant Owner
-        $restaurantIds = $carts->pluck('item.restaurant_id')->unique();
-        $owners = Restaurant::whereIn('id', $restaurantIds)->pluck('owner_id')->unique();
-        foreach ($owners as $ownerId) {
-            Notification::create([
-                'user_id' => $ownerId,
-                'title' => 'Pesanan Baru Masuk',
-                'message' => "Pesanan #{$order->id} telah diterima.",
-                'type' => 'order',
-            ]);
-        }
+        // Hapus cart user
+        Cart::where('user_id', $user->id)->delete();
 
-        // Kosongkan cart setelah checkout
-        Cart::where('user_id', $request->user()->id)->delete();
-
-        return response()->json($order, 201);
-    }
-
-    public function show($id)
-    {
-        return response()->json(Order::with('items')->findOrFail($id));
-    }
-
-    public function updateStatus(Request $request, $id)
-    {
-        $request->validate([
-            'status' => 'required|in:pending,processing,shipped,delivered',
-        ]);
-
-        $order = Order::findOrFail($id);
-
-        if ($request->user()->role === 'restaurant_owner') {
-            $restaurantIds = Restaurant::where('owner_id', $request->user()->id)->pluck('id');
-            $hasAccess = $order->items()->whereIn('restaurant_id', $restaurantIds)->exists();
-            if (!$hasAccess) {
-                return response()->json(['message' => 'Unauthorized'], 403);
-            }
-        } elseif ($request->user()->role === 'driver') {
-            if ($order->driver_id !== $request->user()->id) {
-                return response()->json(['message' => 'Unauthorized'], 403);
-            }
-        }
-
-        $order->status = $request->status;
-        $order->save();
-
-        // Kirim notifikasi ke Customer
-        Notification::create([
-            'user_id' => $order->user_id,
-            'title' => 'Status Pesanan Berubah',
-            'message' => "Pesanan #{$order->id} sekarang: {$order->status}",
-            'type' => 'status_update',
-        ]);
-
-        return response()->json($order);
-    }
-
-    public function assignDriver(Request $request, $id)
-    {
-        $request->validate([
-            'driver_id' => 'required|exists:users,id',
-        ]);
-
-        $order = Order::findOrFail($id);
-        $driver = User::findOrFail($request->driver_id);
-        if ($driver->role !== 'driver') {
-            return response()->json(['message' => 'User is not a driver'], 400);
-        }
-
-        $order->driver_id = $request->driver_id;
-        $order->save();
-
-        // Kirim notifikasi ke Driver
-        Notification::create([
-            'user_id' => $request->driver_id,
-            'title' => 'Pesanan Ditugaskan',
-            'message' => "Pesanan #{$order->id} telah ditugaskan kepada Anda.",
-            'type' => 'assignment',
-        ]);
-
-        // Kirim notifikasi ke Customer
-        Notification::create([
-            'user_id' => $order->user_id,
-            'title' => 'Driver Ditugaskan',
-            'message' => "Pesanan #{$order->id} sedang ditangani oleh driver.",
-            'type' => 'status_update',
-        ]);
-
-        return response()->json($order);
+        return response()->json([
+            'success' => true,
+            'message' => 'Pesanan berhasil dibuat',
+            'data' => $order->load('items', 'restaurant'),
+        ], 201);
     }
 }

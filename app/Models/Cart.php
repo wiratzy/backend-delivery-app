@@ -16,8 +16,9 @@ class Cart extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function item()
-    {
-        return $this->belongsTo(Item::class);
-    }
+   public function item()
+{
+    return $this->belongsTo(Item::class)->with('restaurant');
+}
+
 }

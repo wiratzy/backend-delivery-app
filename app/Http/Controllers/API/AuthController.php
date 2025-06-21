@@ -12,34 +12,38 @@ use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
-    public function register(Request $request) {
+    public function register(Request $request)
+    {
+        // return response()->json($request->longitude);
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'address' => 'required|string|max:255',
+            'latitude' => 'required', // ini dari frontend
+            'longitude' => 'required', // ini dari frontend
             'phone' => 'required',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8|confirmed',
-
         ]);
+
 
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,
                 'errors' => $validator->errors()
-            ], 422); // Kode status untuk validasi gagal
+            ], 422);
         }
 
         $user = User::create([
             'name' => $request->name,
-            'address'=> $request->address,
-            'phone'=> $request->phone,
+            'address' => $request->address,
+            'address_latitude' => $request->latitude,
+            'address_longitude' => $request->longitude,
+            'phone' => $request->phone,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'role' => 'customer', // default role
+            'role' => 'customer',
         ]);
 
-        // Optional: auto-login user (hapus kalau tidak mau)
-        // Auth::login($user);
         $token = $user->createToken('api_token')->plainTextToken;
 
         return response()->json([
@@ -50,7 +54,8 @@ class AuthController extends Controller
         ], 201);
     }
 
-    public function login(Request $request) {
+    public function login(Request $request)
+    {
         $validator = Validator::make($request->all(), [
             'email' => 'required|email',
             'password' => 'required|string',
@@ -67,7 +72,7 @@ class AuthController extends Controller
         // Cek kredensial
         if (!Auth::attempt($request->only('email', 'password'))) {
             return response()->json([
-                'success'=> false,
+                'success' => false,
                 'message' => 'Email atau password salah',
             ], 401);
         }
@@ -86,7 +91,8 @@ class AuthController extends Controller
         ]);
     }
 
-    public function logout(Request $request) {
+    public function logout(Request $request)
+    {
         $request->user()->tokens()->delete();
 
         return response()->json(['message' => 'Logged out Berhasil']);

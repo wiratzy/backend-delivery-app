@@ -15,8 +15,8 @@ class Item extends Model
         'rate',
         'rating',
         'type',
-        'location',
         'restaurant_id',
+        'item_category_id',
         'price'
     ];
 

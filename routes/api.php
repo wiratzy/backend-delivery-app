@@ -35,14 +35,16 @@ Route::middleware('auth:sanctum')->group(function () {
             'user' => $request->user(),
         ]);
     });
-    Route::put('/user', [UserController::class, 'update']);
+    Route::put('/user/update', [UserController::class, 'update']);
     Route::post('/user/photo', [UserController::class, 'uploadPhoto']);
     // Routes untuk Customer
     Route::middleware('role:customer')->group(function () {
         Route::get('/user/home', [HomeController::class, 'fetchHomeData']);
         // Route::get('/user/home/categories', [HomeController::class, 'getCategories']);
+        Route::get('user/items', [ItemController::class, 'getAllItems']);
         Route::get('/user/items/categories', [HomeController::class, 'getAllCategories']);
         Route::get('/user/items/category/{category_id}', [ItemController::class, 'getItemsByCategory']);
+        Route::get('user/items-categories', [ItemCategoryController::class, 'getItemsCategories']);
         Route::get('user/item/{item_id}', [ItemController::class, 'show']);
         // Route::get('/user/popular-restaurants', [HomeController::class, 'getPopularRestaurants']);
         // Route::get('/user/most-popular-restaurants', [HomeController::class, 'getMostPopularRestaurants']);

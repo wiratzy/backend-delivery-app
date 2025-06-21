@@ -70,14 +70,68 @@ class ItemController extends Controller
 
     }
 
-    public function getAllItems()
+    public function getAllItems(Request $request)
     {
-        $items = Item::all();
+        $limit = $request->input('limit', 10);
 
+        // Memulai query untuk Item
+        $query = Item::query();
+        if ($request->has('search')) {
+            $searchTerm = $request->input('search');
+            // Pastikan Anda menggunakan operator LIKE dan wildcard (%)
+            $query->where('name', 'LIKE', '%' . $searchTerm . '%');
+        }
+        // Fitur Filtering berdasarkan item_category_id
+        if ($request->has('item_category_id') && $request->input('item_category_id') != '') {
+            $query->where('item_category_id', $request->input('item_category_id'));
+        }
+
+        // Load relasi kategori untuk mendapatkan nama kategori
+        $query->with('ItemCategory');
+
+        // Terapkan pagination
+        $items = $query->paginate($limit);
+
+        // Manual transformation untuk setiap item
+        $formattedItems = $items->map(function ($item) {
+            return [
+                'id' => $item->id,
+                'name' => $item->name,
+                // Pastikan image ada dan mengarah ke public/storage
+                'image' => url('storage/items/' . $item->image),
+                'rate' => (double) $item->rate,
+                'rating' => (int) $item->rating,
+                'type' => $item->type,
+                'price' => (double) $item->price,
+                'item_category_id' => $item->item_category_id,
+                'category_name' => $item->category ? $item->category->name : null, // Ambil nama kategori
+                'restaurant_id' => $item->restaurant_id,
+                'created_at' => $item->created_at,
+                'updated_at' => $item->updated_at,
+            ];
+        });
+
+        // Struktur respons untuk pagination manual
+        // Laravel's paginate() method menyediakan informasi ini.
         return response()->json([
+            'data' => $formattedItems, // Data item yang sudah diformat
+            'links' => [
+                'first' => $items->url(1),
+                'last' => $items->url($items->lastPage()),
+                'prev' => $items->previousPageUrl(),
+                'next' => $items->nextPageUrl(),
+            ],
+            'meta' => [
+                'current_page' => $items->currentPage(),
+                'from' => $items->firstItem(),
+                'last_page' => $items->lastPage(),
+                'path' => $items->path(),
+                'per_page' => $items->perPage(),
+                'to' => $items->lastItem(),
+                'total' => $items->total(),
+            ],
+            'message' => 'Items retrieved successfully.',
             'success' => true,
-            'message' => 'Items retrieved successfully',
-            'data' => $items
         ]);
     }
 

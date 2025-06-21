@@ -13,6 +13,9 @@ class ItemCategoryController extends Controller
     /**
      * Ambil daftar semua kategori item.
      */
+
+
+
     public function index()
     {
         Log::info('Fetching all item categories');
@@ -171,4 +174,32 @@ class ItemCategoryController extends Controller
             ], $e instanceof \Illuminate\Database\Eloquent\ModelNotFoundException ? 404 : 500);
         }
     }
+
+
+    public function  getItemsCategories(){
+
+        // Mengambil semua data kategori item dari database
+        $categories = ItemCategory::all();
+
+        // Transformasi data secara manual untuk respons JSON
+        $formattedCategories = $categories->map(function ($category) {
+            return [
+                'id' => $category->id,
+                'name' => $category->name,
+                // Pastikan 'image' di database menyimpan path relatif dari storage/app/public
+                // dan Anda sudah menjalankan 'php artisan storage:link'
+                'image' => $category->image ? url('storage/item_categories/' . $category->image) : null,
+                'created_at' => $category->created_at,
+                'updated_at' => $category->updated_at,
+            ];
+        });
+
+        // Mengembalikan respons dalam format JSON
+        return response()->json([
+            'data' => $formattedCategories,
+            'message' => 'Item categories retrieved successfully.',
+            'success' => true,
+        ]);
+    }
+
 }

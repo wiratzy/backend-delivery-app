@@ -14,77 +14,130 @@ class OrderController extends Controller
 {
     public function checkout(Request $request)
     {
-        $user = $request->user();
+        $user = $request->user(); // User yang sedang login
 
-        // Ambil isi cart user
-        $cartItems = Cart::with('item.restaurant')
-            ->where('user_id', $user->id)
-            ->get();
-
-
-        if ($cartItems->isEmpty()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Keranjang kosong',
-            ], 400);
-        }
-
-        // Hitung subtotal
-        $subtotal = $cartItems->reduce(function ($carry, $cartItem) {
-            return $carry + ($cartItem->quantity * $cartItem->price);
-        }, 0);
-
-        // Ambil info restoran dari item pertama
-        $restaurant = optional($cartItems->first()->item)->restaurant;
-
-        if (!$restaurant) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Item dalam keranjang tidak memiliki data restoran.',
-            ], 400);
-        }
-
-
-        $deliveryFee = (float) ($restaurant->delivery_fee ?? 0);
-        $total = (float) ($subtotal + $deliveryFee);
-
-        // dd([
-        //     'restaurant_id' => $restaurant->id,
-        //     'delivery_fee' => $deliveryFee,
-        //     'user_id' => $user->id,
-        //     'total_price' => $total,
-        //     'status' => 'pending_confirmation',
-        //     'order_timeout_at' => now()->addMinutes(5),
-        // ]);
+        $request->validate([
+            'payment_method' => 'required|string',
+            'address' => 'required|string',
+            'latitude' => 'required|numeric',
+            'longitude' => 'required|numeric',
+            'items' => 'required|array',
+            'items.*.item_id' => 'required|exists:items,id',
+            'items.*.quantity' => 'required|integer|min:1',
+            'subtotal' => 'required|numeric',
+            'delivery_fee' => 'required|numeric',
+            'restaurant_id' => 'required|exists:restaurants,id',
+        ]);
 
         // Buat order
         $order = Order::create([
             'user_id' => $user->id,
-            'restaurant_id' => $restaurant->id,
-            'total_price' => $total,
-            'delivery_fee' => $deliveryFee,
+            'restaurant_id' => $request->restaurant_id,
+            'payment_method' => $request->payment_method,
+            'total_price' => $request->subtotal + $request->delivery_fee,
+            'delivery_fee' => $request->delivery_fee,
+            'address' => $request->address,
+            'latitude' => $request->latitude,
+            'longitude' => $request->longitude,
             'status' => 'pending_confirmation',
-            'payment_method' => 'COD',
-            'order_timeout_at' => now()->addMinutes(5),
+            'order_timeout_at' => now()->addMinutes(15), // Contoh timeout
         ]);
 
-        // Tambahkan order items
-        foreach ($cartItems as $cartItem) {
-            OrderItem::create([
-                'order_id' => $order->id,
-                'item_id' => $cartItem->item_id,
-                'quantity' => $cartItem->quantity,
-                'price' => $cartItem->price,
+        // Simpan item-itemnya
+        foreach ($request->items as $item) {
+            $itemData = \App\Models\Item::find($item['item_id']);
+            $order->items()->create([
+                'item_id' => $item['item_id'],
+                'quantity' => $item['quantity'],
+                'price' => $itemData->price,
             ]);
         }
 
-        // Hapus cart user
-        Cart::where('user_id', $user->id)->delete();
+        return response()->json([
+            'success' => true,
+            'message' => 'Order berhasil dibuat',
+            'order_id' => $order->id,
+        ], 201);
+    }
+
+    public function restoOrders()
+    {
+        $user = auth()->user();
+        $restaurantId = $user->restaurant->id;
+
+        $orders = Order::with(['items.item.restaurant', 'user']) // Eager load restoran
+            ->where('restaurant_id', $restaurantId)
+            ->latest()
+            ->get();
+
+        $orders = $orders->map(function ($order) {
+            $orderArray = $order->toArray();
+
+            $orderArray['items'] = collect($order->items)->map(function ($orderItem) {
+                $item = $orderItem->item;
+                $itemArray = $item->toArray();
+
+                // ✅ Tambahkan relasi restaurant secara eksplisit
+                $itemArray['restaurant'] = $item->restaurant ? $item->restaurant->toArray() : null;
+
+                // ✅ Pastikan image sudah berupa full URL
+                $itemArray['image'] = url('storage/items/' . $item->image);
+
+                $orderItemArray = $orderItem->toArray();
+                $orderItemArray['item'] = $itemArray;
+
+                return $orderItemArray;
+            });
+
+            return $orderArray;
+        });
 
         return response()->json([
             'success' => true,
-            'message' => 'Pesanan berhasil dibuat',
-            'data' => $order->load('items', 'restaurant'),
-        ], 201);
+            'message' => 'Daftar order restoran berhasil diambil',
+            'orders' => $orders
+        ]);
     }
+
+
+    public function show($id)
+    {
+        $user = auth()->user();
+
+        $order = Order::with(['items.item.restaurant', 'user'])
+            ->where('restaurant_id', $user->restaurant->id)
+            ->where('id', $id)
+            ->first();
+
+        if (!$order) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Pesanan tidak ditemukan atau tidak milik restoran Anda.'
+            ], 404);
+        }
+
+        // Format ulang data jika perlu (misalnya path gambar)
+        $orderArray = $order->toArray();
+        $orderArray['items'] = collect($order->items)->map(function ($orderItem) {
+            $item = $orderItem->item;
+            $itemArray = $item->toArray();
+            $itemArray['image'] = url('storage/items/' . $item->image);
+            $itemArray['restaurant'] = $item->restaurant->toArray(); // include restaurant info
+
+            $orderItemArray = $orderItem->toArray();
+            $orderItemArray['item'] = $itemArray;
+
+            return $orderItemArray;
+        });
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Detail pesanan berhasil diambil.',
+            'order' => $orderArray
+        ]);
+    }
+
+
+
+
 }

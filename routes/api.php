@@ -108,8 +108,11 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::get('/detail/{itemId}', [ItemController::class, 'show']);
             Route::post('/', [ItemController::class, 'store']);
         });
-        Route::apiResource('orders', OrderController::class)->only(['index', 'show']);
-        Route::put('/orders/{id}/status', [OrderController::class, 'updateStatus']);
+        // Route::apiResource('orders', OrderController::class)->only(['index', 'show']);
+        // Route::put('/orders/{id}/status', [OrderController::class, 'updateStatus']);
+
+        Route::get('get-orders', [OrderController::class, 'restoOrders']);
+        Route::get('/orders/{id}', [OrderController::class, 'show']);
     });
 
     // Routes untuk Driver

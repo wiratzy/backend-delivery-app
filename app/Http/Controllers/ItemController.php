@@ -98,7 +98,7 @@ class ItemController extends Controller
                 'id' => $item->id,
                 'name' => $item->name,
                 // Pastikan image ada dan mengarah ke public/storage
-                'image' => url('storage/items/' . $item->image),
+                'image' => $item->image,
                 'rate' => (double) $item->rate,
                 'rating' => (int) $item->rating,
                 'type' => $item->type,
@@ -147,7 +147,7 @@ class ItemController extends Controller
                     return [
                         'id' => $item->id,
                         'name' => $item->name,
-                        'image' => $item->image ? url('storage/items/' . $item->image) : 'default_category.png',
+                        'image' => $item->image ? $item->image : 'default_category.png',
                         'rate' => $item->rate,
                         'rating' => $item->rating,
                         'type' => $item->type,
@@ -285,8 +285,6 @@ class ItemController extends Controller
                 }
             ])->findOrFail($id);
 
-            $item->image = $item->image ? \Storage::url('items/' . $item->image) : \Storage::url('default_item.png');
-            $item->restaurant->image = $item->restaurant->image ? \Storage::url('restaurants/' . $item->restaurant->image) : \Storage::url('default_item.png');
             return response()->json([
                 'success' => true,
                 'data' => $item

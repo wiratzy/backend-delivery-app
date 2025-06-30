@@ -51,4 +51,12 @@ class User extends Authenticatable
     {
         return $this->hasMany(Notification::class);
     }
+
+    // app/Models/Item.php
+
+public function getPhotoAttribute($value)
+{
+    return url('storage/photos/' . $value);
+}
+
 }

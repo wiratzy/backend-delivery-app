@@ -12,18 +12,7 @@ class CartController extends Controller
     {
         $user = $request->user();
         $cartItems = Cart::with(['item', 'item.restaurant'])->where('user_id', $user->id)->get();
-        $cartItems->each(function ($cartItem) {
-            if (isset($cartItem->item->restaurant)) {
-                $restaurant = $cartItem->item->restaurant;
-                $restaurant->image = url('storage/restaurants/' . $restaurant->image);
-            }
-        });
-        $cartItems->each(function ($cartItem) {
-            if (isset($cartItem->item)) {
-                $cartItem->item->image = url('storage/items/' . $cartItem->item->image); // <-- Simpan URL ke objek
 
-            }
-        });
         return response()->json([
             'success' => true,
             'data' => $cartItems

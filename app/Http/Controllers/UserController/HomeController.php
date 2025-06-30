@@ -149,7 +149,7 @@ class HomeController extends Controller
                     return [
                         'id' => $restaurant->id,
                         'name' => $restaurant->name,
-                        'image' => $restaurant->image ? url('storage/restaurants/' . $restaurant->image) : 'default_restaurant.png',
+                        'image' => $restaurant->image ? $restaurant->image : 'default_restaurant.png',
                         'rate' => number_format((float) $restaurant->rate, 1),
                         'rating' => $restaurant->rating,
                         'type' => $restaurant->type ?? 'Unknown',
@@ -166,7 +166,7 @@ class HomeController extends Controller
                     return [
                         'id' => $item->id,
                         'name' => $item->name,
-                        'image' => $item->image ? \url('storage/items/' . $item->image) : 'default_item.png',
+                        'image' => $item->image ? $item->image : 'default_item.png',
                         'rate' => number_format((float) $item->rate, 1),
                         'rating' => $item->rating,
                         'type' => $item->type ?? 'Unknown',
@@ -176,7 +176,7 @@ class HomeController extends Controller
                         'restaurant' => $item->restaurant ? [
                         'id' => $item->restaurant->id,
                         'name' => $item->restaurant->name,
-                        'image' => $item->restaurant->image ? url('storage/restaurants/' . $item->restaurant->image) : 'default_restaurant.png',
+                        'image' => $item->restaurant->image ? $item->restaurant->image : 'default_restaurant.png',
                         'rate' => number_format((float) $item->restaurant->rate, 1),
                         'rating' => $item->restaurant->rating,
                         'type' => $item->restaurant->type ?? 'Unknown',

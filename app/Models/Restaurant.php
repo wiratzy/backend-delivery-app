@@ -30,5 +30,12 @@ class Restaurant extends Model
     {
         return $this->belongsTo(User::class, 'owner_id');
     }
+    // app/Models/Item.php
+
+public function getImageAttribute($value)
+{
+    return url('storage/restaurants/' . $value);
+}
+
 
 }

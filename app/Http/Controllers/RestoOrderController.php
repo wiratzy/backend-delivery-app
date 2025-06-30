@@ -10,7 +10,7 @@ use App\Models\Restaurant;
 use App\Models\Notification;
 use Illuminate\Http\Request;
 
-class OrderController extends Controller
+class RestoOrderController extends Controller
 {
     public function checkout(Request $request)
     {
@@ -39,7 +39,7 @@ class OrderController extends Controller
             'address' => $request->address,
             'latitude' => $request->latitude,
             'longitude' => $request->longitude,
-            'status' => 'pending_confirmation',
+            'status' => 'menunggu_konfirmasi',
             'order_timeout_at' => now()->addMinutes(15), // Contoh timeout
         ]);
 
@@ -137,7 +137,47 @@ class OrderController extends Controller
         ]);
     }
 
+    public function updateStatus(Request $request, $id)
+    {
+        $request->validate([
+            'status' => 'required|in:menunggu_konfirmasi,diproses,diantar,berhasil,dibatalkan'
+        ]);
 
+        $order = Order::findOrFail($id);
+        // Optional: Validasi role user yang boleh update (misal hanya resto)
+        if ($request->user()->role !== 'restaurant_owner') {
+            return response()->json([
+                'message' => 'Unauthorized Role User: ' . $request->user()->role,
+            ], 403);
+        }
+
+        $order->status = $request->status;
+        $order->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Status pesanan berhasil diperbarui',
+            'order' => $order
+        ]);
+    }
+
+    public function assignDriver(Request $request, $id)
+    {
+        $request->validate([
+            'driver_id' => 'required|exists:users,id',
+        ]);
+
+        $order = Order::findOrFail($id);
+        $order->driver_id = $request->driver_id;
+        $order->driver_confirmed_at = now();
+        $order->status = 'diantar';
+        $order->save();
+
+        return response()->json([
+            'message' => 'Driver berhasil ditetapkan dan status diubah ke diantar',
+            'data' => $order
+        ]);
+    }
 
 
 }

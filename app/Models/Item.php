@@ -38,4 +38,11 @@ class Item extends Model
     {
         return $this->belongsTo(ItemCategory::class, 'item_category_id');
     }
+    // app/Models/Item.php
+
+public function getImageAttribute($value)
+{
+    return url('storage/items/' . $value);
+}
+
 }

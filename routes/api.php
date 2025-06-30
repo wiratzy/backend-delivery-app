@@ -1,13 +1,14 @@
 <?php
 
 use App\Http\Controllers\RestaurantItemController;
+use App\Http\Controllers\UserController\UserOrderController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\LoginController;
-use App\Http\Controllers\OrderController;
+use App\Http\Controllers\RestoOrderController;
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\Auth\RegisterController;
@@ -29,10 +30,12 @@ Route::middleware('auth:sanctum')->group(function () {
     //get restaurant-categories
 
     Route::get('/user', function (Request $request) {
+
+         $user = $request->user();
         return response()->json([
             'message' => 'Data Berhasil Diterima!',
             'success' => true,
-            'user' => $request->user(),
+            'user' => $user,
         ]);
     });
     Route::put('/user/update', [UserController::class, 'update']);
@@ -63,7 +66,10 @@ Route::middleware('auth:sanctum')->group(function () {
         // Route::apiResource('cart', CartController::class)->except(['show']);
 
         //alur checkout
-        Route::post('/checkout', [OrderController::class, 'checkout']);
+        Route::post('/checkout', [RestoOrderController::class, 'checkout']);
+        Route::get('/user/my-orders', [UserOrderController::class, 'userOrders']);
+        Route::get('/user/orders/{id}', [UserOrderController::class, 'show']);
+        Route::put('/user/orders/{id}/status', [UserOrderController::class, 'updateStatus']);
     });
 
     // Routes untuk Admin
@@ -90,8 +96,8 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::post('/{id}', [ItemController::class, 'storeForAdmin']);
             Route::put('/{id}', [ItemController::class, 'update']);
         });
-        // Route::apiResource('orders', OrderController::class)->only(['index', 'show']);
-        Route::put('/orders/{id}/assign-driver', [OrderController::class, 'assignDriver']);
+        // Route::apiResource('orders', RestoOrderController::class)->only(['index', 'show']);
+        // Route::put('/orders/{id}/assign-driver', [RestoOrderController::class, 'assignDriver']);
     });
 
     // Routes untuk Restaurant Owner
@@ -108,17 +114,17 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::get('/detail/{itemId}', [ItemController::class, 'show']);
             Route::post('/', [ItemController::class, 'store']);
         });
-        // Route::apiResource('orders', OrderController::class)->only(['index', 'show']);
-        // Route::put('/orders/{id}/status', [OrderController::class, 'updateStatus']);
+        Route::get('/get-orders', [RestoOrderController::class, 'restoOrders']);
+        Route::get('/restaurants/orders/{id}', [RestoOrderController::class, 'show']);
+        Route::put('/restaurants/orders/{id}/status', [RestoOrderController::class, 'updateStatus']);
+        Route::put('/restaurants/orders/{id}/assign-driver', [RestoOrderController::class, 'assignDriver']);
+        // Route::apiResource('orders', RestoOrderController::class)->only(['index', 'show']);
 
-        Route::get('get-orders', [OrderController::class, 'restoOrders']);
-        Route::get('/orders/{id}', [OrderController::class, 'show']);
     });
 
     // Routes untuk Driver
     Route::middleware('role:driver')->group(function () {
-        Route::apiResource('orders', OrderController::class)->only(['index', 'show']);
-        Route::put('/orders/{id}/status', [OrderController::class, 'updateStatus']);
+        Route::apiResource('orders', RestoOrderController::class)->only(['index', 'show']);
     });
 
     // Routes untuk Notifikasi (semua role)

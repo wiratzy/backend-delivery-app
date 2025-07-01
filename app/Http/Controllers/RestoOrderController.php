@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Cart;
 use App\Models\User;
 use App\Models\Order;
+use App\Models\Driver;
 use App\Models\OrderItem;
 use App\Models\Restaurant;
 use App\Models\Notification;
@@ -168,16 +169,63 @@ class RestoOrderController extends Controller
         ]);
 
         $order = Order::findOrFail($id);
+
+        // ✅ Tambahkan validasi status
+        if ($order->status !== 'diproses') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Pesanan harus dikonfirmasi terlebih dahulu sebelum memilih driver.',
+            ], 422); // 422 Unprocessable Entity
+        }
+
         $order->driver_id = $request->driver_id;
         $order->driver_confirmed_at = now();
         $order->status = 'diantar';
         $order->save();
 
         return response()->json([
+            'success' => true,
             'message' => 'Driver berhasil ditetapkan dan status diubah ke diantar',
             'data' => $order
         ]);
     }
+
+
+    public function getAvailableDrivers(Request $request)
+    {
+        $user = $request->user();
+
+
+
+        // Cek apakah user adalah pemilik restoran
+        $restaurantId = Restaurant::where('owner_id', $user->id)->value('id');
+
+        if (!$restaurantId) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Restaurant tidak ditemukan untuk user ini.',
+            ], 403);
+        }
+
+        // Ambil semua driver milik restoran tersebut
+        $drivers = Driver::where('restaurant_id', $restaurantId)
+            ->get();
+
+        if ($drivers->isEmpty()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Tidak ada driver tersedia untuk restoran ini.',
+            ], 404);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Daftar driver berhasil diambil',
+            'data' => $drivers
+        ]);
+    }
+
+
 
 
 }

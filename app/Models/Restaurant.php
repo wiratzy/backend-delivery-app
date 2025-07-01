@@ -32,6 +32,12 @@ class Restaurant extends Model
     }
     // app/Models/Item.php
 
+    public function drivers()
+{
+    return $this->hasMany(Driver::class);
+}
+
+
 public function getImageAttribute($value)
 {
     return url('storage/restaurants/' . $value);

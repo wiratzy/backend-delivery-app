@@ -47,6 +47,12 @@ class User extends Authenticatable
         return $this->hasMany(Order::class, 'driver_id');
     }
 
+
+    public function driver()
+    {
+        return $this->hasOne(Driver::class);
+    }
+
     public function notifications()
     {
         return $this->hasMany(Notification::class);
@@ -54,9 +60,9 @@ class User extends Authenticatable
 
     // app/Models/Item.php
 
-public function getPhotoAttribute($value)
-{
-    return url('storage/photos/' . $value);
-}
+    public function getPhotoAttribute($value)
+    {
+        return url('storage/photos/' . $value);
+    }
 
 }

@@ -1,23 +1,24 @@
 <?php
 
-use App\Http\Controllers\RestaurantItemController;
-use App\Http\Controllers\UserController\UserOrderController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\LoginController;
-use App\Http\Controllers\RestoOrderController;
+use App\Http\Controllers\DriverController;
 use App\Http\Controllers\API\AuthController;
+use App\Http\Controllers\RestoOrderController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\RestaurantItemController;
 use App\Http\Controllers\Owner\RestaurantController;
 use App\Http\Controllers\Admin\AdminAccountController;
 use App\Http\Controllers\Admin\ItemCategoryController;
 use App\Http\Controllers\UserController\HomeController;
 use App\Http\Controllers\Admin\AdminRestaurantController;
+use App\Http\Controllers\UserController\UserOrderController;
 
 Route::post('/register', [AuthController::class, 'register'])->middleware('guest')->name('register');
 Route::post('/login', [AuthController::class, 'login'])->middleware('guest')->name('login');
@@ -31,7 +32,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/user', function (Request $request) {
 
-         $user = $request->user();
+        $user = $request->user();
         return response()->json([
             'message' => 'Data Berhasil Diterima!',
             'success' => true,
@@ -103,11 +104,18 @@ Route::middleware('auth:sanctum')->group(function () {
     // Routes untuk Restaurant Owner
     Route::middleware('role:restaurant_owner')->group(function () {
         Route::prefix('restaurants')->group(function () {
+            Route::get('/drivers', [DriverController::class, 'index']);
+            Route::post('/drivers', [DriverController::class, 'store']);
+            Route::get('/drivers/{id}', [DriverController::class, 'show']);
+            Route::put('/drivers/{id}', [DriverController::class, 'update']);
+            Route::delete('/drivers/{id}', [DriverController::class, 'destroy']);
             Route::get('/', [RestaurantController::class, 'index']);
             Route::get('/{id}', [RestaurantController::class, 'showOwnerRestaurant']);
             Route::post('/', [RestaurantController::class, 'storeRestaurant']);
             Route::put('/', [RestaurantController::class, 'update']);
             Route::delete('/{id}', [RestaurantController::class, 'destroy']);
+
+
         });
         Route::prefix('restaurants-items')->group(function () {
             Route::get('/', [RestaurantItemController::class, 'index']);
@@ -118,6 +126,10 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/restaurants/orders/{id}', [RestoOrderController::class, 'show']);
         Route::put('/restaurants/orders/{id}/status', [RestoOrderController::class, 'updateStatus']);
         Route::put('/restaurants/orders/{id}/assign-driver', [RestoOrderController::class, 'assignDriver']);
+        Route::get('/restausrants/drivers/available', [RestoOrderController::class, 'getAvailableDrivers']);
+
+
+
         // Route::apiResource('orders', RestoOrderController::class)->only(['index', 'show']);
 
     });

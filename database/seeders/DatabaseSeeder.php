@@ -19,6 +19,8 @@ class DatabaseSeeder extends Seeder
             // RestaurantSeeder::class, // PENTING: Pastikan ini jalan duluan jika ItemSeeder butuh restoran
             ItemCategorySeeder::class,
             ItemSeeder::class,
+            DriverSeeder::class,
+
         ]);
     }
 }

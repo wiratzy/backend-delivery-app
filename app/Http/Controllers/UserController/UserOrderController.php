@@ -27,10 +27,15 @@ class UserOrderController extends Controller
     {
         $user = auth()->user();
 
-        $order = Order::with(['items.item', 'items.item.restaurant'])
-            ->where('id', $id)
-            ->where('user_id', $user->id)
-            ->first();
+        $order = Order::with([
+        'items.item', 
+        'items.item.restaurant', 
+        'driver' // ⬅️ ini yang penting
+    ])
+    ->where('id', $id)
+    ->where('user_id', $user->id)
+    ->first();
+
 
 
         if (!$order) {

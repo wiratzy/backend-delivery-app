@@ -33,7 +33,7 @@ public function user()
 
 public function driver()
 {
-    return $this->belongsTo(User::class, 'driver_id');
+    return $this->belongsTo(Driver::class, 'driver_id');
 }
 
 public function items()

@@ -3,6 +3,9 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
+use App\Models\Order;
+use Carbon\Carbon;
+
 
 class CancelTimedOutOrders extends Command
 {
@@ -18,18 +21,26 @@ class CancelTimedOutOrders extends Command
      *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = 'Set status dibatalkan jika order timeout';
 
     /**
      * Execute the console command.
      */
-    public function handle()
+   public function handle()
     {
-        $cancelled = \App\Models\Order::where('status', 'pending_confirmation')
-            ->where('order_timeout_at', '<=', now())
-            ->update(['status' => 'cancelled_timeout']);
+        $now = Carbon::now();
 
-        $this->info("Order timeout check: $cancelled order(s) cancelled.");
+        $orders = Order::where('status', 'menunggu_konfirmasi')
+            ->where('order_timeout_at', '<', $now)
+            ->get();
+
+        foreach ($orders as $order) {
+            $order->status = 'dibatalkan';
+            $order->save();
+            $this->info("Order #{$order->id} dibatalkan karena timeout.");
+        }
+
+        return 0;
     }
 
 }

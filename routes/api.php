@@ -125,7 +125,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/get-orders', [RestoOrderController::class, 'restoOrders']);
         Route::get('/restaurants/orders/{id}', [RestoOrderController::class, 'show']);
         Route::put('/restaurants/orders/{id}/status', [RestoOrderController::class, 'updateStatus']);
-        Route::put('/restaurants/orders/{id}/assign-driver', [RestoOrderController::class, 'assignDriver']);
+        Route::post('/restaurants/orders/{id}/assign-driver', [RestoOrderController::class, 'assignDriver']);
         Route::get('/restausrants/drivers/available', [RestoOrderController::class, 'getAvailableDrivers']);
 
 

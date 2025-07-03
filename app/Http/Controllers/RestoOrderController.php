@@ -10,6 +10,8 @@ use App\Models\OrderItem;
 use App\Models\Restaurant;
 use App\Models\Notification;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule; // <-- 1. JANGAN LUPA TAMBAHKAN INI DI ATAS
+
 
 class RestoOrderController extends Controller
 {
@@ -41,7 +43,7 @@ class RestoOrderController extends Controller
             'latitude' => $request->latitude,
             'longitude' => $request->longitude,
             'status' => 'menunggu_konfirmasi',
-            'order_timeout_at' => now()->addMinutes(15), // Contoh timeout
+            'order_timeout_at' => now()->addMinutes(5), // Contoh timeout
         ]);
 
         // Simpan item-itemnya
@@ -163,32 +165,33 @@ class RestoOrderController extends Controller
     }
 
     public function assignDriver(Request $request, $id)
-    {
-        $request->validate([
-            'driver_id' => 'required|exists:users,id',
-        ]);
+{
+    $request->validate([
+        'driver_id' => 'required|exists:drivers,id', // ✅ ganti dari 'users' ke 'drivers'
+    ]);
 
-        $order = Order::findOrFail($id);
+    $order = Order::findOrFail($id);
 
-        // ✅ Tambahkan validasi status
-        if ($order->status !== 'diproses') {
-            return response()->json([
-                'success' => false,
-                'message' => 'Pesanan harus dikonfirmasi terlebih dahulu sebelum memilih driver.',
-            ], 422); // 422 Unprocessable Entity
-        }
-
-        $order->driver_id = $request->driver_id;
-        $order->driver_confirmed_at = now();
-        $order->status = 'diantar';
-        $order->save();
-
+    // ✅ Cek status harus 'diproses' sebelum bisa pilih driver
+    if ($order->status !== 'diproses') {
         return response()->json([
-            'success' => true,
-            'message' => 'Driver berhasil ditetapkan dan status diubah ke diantar',
-            'data' => $order
-        ]);
+            'success' => false,
+            'message' => 'Pesanan harus dikonfirmasi terlebih dahulu sebelum memilih driver.',
+        ], 422);
     }
+
+    $order->driver_id = $request->driver_id;
+    $order->driver_confirmed_at = now();
+    $order->status = 'diantar';
+    $order->save();
+
+    return response()->json([
+        'success' => true,
+        'message' => 'Driver berhasil ditetapkan dan status diubah ke diantar',
+        'data' => $order
+    ]);
+}
+
 
 
     public function getAvailableDrivers(Request $request)

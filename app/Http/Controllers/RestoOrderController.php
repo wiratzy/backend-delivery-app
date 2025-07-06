@@ -165,32 +165,32 @@ class RestoOrderController extends Controller
     }
 
     public function assignDriver(Request $request, $id)
-{
-    $request->validate([
-        'driver_id' => 'required|exists:drivers,id', // ✅ ganti dari 'users' ke 'drivers'
-    ]);
+    {
+        $request->validate([
+            'driver_id' => 'required|exists:drivers,id', // ✅ ganti dari 'users' ke 'drivers'
+        ]);
 
-    $order = Order::findOrFail($id);
+        $order = Order::findOrFail($id);
 
-    // ✅ Cek status harus 'diproses' sebelum bisa pilih driver
-    if ($order->status !== 'diproses') {
+        // ✅ Cek status harus 'diproses' sebelum bisa pilih driver
+        if ($order->status !== 'diproses') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Pesanan harus dikonfirmasi terlebih dahulu sebelum memilih driver.',
+            ], 422);
+        }
+
+        $order->driver_id = $request->driver_id;
+        $order->driver_confirmed_at = now();
+        $order->status = 'diantar';
+        $order->save();
+
         return response()->json([
-            'success' => false,
-            'message' => 'Pesanan harus dikonfirmasi terlebih dahulu sebelum memilih driver.',
-        ], 422);
+            'success' => true,
+            'message' => 'Driver berhasil ditetapkan dan status diubah ke diantar',
+            'data' => $order
+        ]);
     }
-
-    $order->driver_id = $request->driver_id;
-    $order->driver_confirmed_at = now();
-    $order->status = 'diantar';
-    $order->save();
-
-    return response()->json([
-        'success' => true,
-        'message' => 'Driver berhasil ditetapkan dan status diubah ke diantar',
-        'data' => $order
-    ]);
-}
 
 
 

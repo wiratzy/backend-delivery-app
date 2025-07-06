@@ -177,56 +177,7 @@ class ItemController extends Controller
         return response()->json(Item::orderBy('created_at', 'desc')->take(10)->get());
     }
 
-    public function store(Request $request)
-    {
-        Log::info('store called', ['user_id' => $request->user()->id, 'role' => $request->user()->role, 'request' => $request->all()]);
 
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'image' => 'nullable|image|max:2048',
-            'rate' => 'nullable|numeric|min:0|max:10',
-            'rating' => 'nullable|string|max:10',
-            'type' => 'required|string|max:255',
-            'location' => 'nullable|string|max:255',
-            'price' => 'required|numeric',
-            'item_category_id' => 'nullable|exists:item_categories,id',
-            'restaurant_id' => 'required|exists:restaurants,id',
-        ]);
-
-        try {
-            if ($request->user()->role === 'restaurant_owner') {
-                $restaurant = Restaurant::where('owner_id', $request->user()->id)
-                    ->findOrFail($request->restaurant_id);
-            } else { // admin
-                $restaurant = Restaurant::findOrFail($request->restaurant_id);
-            }
-
-            $data = $request->only(['name', 'rate', 'rating', 'type', 'location', 'price', 'item_category_id', 'restaurant_id']);
-            if ($request->hasFile('image')) {
-                $imageName = time() . '.' . $request->file('image')->getClientOriginalExtension();
-                $request->file('image')->storeAs('public/items', $imageName);
-                $data['image'] = $imageName;
-            } else {
-                $data['image'] = 'default_item.png';
-            }
-
-            $item = Item::create($data);
-
-            Log::info('Item created', ['item' => $item->toArray()]);
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Item created successfully',
-                'item' => $item,
-            ], 201);
-        } catch (\Exception $e) {
-            Log::error('Failed to create item', ['error' => $e->getMessage()]);
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to create item: ' . $e->getMessage(),
-            ], 500);
-        }
-    }
 
     public function storeForAdmin(Request $request, $restaurant_id)
     {

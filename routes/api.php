@@ -30,6 +30,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/restaurant-categories/{id}', [CategoryController::class, 'showRestaurantCategory']);
     //get restaurant-categories
 
+    Route::get('user/items-categories', [ItemCategoryController::class, 'getItemsCategories']);
     Route::get('/user', function (Request $request) {
 
         $user = $request->user();
@@ -48,7 +49,6 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('user/items', [ItemController::class, 'getAllItems']);
         Route::get('/user/items/categories', [HomeController::class, 'getAllCategories']);
         Route::get('/user/items/category/{category_id}', [ItemController::class, 'getItemsByCategory']);
-        Route::get('user/items-categories', [ItemCategoryController::class, 'getItemsCategories']);
         Route::get('user/item/{item_id}', [ItemController::class, 'show']);
         // Route::get('/user/popular-restaurants', [HomeController::class, 'getPopularRestaurants']);
         // Route::get('/user/most-popular-restaurants', [HomeController::class, 'getMostPopularRestaurants']);
@@ -119,8 +119,8 @@ Route::middleware('auth:sanctum')->group(function () {
         });
         Route::prefix('restaurants-items')->group(function () {
             Route::get('/', [RestaurantItemController::class, 'index']);
-            Route::get('/detail/{itemId}', [ItemController::class, 'show']);
-            Route::post('/', [ItemController::class, 'store']);
+            Route::get('/detail/{itemId}', [RestaurantItemController::class, 'show']);
+            Route::post('/', [RestaurantItemController::class, 'store']);
         });
         Route::get('/get-orders', [RestoOrderController::class, 'restoOrders']);
         Route::get('/restaurants/orders/{id}', [RestoOrderController::class, 'show']);

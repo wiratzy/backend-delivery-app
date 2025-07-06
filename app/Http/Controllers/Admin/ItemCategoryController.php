@@ -188,7 +188,7 @@ class ItemCategoryController extends Controller
                 'name' => $category->name,
                 // Pastikan 'image' di database menyimpan path relatif dari storage/app/public
                 // dan Anda sudah menjalankan 'php artisan storage:link'
-                'image' => $category->image ? url('storage/item_categories/' . $category->image) : null,
+                'image' => $category->image,
                 'created_at' => $category->created_at,
                 'updated_at' => $category->updated_at,
             ];

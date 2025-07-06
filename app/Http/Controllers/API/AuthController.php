@@ -87,6 +87,7 @@ class AuthController extends Controller
             'success' => true,
             'message' => 'Login Berhasil',
             'user' => $user,
+            'restaurant_id' => optional($user->restaurant)->id,
             'token' => $token, // Uncomment kalau pakai Sanctum/Passport
         ]);
     }

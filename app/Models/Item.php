@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Item extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected $fillable = [
         'name',
@@ -34,15 +35,15 @@ class Item extends Model
     {
         return $this->hasMany(OrderItem::class);
     }
-    public function ItemCategory()
+
+    // ✅ FIX INI: relasi itemCategory() ditulis dengan benar dan DI DALAM CLASS
+    public function itemCategory()
     {
         return $this->belongsTo(ItemCategory::class, 'item_category_id');
     }
-    // app/Models/Item.php
 
-public function getImageAttribute($value)
-{
-    return url('storage/items/' . $value);
-}
-
+    public function getImageAttribute($value)
+    {
+        return url('storage/items/' . $value);
+    }
 }

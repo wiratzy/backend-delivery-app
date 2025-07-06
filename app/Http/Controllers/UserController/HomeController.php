@@ -133,7 +133,7 @@ class HomeController extends Controller
                     return [
                         'id' => $category->id,
                         'name' => $category->name,
-                        'image' => $category->image ? url('storage/item_categories/' . $category->image) : 'default_category.png',
+                        'image' => $category->image,
                     ];
                 });
 

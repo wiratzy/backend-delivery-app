@@ -78,7 +78,7 @@ class AuthController extends Controller
         }
 
         // Ambil user
-        $user = Auth::user();
+        $user = Auth::user()->load('restaurant');
 
         // (Opsional) Buat token untuk autentikasi selanjutnya (kalau pakai Laravel Sanctum / Passport)
         $token = $user->createToken('auth_token')->plainTextToken;

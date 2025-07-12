@@ -121,6 +121,8 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::get('/', [RestaurantItemController::class, 'index']);
             Route::get('/detail/{itemId}', [RestaurantItemController::class, 'show']);
             Route::post('/', [RestaurantItemController::class, 'store']);
+            Route::put('/{id}', [RestaurantItemController::class, 'update']);
+            Route::delete('/{id}', [RestaurantItemController::class, 'destroy']);
         });
         Route::get('/get-orders', [RestoOrderController::class, 'restoOrders']);
         Route::get('/restaurants/orders/{id}', [RestoOrderController::class, 'show']);

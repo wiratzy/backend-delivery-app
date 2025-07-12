@@ -147,6 +147,68 @@ class RestaurantItemController extends Controller
         }
     }
 
+    public function update(Request $request, $id)
+{
+
+    Log::info('update called', ['item_id' => $id, 'request' => $request->all()]);
+
+    $request->validate([
+        'name' => 'required|string|max:255',
+        'image' => 'nullable|image|max:2048',
+        'type' => 'required|string|max:255',
+        'price' => 'required|numeric',
+        'item_category_id' => 'nullable|exists:item_categories,id',
+    ]);
+
+    try {
+        $item = Item::findOrFail($id);
+        Log::info("DEBUG:: RESTAURANT ID ITEM: " . $item->restaurant_id);
+
+        // Cek apakah user adalah owner restoran terkait
+        if ($request->user()->role === 'restaurant_owner') {
+            $restaurant = $request->user()->restaurant;
+            if (!$restaurant || $restaurant->id != $item->restaurant_id) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Akses ke restoran tidak valid.',
+                ], 403);
+            }
+        }
+
+        $item->name = $request->name;
+        $item->type = $request->type;
+        $item->price = $request->price;
+        $item->item_category_id = $request->item_category_id;
+
+        // Ganti gambar jika ada file image baru
+        if ($request->hasFile('image')) {
+            // Hapus file lama (optional)
+            if ($item->image && Storage::exists('public/items/' . $item->image)) {
+                Storage::delete('public/items/' . $item->image);
+            }
+
+            $imageName = time() . '.' . $request->file('image')->getClientOriginalExtension();
+            $request->file('image')->storeAs('public/items', $imageName);
+            $item->image = $imageName;
+        }
+
+        $item->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Item berhasil diperbarui',
+            'item' => $item
+        ]);
+    } catch (\Exception $e) {
+        Log::error('Gagal update item', ['error' => $e->getMessage()]);
+        return response()->json([
+            'success' => false,
+            'message' => 'Gagal update item: ' . $e->getMessage()
+        ], 500);
+    }
+}
+
+
     public function destroy(Request $request, $id)
     {
         Log::info('destroy called', ['item_id' => $id, 'user_id' => $request->user()->id, 'role' => $request->user()->role]);

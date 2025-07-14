@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Jul 01, 2025 at 06:08 PM
+-- Generation Time: Jul 12, 2025 at 09:41 PM
 -- Server version: 8.0.30
 -- PHP Version: 7.4.33
 
@@ -52,7 +52,7 @@ CREATE TABLE `carts` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   `price` decimal(10,2) NOT NULL DEFAULT '0.00'
-) ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `carts`
@@ -77,16 +77,18 @@ CREATE TABLE `drivers` (
   `vehicle_number` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `restaurant_id` bigint UNSIGNED NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `deleted_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `drivers`
 --
 
-INSERT INTO `drivers` (`id`, `name`, `phone`, `vehicle_number`, `restaurant_id`, `created_at`, `updated_at`) VALUES
-(2, 'Raga', '08123456789', 'E 1234 QW', 2, '2025-07-01 03:37:00', '2025-07-01 03:37:00'),
-(3, 'Adit', '08123456789', 'E 1234 QW', 2, '2025-07-01 03:39:26', '2025-07-01 03:39:26');
+INSERT INTO `drivers` (`id`, `name`, `phone`, `vehicle_number`, `restaurant_id`, `created_at`, `updated_at`, `deleted_at`) VALUES
+(1, 'radit', '08123456789', 'E 3244 QW', 2, '2025-07-12 21:03:02', '2025-07-12 21:03:02', NULL),
+(2, 'radit', '08123456789', 'E 3422 QW', 2, '2025-07-12 21:17:05', '2025-07-12 21:17:05', NULL),
+(3, 'radit', '08123456789', 'E 3422 QW', 3, '2025-07-12 21:17:51', '2025-07-12 21:17:51', NULL);
 
 -- --------------------------------------------------------
 
@@ -96,55 +98,57 @@ INSERT INTO `drivers` (`id`, `name`, `phone`, `vehicle_number`, `restaurant_id`,
 
 CREATE TABLE `items` (
   `id` bigint UNSIGNED NOT NULL,
-  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `image` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'default_item.png',
+  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `image` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'default_item.png',
   `rate` decimal(3,1) NOT NULL DEFAULT '0.0',
   `rating` int NOT NULL DEFAULT '0',
-  `type` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `type` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `price` decimal(10,2) UNSIGNED NOT NULL,
   `item_category_id` bigint UNSIGNED DEFAULT NULL,
   `restaurant_id` bigint UNSIGNED NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL
-) ;
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `deleted_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `items`
 --
 
-INSERT INTO `items` (`id`, `name`, `image`, `rate`, `rating`, `type`, `price`, `item_category_id`, `restaurant_id`, `created_at`, `updated_at`) VALUES
-(1, 'Smoky mushrooms', '1747167139.jpg', 0.0, 0, 'sayuran', 15000.00, 2, 2, '2025-05-13 13:12:19', '2025-05-13 13:12:19'),
-(2, 'Soup Enak', '1747168579.jpg', 4.0, 12, 'Kuah', 15000.00, 2, 2, '2025-05-13 13:36:20', '2025-05-13 13:36:20'),
-(3, 'Soup Enak punya sarul', '1748246629.jpeg', 0.0, 0, 'Kuah', 12000.00, 2, 3, '2025-05-26 01:03:49', '2025-05-26 01:03:49'),
-(4, 'Pizza Margherita', '1748246629.jpeg', 4.5, 150, 'Italian Food', 75000.00, 4, 2, '2025-06-21 12:57:15', '2025-06-21 12:57:15'),
-(5, 'Burger Combo', '1748246629.jpeg', 4.2, 100, 'Fast Food', 50000.00, 4, 2, '2025-06-21 12:57:15', '2025-06-21 12:57:15'),
-(6, 'Coca Cola (Small)', '1748246629.jpeg', 4.0, 80, 'Soft Drink', 10000.00, 5, 2, '2025-06-21 12:57:15', '2025-06-21 12:57:15'),
-(7, 'Laptop X100', '1748246629.jpeg', 4.8, 200, 'Gadget', 12000000.00, 3, 2, '2025-06-21 12:57:15', '2025-06-21 12:57:15'),
-(8, 'Test Item 1', '1748246629.jpeg', 4.8, 24, 'Misc', 47759.00, 5, 2, '2025-06-21 12:57:15', '2025-06-21 12:57:15'),
-(9, 'Test Item 2', '1748246629.jpeg', 3.9, 57, 'Misc', 33317.00, 4, 2, '2025-06-21 12:57:15', '2025-06-21 12:57:15'),
-(10, 'Test Item 3', '1748246629.jpeg', 4.7, 17, 'Misc', 13228.00, 5, 2, '2025-06-21 12:57:15', '2025-06-21 12:57:15'),
-(11, 'Test Item 4', '1748246629.jpeg', 5.0, 42, 'Misc', 38699.00, 4, 2, '2025-06-21 12:57:15', '2025-06-21 12:57:15'),
-(12, 'Test Item 5', '1748246629.jpeg', 4.5, 93, 'Misc', 25710.00, 5, 2, '2025-06-21 12:57:15', '2025-06-21 12:57:15'),
-(13, 'Test Item 6', '1748246629.jpeg', 3.6, 99, 'Misc', 30757.00, 4, 2, '2025-06-21 12:57:15', '2025-06-21 12:57:15'),
-(14, 'Test Item 7', '1748246629.jpeg', 3.2, 12, 'Misc', 5633.00, 5, 2, '2025-06-21 12:57:15', '2025-06-21 12:57:15'),
-(15, 'Test Item 8', '1748246629.jpeg', 3.5, 60, 'Misc', 34539.00, 4, 2, '2025-06-21 12:57:15', '2025-06-21 12:57:15'),
-(16, 'Test Item 9', '1748246629.jpeg', 4.4, 14, 'Misc', 32938.00, 5, 2, '2025-06-21 12:57:15', '2025-06-21 12:57:15'),
-(17, 'Test Item 10', '1748246629.jpeg', 3.1, 60, 'Misc', 12708.00, 4, 2, '2025-06-21 12:57:15', '2025-06-21 12:57:15'),
-(18, 'Test Item 11', '1748246629.jpeg', 3.0, 58, 'Misc', 38393.00, 5, 2, '2025-06-21 12:57:15', '2025-06-21 12:57:15'),
-(19, 'Test Item 12', '1748246629.jpeg', 3.3, 31, 'Misc', 10683.00, 4, 2, '2025-06-21 12:57:15', '2025-06-21 12:57:15'),
-(20, 'Test Item 13', '1748246629.jpeg', 3.5, 68, 'Misc', 22246.00, 5, 2, '2025-06-21 12:57:15', '2025-06-21 12:57:15'),
-(21, 'Test Item 14', '1748246629.jpeg', 4.7, 95, 'Misc', 37973.00, 4, 2, '2025-06-21 12:57:15', '2025-06-21 12:57:15'),
-(22, 'Test Item 15', '1748246629.jpeg', 4.4, 68, 'Misc', 8028.00, 5, 2, '2025-06-21 12:57:15', '2025-06-21 12:57:15'),
-(23, 'Test Item 16', '1748246629.jpeg', 3.2, 20, 'Misc', 33169.00, 4, 2, '2025-06-21 12:57:15', '2025-06-21 12:57:15'),
-(24, 'Test Item 17', '1748246629.jpeg', 3.7, 62, 'Misc', 15351.00, 5, 2, '2025-06-21 12:57:15', '2025-06-21 12:57:15'),
-(25, 'Test Item 18', '1748246629.jpeg', 4.4, 18, 'Misc', 32389.00, 4, 2, '2025-06-21 12:57:15', '2025-06-21 12:57:15'),
-(26, 'Test Item 19', '1748246629.jpeg', 3.0, 48, 'Misc', 45003.00, 5, 2, '2025-06-21 12:57:15', '2025-06-21 12:57:15'),
-(27, 'Test Item 20', '1748246629.jpeg', 3.6, 39, 'Misc', 9919.00, 4, 2, '2025-06-21 12:57:15', '2025-06-21 12:57:15'),
-(28, 'Test Item 21', '1748246629.jpeg', 3.3, 55, 'Misc', 41586.00, 5, 2, '2025-06-21 12:57:15', '2025-06-21 12:57:15'),
-(29, 'Test Item 22', '1748246629.jpeg', 4.3, 14, 'Misc', 42706.00, 4, 2, '2025-06-21 12:57:15', '2025-06-21 12:57:15'),
-(30, 'Test Item 23', '1748246629.jpeg', 4.3, 25, 'Misc', 47292.00, 5, 2, '2025-06-21 12:57:15', '2025-06-21 12:57:15'),
-(31, 'Test Item 24', '1748246629.jpeg', 4.5, 23, 'Misc', 30187.00, 4, 2, '2025-06-21 12:57:15', '2025-06-21 12:57:15'),
-(32, 'Test Item 25', '1748246629.jpeg', 4.1, 48, 'Misc', 30455.00, 5, 2, '2025-06-21 12:57:15', '2025-06-21 12:57:15');
+INSERT INTO `items` (`id`, `name`, `image`, `rate`, `rating`, `type`, `price`, `item_category_id`, `restaurant_id`, `created_at`, `updated_at`, `deleted_at`) VALUES
+(1, 'Smoky mushrooms', '1747167139.jpg', 0.0, 0, 'sayuran', 15000.00, 2, 2, '2025-05-13 13:12:19', '2025-07-12 20:33:23', '2025-07-12 20:33:23'),
+(2, 'Soup Enak', '1747168579.jpg', 4.0, 12, 'Kuah', 15000.00, 2, 2, '2025-05-13 13:36:20', '2025-07-12 20:33:32', '2025-07-12 20:33:32'),
+(3, 'Soup Enak punya sarul', '1748246629.jpeg', 5.0, 1, 'Kuah', 12000.00, 2, 3, '2025-05-26 01:03:49', '2025-07-12 21:18:37', NULL),
+(4, 'Pizza Margherita', '1748246629.jpeg', 4.5, 150, 'Italian Food', 75000.00, 4, 2, '2025-06-21 12:57:15', '2025-07-12 19:34:40', '2025-07-12 19:34:40'),
+(5, 'Burger Combo', '1748246629.jpeg', 4.2, 100, 'Fast Food', 50000.00, 4, 2, '2025-06-21 12:57:15', '2025-06-21 12:57:15', NULL),
+(6, 'Coca Cola (Small)', '1748246629.jpeg', 4.0, 80, 'Soft Drink', 10000.00, 5, 2, '2025-06-21 12:57:15', '2025-06-21 12:57:15', NULL),
+(7, 'Laptop X100', '1748246629.jpeg', 4.8, 200, 'Gadget', 12000000.00, 3, 2, '2025-06-21 12:57:15', '2025-06-21 12:57:15', NULL),
+(8, 'Test Item 1', '1748246629.jpeg', 4.5, 4, 'Misc', 47759.00, 5, 2, '2025-06-21 12:57:15', '2025-07-12 21:14:21', NULL),
+(9, 'Test Item 2', '1748246629.jpeg', 4.5, 4, 'Misc', 33317.00, 4, 2, '2025-06-21 12:57:15', '2025-07-12 21:14:21', NULL),
+(10, 'Test Item 3', '1748246629.jpeg', 4.7, 17, 'Misc', 13228.00, 5, 2, '2025-06-21 12:57:15', '2025-06-21 12:57:15', NULL),
+(11, 'Test Item 4', '1748246629.jpeg', 5.0, 42, 'Misc', 38699.00, 4, 2, '2025-06-21 12:57:15', '2025-06-21 12:57:15', NULL),
+(12, 'Test Item 5', '1748246629.jpeg', 4.5, 93, 'Misc', 25710.00, 5, 2, '2025-06-21 12:57:15', '2025-06-21 12:57:15', NULL),
+(13, 'Test Item 6', '1748246629.jpeg', 3.6, 99, 'Misc', 30757.00, 4, 2, '2025-06-21 12:57:15', '2025-06-21 12:57:15', NULL),
+(14, 'Test Item 7', '1748246629.jpeg', 3.2, 12, 'Misc', 5633.00, 5, 2, '2025-06-21 12:57:15', '2025-06-21 12:57:15', NULL),
+(15, 'Test Item 8', '1748246629.jpeg', 3.5, 60, 'Misc', 34539.00, 4, 2, '2025-06-21 12:57:15', '2025-06-21 12:57:15', NULL),
+(16, 'Test Item 9', '1748246629.jpeg', 4.4, 14, 'Misc', 32938.00, 5, 2, '2025-06-21 12:57:15', '2025-06-21 12:57:15', NULL),
+(17, 'Test Item 10', '1748246629.jpeg', 3.1, 60, 'Misc', 12708.00, 4, 2, '2025-06-21 12:57:15', '2025-06-21 12:57:15', NULL),
+(18, 'Test Item 11', '1748246629.jpeg', 3.0, 58, 'Misc', 38393.00, 5, 2, '2025-06-21 12:57:15', '2025-06-21 12:57:15', NULL),
+(19, 'Test Item 12', '1748246629.jpeg', 3.3, 31, 'Misc', 10683.00, 4, 2, '2025-06-21 12:57:15', '2025-06-21 12:57:15', NULL),
+(20, 'Test Item 13', '1748246629.jpeg', 3.5, 68, 'Misc', 22246.00, 5, 2, '2025-06-21 12:57:15', '2025-06-21 12:57:15', NULL),
+(21, 'Test Item 14', '1748246629.jpeg', 4.7, 95, 'Misc', 37973.00, 4, 2, '2025-06-21 12:57:15', '2025-06-21 12:57:15', NULL),
+(22, 'Test Item 15', '1748246629.jpeg', 4.4, 68, 'Misc', 8028.00, 5, 2, '2025-06-21 12:57:15', '2025-06-21 12:57:15', NULL),
+(23, 'Test Item 16', '1748246629.jpeg', 3.2, 20, 'Misc', 33169.00, 4, 2, '2025-06-21 12:57:15', '2025-06-21 12:57:15', NULL),
+(24, 'Test Item 17', '1748246629.jpeg', 3.7, 62, 'Misc', 15351.00, 5, 2, '2025-06-21 12:57:15', '2025-06-21 12:57:15', NULL),
+(25, 'Test Item 18', '1748246629.jpeg', 4.4, 18, 'Misc', 32389.00, 4, 2, '2025-06-21 12:57:15', '2025-06-21 12:57:15', NULL),
+(26, 'Test Item 19', '1748246629.jpeg', 3.0, 48, 'Misc', 45003.00, 5, 2, '2025-06-21 12:57:15', '2025-06-21 12:57:15', NULL),
+(27, 'Test Item 20', '1748246629.jpeg', 3.6, 39, 'Misc', 9919.00, 4, 2, '2025-06-21 12:57:15', '2025-06-21 12:57:15', NULL),
+(28, 'Test Item 21', '1748246629.jpeg', 3.3, 55, 'Misc', 41586.00, 5, 2, '2025-06-21 12:57:15', '2025-06-21 12:57:15', NULL),
+(29, 'Test Item 22', '1748246629.jpeg', 4.3, 14, 'Misc', 42706.00, 4, 2, '2025-06-21 12:57:15', '2025-06-21 12:57:15', NULL),
+(30, 'Test Item 23', '1748246629.jpeg', 4.3, 25, 'Misc', 47292.00, 5, 2, '2025-06-21 12:57:15', '2025-06-21 12:57:15', NULL),
+(31, 'Test Item 24', '1748246629.jpeg', 4.5, 23, 'Misc', 30187.00, 4, 2, '2025-06-21 12:57:15', '2025-06-21 12:57:15', NULL),
+(32, 'Test Item 25', '1748246629.jpeg', 4.1, 48, 'Misc', 30455.00, 5, 2, '2025-06-21 12:57:15', '2025-06-21 12:57:15', NULL),
+(33, 'testttt', '1752346055.jpg', 0.0, 0, 'testttt', 20000.00, 2, 3, '2025-07-10 19:50:59', '2025-07-12 19:33:18', '2025-07-12 19:33:18');
 
 -- --------------------------------------------------------
 
@@ -157,19 +161,20 @@ CREATE TABLE `item_categories` (
   `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `image` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `deleted_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `item_categories`
 --
 
-INSERT INTO `item_categories` (`id`, `name`, `image`, `created_at`, `updated_at`) VALUES
-(2, 'Resto', '1747590369.jpg', '2025-05-18 10:46:09', '2025-05-18 10:46:09'),
-(3, 'Electronics', '1746897692.jpg', '2025-06-21 12:57:15', '2025-06-21 12:57:15'),
-(4, 'Food', '1746962237.jpg', '2025-06-21 12:57:15', '2025-06-21 12:57:15'),
-(5, 'Drinks', '1746966048.jpg', '2025-06-21 12:57:15', '2025-06-21 12:57:15'),
-(6, 'Snacks', '1746966149.jpg', '2025-06-21 12:57:15', '2025-06-21 12:57:15');
+INSERT INTO `item_categories` (`id`, `name`, `image`, `created_at`, `updated_at`, `deleted_at`) VALUES
+(2, 'Resto', '1747590369.jpg', '2025-05-18 10:46:09', '2025-05-18 10:46:09', NULL),
+(3, 'Electronics', '1746897692.jpg', '2025-06-21 12:57:15', '2025-06-21 12:57:15', NULL),
+(4, 'Food', '1746962237.jpg', '2025-06-21 12:57:15', '2025-06-21 12:57:15', NULL),
+(5, 'Drinks', '1746966048.jpg', '2025-06-21 12:57:15', '2025-06-21 12:57:15', NULL),
+(6, 'Snacks', '1746966149.jpg', '2025-06-21 12:57:15', '2025-06-21 12:57:15', NULL);
 
 -- --------------------------------------------------------
 
@@ -220,7 +225,14 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (30, '2025_06_27_151902_update_order_status_enum_column', 10),
 (31, '2025_06_27_152422_clean_old_order_status_values', 11),
 (32, '2025_06_29_170124_update_status_length_on_orders_table', 12),
-(35, '2025_06_30_124313_create_drivers_table', 13);
+(36, '2025_06_30_124313_create_drivers_table', 13),
+(37, '2025_07_03_235935_add_deleted_at_to_items_table', 13),
+(38, '2025_07_04_000008_add_deleted_at_to_item_categories_table', 13),
+(39, '2025_07_04_000008_add_deleted_at_to_orders_table', 13),
+(40, '2025_07_04_000008_add_deleted_at_to_restaurants_table', 13),
+(41, '2025_07_04_000009_add_deleted_at_to_drivers_table', 13),
+(42, '2025_07_04_000009_add_deleted_at_to_users_table', 13),
+(43, '2025_07_13_034114_add_ratings_to_orders_table', 14);
 
 -- --------------------------------------------------------
 
@@ -260,32 +272,54 @@ CREATE TABLE `orders` (
   `status` enum('menunggu_konfirmasi','diproses','diantar','diterima','berhasil','dibatalkan') COLLATE utf8mb4_unicode_ci DEFAULT 'menunggu_konfirmasi',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
-  `order_timeout_at` timestamp NULL DEFAULT NULL
+  `order_timeout_at` timestamp NULL DEFAULT NULL,
+  `deleted_at` timestamp NULL DEFAULT NULL,
+  `restaurant_rating` tinyint UNSIGNED DEFAULT NULL,
+  `item_rating` tinyint UNSIGNED DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `orders`
 --
 
-INSERT INTO `orders` (`id`, `user_id`, `restaurant_id`, `driver_id`, `driver_confirmed_at`, `total_price`, `delivery_fee`, `payment_method`, `address`, `latitude`, `longitude`, `status`, `created_at`, `updated_at`, `order_timeout_at`) VALUES
-(1, 4, 3, NULL, NULL, 41000.00, 5000.00, 'COD', NULL, NULL, NULL, 'dibatalkan', '2025-06-14 10:36:30', '2025-06-14 11:46:47', '2025-06-14 10:41:30'),
-(2, 4, 3, NULL, NULL, 17000.00, 5000.00, 'COD', NULL, NULL, NULL, 'dibatalkan', '2025-06-14 12:02:19', '2025-06-14 12:08:13', '2025-06-14 12:07:19'),
-(3, 4, 2, NULL, NULL, 65000.00, 5000.00, 'Cash on delivery', NULL, NULL, NULL, 'menunggu_konfirmasi', '2025-06-23 00:56:15', '2025-06-23 00:56:15', '2025-06-23 01:11:15'),
-(4, 4, 2, NULL, NULL, 65000.00, 5000.00, 'Cash on delivery', 'Jl. Raya Cirebon-Indramayu', -6.9, 108.3, 'diproses', '2025-06-23 00:57:35', '2025-06-28 14:52:44', '2025-06-23 01:12:35'),
-(5, 23, 2, NULL, NULL, 65000.00, 5000.00, 'Cash on delivery', 'Jl. Raya Cirebon-Indramayu', -6.9, 108.3, 'diantar', '2025-06-26 14:07:56', '2025-06-28 15:09:34', '2025-06-26 14:22:56'),
-(6, 4, 2, NULL, NULL, 80000.00, 5000.00, 'Cash on delivery', 'Gg. 7 Utara No.49, Karangampel, Kecamatan Karangampel', -6.4642294794704, 108.44227179018, 'menunggu_konfirmasi', '2025-06-29 10:07:42', '2025-06-29 10:07:42', '2025-06-29 10:22:42'),
-(7, 4, 2, NULL, NULL, 55000.00, 5000.00, 'Cash on delivery', 'Gg. 7 Utara No.49, Karangampel, Kecamatan Karangampel', -6.4642294794704, 108.44227179018, 'menunggu_konfirmasi', '2025-06-29 10:14:55', '2025-06-29 10:14:55', '2025-06-29 10:29:55'),
-(8, 4, 2, NULL, NULL, 55000.00, 5000.00, 'Cash on delivery', 'Gg. 7 Utara No.49, Karangampel, Kecamatan Karangampel', -6.4642294794704, 108.44227179018, 'menunggu_konfirmasi', '2025-06-29 10:20:47', '2025-06-29 10:20:47', '2025-06-29 10:35:47'),
-(9, 4, 2, NULL, NULL, 80000.00, 5000.00, 'Cash on delivery', 'Gg. 7 Utara No.49, Karangampel, Kecamatan Karangampel', -6.4642294794704, 108.44227179018, 'menunggu_konfirmasi', '2025-06-29 10:25:47', '2025-06-29 10:25:47', '2025-06-29 10:40:47'),
-(10, 4, 2, NULL, NULL, 80000.00, 5000.00, 'Cash on delivery', 'Gg. 7 Utara No.49, Karangampel, Kecamatan Karangampel', -6.4642294794704, 108.44227179018, 'menunggu_konfirmasi', '2025-06-29 10:29:37', '2025-06-29 10:29:37', '2025-06-29 10:44:37'),
-(11, 4, 2, NULL, NULL, 80000.00, 5000.00, 'Cash on delivery', 'Gg. 7 Utara No.49, Karangampel, Kecamatan Karangampel', -6.4642294794704, 108.44227179018, 'berhasil', '2025-06-29 10:40:16', '2025-06-29 12:14:04', '2025-06-29 10:55:16'),
-(12, 4, 2, NULL, NULL, 80000.00, 5000.00, 'Cash on delivery', 'Gg. 7 Utara No.49, Karangampel, Kecamatan Karangampel', -6.4642294794704, 108.44227179018, 'menunggu_konfirmasi', '2025-06-29 10:47:33', '2025-06-29 10:47:33', '2025-06-29 11:02:33'),
-(13, 4, 2, NULL, NULL, 80000.00, 5000.00, 'Cash on delivery', 'Gg. 7 Utara No.49, Karangampel, Kecamatan Karangampel', -6.4642294794704, 108.44227179018, 'menunggu_konfirmasi', '2025-06-29 10:51:05', '2025-06-29 10:51:05', '2025-06-29 11:06:05'),
-(14, 4, 2, NULL, NULL, 80000.00, 5000.00, 'Cash on delivery', 'Gg. 7 Utara No.49, Karangampel, Kecamatan Karangampel', -6.4642294794704, 108.44227179018, 'menunggu_konfirmasi', '2025-06-29 10:51:40', '2025-06-29 10:51:40', '2025-06-29 11:06:40'),
-(15, 4, 2, NULL, NULL, 155000.00, 5000.00, 'Cash on delivery', 'Gg. 7 Utara No.49, Karangampel, Kecamatan Karangampel', -6.4642294794704, 108.44227179018, 'diproses', '2025-06-29 11:24:37', '2025-06-30 05:06:52', '2025-06-29 11:39:37'),
-(16, 4, 2, NULL, NULL, 230000.00, 5000.00, 'Cash on delivery', 'Gg. 7 Utara No.49, Karangampel, Kecamatan Karangampel', -6.4642294794704, 108.44227179018, 'menunggu_konfirmasi', '2025-06-29 11:29:38', '2025-06-29 11:29:38', '2025-06-29 11:44:38'),
-(17, 4, 2, NULL, NULL, 80000.00, 5000.00, 'Cash on delivery', 'Gg. 7 Utara No.49, Karangampel, Kecamatan Karangampel', -6.4642294794704, 108.44227179018, 'berhasil', '2025-06-29 11:31:06', '2025-06-29 12:16:24', '2025-06-29 11:46:06'),
-(18, 4, 2, NULL, NULL, 55000.00, 5000.00, 'Cash on delivery', 'Gg. 7 Utara No.49, Karangampel, Kecamatan Karangampel', -6.4642294794704, 108.44227179018, 'berhasil', '2025-06-29 11:46:09', '2025-06-29 12:14:59', '2025-06-29 12:01:09');
+INSERT INTO `orders` (`id`, `user_id`, `restaurant_id`, `driver_id`, `driver_confirmed_at`, `total_price`, `delivery_fee`, `payment_method`, `address`, `latitude`, `longitude`, `status`, `created_at`, `updated_at`, `order_timeout_at`, `deleted_at`, `restaurant_rating`, `item_rating`) VALUES
+(1, 4, 3, NULL, NULL, 41000.00, 5000.00, 'COD', NULL, NULL, NULL, 'dibatalkan', '2025-06-14 10:36:30', '2025-06-14 11:46:47', '2025-06-14 10:41:30', NULL, NULL, NULL),
+(2, 4, 3, NULL, NULL, 17000.00, 5000.00, 'COD', NULL, NULL, NULL, 'dibatalkan', '2025-06-14 12:02:19', '2025-06-14 12:08:13', '2025-06-14 12:07:19', NULL, NULL, NULL),
+(3, 4, 2, NULL, NULL, 65000.00, 5000.00, 'Cash on delivery', NULL, NULL, NULL, 'dibatalkan', '2025-06-23 00:56:15', '2025-07-02 18:50:19', '2025-06-23 01:11:15', NULL, NULL, NULL),
+(4, 4, 2, NULL, NULL, 65000.00, 5000.00, 'Cash on delivery', 'Jl. Raya Cirebon-Indramayu', -6.9, 108.3, 'diproses', '2025-06-23 00:57:35', '2025-06-28 14:52:44', '2025-06-23 01:12:35', NULL, NULL, NULL),
+(5, 23, 2, NULL, NULL, 65000.00, 5000.00, 'Cash on delivery', 'Jl. Raya Cirebon-Indramayu', -6.9, 108.3, 'diantar', '2025-06-26 14:07:56', '2025-06-28 15:09:34', '2025-06-26 14:22:56', NULL, NULL, NULL),
+(6, 4, 2, NULL, NULL, 80000.00, 5000.00, 'Cash on delivery', 'Gg. 7 Utara No.49, Karangampel, Kecamatan Karangampel', -6.4642294794704, 108.44227179018, 'dibatalkan', '2025-06-29 10:07:42', '2025-07-02 18:50:19', '2025-06-29 10:22:42', NULL, NULL, NULL),
+(7, 4, 2, NULL, NULL, 55000.00, 5000.00, 'Cash on delivery', 'Gg. 7 Utara No.49, Karangampel, Kecamatan Karangampel', -6.4642294794704, 108.44227179018, 'dibatalkan', '2025-06-29 10:14:55', '2025-07-02 18:50:19', '2025-06-29 10:29:55', NULL, NULL, NULL),
+(8, 4, 2, NULL, NULL, 55000.00, 5000.00, 'Cash on delivery', 'Gg. 7 Utara No.49, Karangampel, Kecamatan Karangampel', -6.4642294794704, 108.44227179018, 'dibatalkan', '2025-06-29 10:20:47', '2025-07-02 18:50:19', '2025-06-29 10:35:47', NULL, NULL, NULL),
+(9, 4, 2, NULL, NULL, 80000.00, 5000.00, 'Cash on delivery', 'Gg. 7 Utara No.49, Karangampel, Kecamatan Karangampel', -6.4642294794704, 108.44227179018, 'dibatalkan', '2025-06-29 10:25:47', '2025-07-02 18:50:19', '2025-06-29 10:40:47', NULL, NULL, NULL),
+(10, 4, 2, NULL, NULL, 80000.00, 5000.00, 'Cash on delivery', 'Gg. 7 Utara No.49, Karangampel, Kecamatan Karangampel', -6.4642294794704, 108.44227179018, 'dibatalkan', '2025-06-29 10:29:37', '2025-07-02 18:50:19', '2025-06-29 10:44:37', NULL, NULL, NULL),
+(11, 4, 2, NULL, NULL, 80000.00, 5000.00, 'Cash on delivery', 'Gg. 7 Utara No.49, Karangampel, Kecamatan Karangampel', -6.4642294794704, 108.44227179018, 'berhasil', '2025-06-29 10:40:16', '2025-06-29 12:14:04', '2025-06-29 10:55:16', NULL, NULL, NULL),
+(12, 4, 2, NULL, NULL, 80000.00, 5000.00, 'Cash on delivery', 'Gg. 7 Utara No.49, Karangampel, Kecamatan Karangampel', -6.4642294794704, 108.44227179018, 'dibatalkan', '2025-06-29 10:47:33', '2025-07-02 18:50:19', '2025-06-29 11:02:33', NULL, NULL, NULL),
+(13, 4, 2, NULL, NULL, 80000.00, 5000.00, 'Cash on delivery', 'Gg. 7 Utara No.49, Karangampel, Kecamatan Karangampel', -6.4642294794704, 108.44227179018, 'dibatalkan', '2025-06-29 10:51:05', '2025-07-02 18:50:19', '2025-06-29 11:06:05', NULL, NULL, NULL),
+(14, 4, 2, NULL, NULL, 80000.00, 5000.00, 'Cash on delivery', 'Gg. 7 Utara No.49, Karangampel, Kecamatan Karangampel', -6.4642294794704, 108.44227179018, 'dibatalkan', '2025-06-29 10:51:40', '2025-07-02 18:50:19', '2025-06-29 11:06:40', NULL, NULL, NULL),
+(15, 4, 2, NULL, NULL, 155000.00, 5000.00, 'Cash on delivery', 'Gg. 7 Utara No.49, Karangampel, Kecamatan Karangampel', -6.4642294794704, 108.44227179018, 'diproses', '2025-06-29 11:24:37', '2025-06-30 05:06:52', '2025-06-29 11:39:37', NULL, NULL, NULL),
+(16, 4, 2, NULL, NULL, 230000.00, 5000.00, 'Cash on delivery', 'Gg. 7 Utara No.49, Karangampel, Kecamatan Karangampel', -6.4642294794704, 108.44227179018, 'dibatalkan', '2025-06-29 11:29:38', '2025-07-02 18:50:19', '2025-06-29 11:44:38', NULL, NULL, NULL),
+(17, 4, 2, NULL, NULL, 80000.00, 5000.00, 'Cash on delivery', 'Gg. 7 Utara No.49, Karangampel, Kecamatan Karangampel', -6.4642294794704, 108.44227179018, 'berhasil', '2025-06-29 11:31:06', '2025-06-29 12:16:24', '2025-06-29 11:46:06', NULL, NULL, NULL),
+(18, 4, 2, NULL, NULL, 55000.00, 5000.00, 'Cash on delivery', 'Gg. 7 Utara No.49, Karangampel, Kecamatan Karangampel', -6.4642294794704, 108.44227179018, 'berhasil', '2025-06-29 11:46:09', '2025-06-29 12:14:59', '2025-06-29 12:01:09', NULL, NULL, NULL),
+(19, 4, 2, NULL, NULL, 80000.00, 5000.00, 'Cash on delivery', 'Gg. 7 Utara No.49, Karangampel, Kecamatan Karangampel', -6.4642294794704, 108.44227179018, 'dibatalkan', '2025-07-02 10:16:38', '2025-07-02 18:50:19', '2025-07-02 10:31:38', NULL, NULL, NULL),
+(20, 4, 2, NULL, NULL, 80000.00, 5000.00, 'Cash on delivery', 'Gg. 7 Utara No.49, Karangampel, Kecamatan Karangampel', -6.4642294794704, 108.44227179018, 'dibatalkan', '2025-07-02 17:27:40', '2025-07-02 18:50:19', '2025-07-02 17:42:40', NULL, NULL, NULL),
+(21, 4, 2, NULL, NULL, 80000.00, 5000.00, 'Cash on delivery', 'Gg. 7 Utara No.49, Karangampel, Kecamatan Karangampel', -6.4642294794704, 108.44227179018, 'dibatalkan', '2025-07-02 18:28:34', '2025-07-02 18:50:19', '2025-07-02 18:43:34', NULL, NULL, NULL),
+(22, 4, 2, NULL, NULL, 80000.00, 5000.00, 'Cash on delivery', 'Gg. 7 Utara No.49, Karangampel, Kecamatan Karangampel', -6.4642294794704, 108.44227179018, 'dibatalkan', '2025-07-02 18:39:41', '2025-07-02 18:50:19', '2025-07-02 18:40:41', NULL, NULL, NULL),
+(23, 4, 2, NULL, NULL, 55000.00, 5000.00, 'Cash on delivery', 'Gg. 7 Utara No.49, Karangampel, Kecamatan Karangampel', -6.4642294794704, 108.44227179018, 'dibatalkan', '2025-07-02 18:46:48', '2025-07-02 18:50:19', '2025-07-02 18:47:48', NULL, NULL, NULL),
+(24, 4, 2, NULL, NULL, 80000.00, 5000.00, 'Cash on delivery', 'Gg. 7 Utara No.49, Karangampel, Kecamatan Karangampel', -6.4642294794704, 108.44227179018, 'dibatalkan', '2025-07-02 18:50:39', '2025-07-02 18:52:02', '2025-07-02 18:51:39', NULL, NULL, NULL),
+(25, 4, 2, NULL, NULL, 55000.00, 5000.00, 'Cash on delivery', 'Gg. 7 Utara No.49, Karangampel, Kecamatan Karangampel', -6.4642294794704, 108.44227179018, 'dibatalkan', '2025-07-02 18:54:32', '2025-07-02 18:56:19', '2025-07-02 18:55:32', NULL, NULL, NULL),
+(26, 4, 2, 2, '2025-07-02 19:53:35', 80000.00, 5000.00, 'Cash on delivery', 'Gg. 7 Utara No.49, Karangampel, Kecamatan Karangampel', -6.4642294794704, 108.44227179018, 'berhasil', '2025-07-02 19:20:17', '2025-07-02 19:54:23', '2025-07-02 19:25:17', NULL, NULL, NULL),
+(27, 4, 2, 3, '2025-07-02 20:21:47', 55000.00, 5000.00, 'Cash on delivery', 'Gg. 7 Utara No.49, Karangampel, Kecamatan Karangampel', -6.4642294794704, 108.44227179018, 'diantar', '2025-07-02 20:12:16', '2025-07-02 20:21:47', '2025-07-02 20:17:16', NULL, NULL, NULL),
+(28, 4, 2, 2, '2025-07-02 20:12:46', 80000.00, 5000.00, 'Cash on delivery', 'Gg. 7 Utara No.49, Karangampel, Kecamatan Karangampel', -6.4642294794704, 108.44227179018, 'berhasil', '2025-07-02 20:12:23', '2025-07-02 20:37:47', '2025-07-02 20:17:23', NULL, NULL, NULL),
+(29, 4, 3, 5, '2025-07-02 20:25:41', 17000.00, 5000.00, 'Cash on delivery', 'Gg. 7 Utara No.49, Karangampel, Kecamatan Karangampel', -6.4642294794704, 108.44227179018, 'berhasil', '2025-07-02 20:23:32', '2025-07-02 20:37:34', '2025-07-02 20:28:32', NULL, NULL, NULL),
+(30, 4, 2, NULL, NULL, 80000.00, 5000.00, 'Cash on delivery', 'Gg. 7 Utara No.49, Karangampel, Kecamatan Karangampel', -6.4642294794704, 108.44227179018, 'dibatalkan', '2025-07-02 20:33:05', '2025-07-02 20:39:02', '2025-07-02 20:38:05', NULL, NULL, NULL),
+(31, 4, 3, 6, '2025-07-02 20:34:10', 17000.00, 5000.00, 'Cash on delivery', 'Gg. 7 Utara No.49, Karangampel, Kecamatan Karangampel', -6.4642294794704, 108.44227179018, 'berhasil', '2025-07-02 20:33:18', '2025-07-02 20:34:42', '2025-07-02 20:38:18', NULL, NULL, NULL),
+(32, 4, 3, 5, '2025-07-02 20:52:33', 17000.00, 5000.00, 'Cash on delivery', 'Gg. 7 Utara No.49, Karangampel, Kecamatan Karangampel', -6.4642294794704, 108.44227179018, 'berhasil', '2025-07-02 20:52:19', '2025-07-02 20:52:46', '2025-07-02 20:57:19', NULL, NULL, NULL),
+(33, 4, 2, 1, '2025-07-12 21:03:16', 86076.00, 5000.00, 'Cash on delivery', 'Gg. 7 Utara No.49, Karangampel, Kecamatan Karangampel', -6.4642294794704, 108.44227179018, 'berhasil', '2025-07-12 21:01:28', '2025-07-12 21:03:46', '2025-07-12 21:06:28', NULL, 5, 5),
+(34, 4, 2, 1, '2025-07-12 21:05:39', 86076.00, 5000.00, 'Cash on delivery', 'Gg. 7 Utara No.49, Karangampel, Kecamatan Karangampel', -6.4642294794704, 108.44227179018, 'berhasil', '2025-07-12 21:05:07', '2025-07-12 21:06:05', '2025-07-12 21:10:07', NULL, 5, 5),
+(35, 4, 2, 1, '2025-07-12 21:10:40', 86076.00, 5000.00, 'Cash on delivery', 'Gg. 7 Utara No.49, Karangampel, Kecamatan Karangampel', -6.4642294794704, 108.44227179018, 'berhasil', '2025-07-12 21:10:02', '2025-07-12 21:10:51', '2025-07-12 21:15:02', NULL, 5, 5),
+(36, 4, 2, 1, '2025-07-12 21:14:14', 86076.00, 5000.00, 'Cash on delivery', 'Gg. 7 Utara No.49, Karangampel, Kecamatan Karangampel', -6.4642294794704, 108.44227179018, 'berhasil', '2025-07-12 21:13:56', '2025-07-12 21:14:21', '2025-07-12 21:18:56', NULL, 3, 3),
+(37, 4, 3, 3, '2025-07-12 21:18:13', 17000.00, 5000.00, 'Cash on delivery', 'Gg. 7 Utara No.49, Karangampel, Kecamatan Karangampel', -6.4642294794704, 108.44227179018, 'berhasil', '2025-07-12 21:15:26', '2025-07-12 21:18:37', '2025-07-12 21:20:26', NULL, 3, 5);
 
 -- --------------------------------------------------------
 
@@ -301,7 +335,7 @@ CREATE TABLE `order_items` (
   `price` decimal(10,2) UNSIGNED NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
-) ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `order_items`
@@ -328,7 +362,30 @@ INSERT INTO `order_items` (`id`, `order_id`, `item_id`, `quantity`, `price`, `cr
 (18, 15, 4, 2, 75000.00, '2025-06-29 11:24:37', '2025-06-29 11:24:37'),
 (19, 16, 4, 3, 75000.00, '2025-06-29 11:29:38', '2025-06-29 11:29:38'),
 (20, 17, 4, 1, 75000.00, '2025-06-29 11:31:06', '2025-06-29 11:31:06'),
-(21, 18, 5, 1, 50000.00, '2025-06-29 11:46:09', '2025-06-29 11:46:09');
+(21, 18, 5, 1, 50000.00, '2025-06-29 11:46:09', '2025-06-29 11:46:09'),
+(22, 19, 4, 1, 75000.00, '2025-07-02 10:16:38', '2025-07-02 10:16:38'),
+(23, 20, 4, 1, 75000.00, '2025-07-02 17:27:40', '2025-07-02 17:27:40'),
+(24, 21, 4, 1, 75000.00, '2025-07-02 18:28:34', '2025-07-02 18:28:34'),
+(25, 22, 4, 1, 75000.00, '2025-07-02 18:39:41', '2025-07-02 18:39:41'),
+(26, 23, 5, 1, 50000.00, '2025-07-02 18:46:48', '2025-07-02 18:46:48'),
+(27, 24, 4, 1, 75000.00, '2025-07-02 18:50:39', '2025-07-02 18:50:39'),
+(28, 25, 5, 1, 50000.00, '2025-07-02 18:54:32', '2025-07-02 18:54:32'),
+(29, 26, 4, 1, 75000.00, '2025-07-02 19:20:17', '2025-07-02 19:20:17'),
+(30, 27, 5, 1, 50000.00, '2025-07-02 20:12:16', '2025-07-02 20:12:16'),
+(31, 28, 4, 1, 75000.00, '2025-07-02 20:12:23', '2025-07-02 20:12:23'),
+(32, 29, 3, 1, 12000.00, '2025-07-02 20:23:32', '2025-07-02 20:23:32'),
+(33, 30, 4, 1, 75000.00, '2025-07-02 20:33:05', '2025-07-02 20:33:05'),
+(34, 31, 3, 1, 12000.00, '2025-07-02 20:33:18', '2025-07-02 20:33:18'),
+(35, 32, 3, 1, 12000.00, '2025-07-02 20:52:19', '2025-07-02 20:52:19'),
+(36, 33, 8, 1, 47759.00, '2025-07-12 21:01:28', '2025-07-12 21:01:28'),
+(37, 33, 9, 1, 33317.00, '2025-07-12 21:01:28', '2025-07-12 21:01:28'),
+(38, 34, 8, 1, 47759.00, '2025-07-12 21:05:07', '2025-07-12 21:05:07'),
+(39, 34, 9, 1, 33317.00, '2025-07-12 21:05:07', '2025-07-12 21:05:07'),
+(40, 35, 8, 1, 47759.00, '2025-07-12 21:10:02', '2025-07-12 21:10:02'),
+(41, 35, 9, 1, 33317.00, '2025-07-12 21:10:02', '2025-07-12 21:10:02'),
+(42, 36, 8, 1, 47759.00, '2025-07-12 21:13:56', '2025-07-12 21:13:56'),
+(43, 36, 9, 1, 33317.00, '2025-07-12 21:13:56', '2025-07-12 21:13:56'),
+(44, 37, 3, 1, 12000.00, '2025-07-12 21:15:26', '2025-07-12 21:15:26');
 
 -- --------------------------------------------------------
 
@@ -481,7 +538,70 @@ INSERT INTO `personal_access_tokens` (`id`, `tokenable_type`, `tokenable_id`, `n
 (125, 'App\\Models\\User', 5, 'auth_token', 'b09dcf5eb7b173ff2bb23aa9c3e5791b07eda49c579977a20cf4b6bae8e2203d', '[\"*\"]', NULL, NULL, '2025-07-01 03:34:23', '2025-07-01 03:34:23'),
 (126, 'App\\Models\\User', 3, 'auth_token', '8b1b00737d5d1c2b5fdba4966b3cf75905d7438055aa0729d067e00776da00fe', '[\"*\"]', '2025-07-01 03:37:07', NULL, '2025-07-01 03:34:29', '2025-07-01 03:37:07'),
 (127, 'App\\Models\\User', 5, 'auth_token', 'abd46579a3d0415304ea0c26065b3b25418bc5d8cfd57d7cbeb9b5f7e06e7f25', '[\"*\"]', '2025-07-01 03:37:26', NULL, '2025-07-01 03:37:17', '2025-07-01 03:37:26'),
-(128, 'App\\Models\\User', 3, 'auth_token', '9ce6e7012dbf563f654a0c58a4d2bd935662504d7e5a6978c664d8da0a2a8b46', '[\"*\"]', '2025-07-01 03:44:24', NULL, '2025-07-01 03:37:33', '2025-07-01 03:44:24');
+(128, 'App\\Models\\User', 3, 'auth_token', '9ce6e7012dbf563f654a0c58a4d2bd935662504d7e5a6978c664d8da0a2a8b46', '[\"*\"]', '2025-07-01 03:44:24', NULL, '2025-07-01 03:37:33', '2025-07-01 03:44:24'),
+(129, 'App\\Models\\User', 4, 'auth_token', 'ac63a3834c2636bac85d86154a57c6521471c33ef427cd1bf3d261518427a249', '[\"*\"]', '2025-07-02 18:49:06', NULL, '2025-07-02 07:46:15', '2025-07-02 18:49:06'),
+(130, 'App\\Models\\User', 4, 'auth_token', 'ac6a6653abed65de92c88d6fdd6806cc6d35fe80b898bb489032c3ed7fd879c6', '[\"*\"]', '2025-07-02 19:20:17', NULL, '2025-07-02 07:49:29', '2025-07-02 19:20:17'),
+(131, 'App\\Models\\User', 3, 'auth_token', '35dbccb848389adbc29768c4a51806af032dc446825961e1eb194a5f89649ba7', '[\"*\"]', '2025-07-02 19:54:02', NULL, '2025-07-02 19:20:38', '2025-07-02 19:54:02'),
+(132, 'App\\Models\\User', 3, 'auth_token', 'ecab1a1e77d45ba6a6a13fbe11db136a4960a41f07331adafc8fa6a54cf3364f', '[\"*\"]', '2025-07-02 19:23:05', NULL, '2025-07-02 19:22:56', '2025-07-02 19:23:05'),
+(133, 'App\\Models\\User', 4, 'auth_token', 'f38e57a8b02bc1d6cd51a949713495c6c7680144a5f1e9e30f663bfbbc83bf61', '[\"*\"]', '2025-07-02 20:12:23', NULL, '2025-07-02 19:54:16', '2025-07-02 20:12:23'),
+(134, 'App\\Models\\User', 4, 'auth_token', '05b3d9c080734163c3d5303cf00f1660b4e7e986567abe8cea77e969330f6da2', '[\"*\"]', '2025-07-02 20:14:10', NULL, '2025-07-02 20:02:49', '2025-07-02 20:14:10'),
+(135, 'App\\Models\\User', 3, 'auth_token', 'cb68febd6c606a1529b671927ac626f0fa24bd75ce4752191280e2d1cb232d44', '[\"*\"]', '2025-07-02 20:12:57', NULL, '2025-07-02 20:12:38', '2025-07-02 20:12:57'),
+(136, 'App\\Models\\User', 4, 'auth_token', '4566360d7e516d2bfa5465c6cb961196fc7e057ae17648706462702ef2419d4f', '[\"*\"]', '2025-07-02 20:13:33', NULL, '2025-07-02 20:13:07', '2025-07-02 20:13:33'),
+(137, 'App\\Models\\User', 3, 'auth_token', '1c9073ae9897ae69ec8c8114a93a0b3a35342cbfe832c9d263858cc465fad097', '[\"*\"]', '2025-07-02 20:21:52', NULL, '2025-07-02 20:16:44', '2025-07-02 20:21:52'),
+(138, 'App\\Models\\User', 5, 'auth_token', '2791c63838ba00ec7f30dd329546e93024255543ee886a0496882d9e11c53398', '[\"*\"]', '2025-07-02 20:23:04', NULL, '2025-07-02 20:22:03', '2025-07-02 20:23:04'),
+(139, 'App\\Models\\User', 4, 'auth_token', '1d18fc1360da93d9ee2fc29407f236f50d41d243140ee897b636da8efc68b43a', '[\"*\"]', '2025-07-02 20:23:32', NULL, '2025-07-02 20:23:18', '2025-07-02 20:23:32'),
+(140, 'App\\Models\\User', 5, 'auth_token', '305bd017a5d86f19fd7178343ddd2c3f37b8b1155fb6dedf4c7504d40d792346', '[\"*\"]', '2025-07-02 20:25:41', NULL, '2025-07-02 20:23:52', '2025-07-02 20:25:41'),
+(141, 'App\\Models\\User', 4, 'auth_token', 'aa38ae9e2943bdf5c778ce26ba18bc5a5df517c39daf1af0819f52d42878a2c7', '[\"*\"]', '2025-07-02 20:33:34', NULL, '2025-07-02 20:25:54', '2025-07-02 20:33:34'),
+(142, 'App\\Models\\User', 4, 'auth_token', '115649767f55fa904920b3723c6b8ba79403a9afb9ef62e5412aeb6578490489', '[\"*\"]', '2025-07-03 15:16:16', NULL, '2025-07-02 20:27:08', '2025-07-03 15:16:16'),
+(143, 'App\\Models\\User', 5, 'auth_token', '210a905c9e680f6c9b07a1f5d5d21a6b1e326fe650685eae074c338589a6eb99', '[\"*\"]', '2025-07-02 20:34:10', NULL, '2025-07-02 20:33:49', '2025-07-02 20:34:10'),
+(144, 'App\\Models\\User', 4, 'auth_token', '84fc922abbc4e911be8b1c80d5931e07ceb0785421dde574442a20f9411d0ec7', '[\"*\"]', '2025-07-02 20:37:47', NULL, '2025-07-02 20:34:36', '2025-07-02 20:37:47'),
+(145, 'App\\Models\\User', 4, 'auth_token', 'e2c3e9d68ba4812e2772f50c1e0e49b09629653d3911be63ac248c049d061a57', '[\"*\"]', '2025-07-02 20:46:51', NULL, '2025-07-02 20:46:44', '2025-07-02 20:46:51'),
+(146, 'App\\Models\\User', 4, 'auth_token', '0bb8a148dfd7590201f753cdb8656a00e96a0784e194467e932b865e39eb7db4', '[\"*\"]', '2025-07-02 20:52:48', NULL, '2025-07-02 20:51:07', '2025-07-02 20:52:48'),
+(147, 'App\\Models\\User', 5, 'auth_token', '8a1421e7b552b1c395713d77858e65ac0bd4b3774cd9e06422b9e58e243aaf8b', '[\"*\"]', '2025-07-03 14:41:38', NULL, '2025-07-02 20:51:31', '2025-07-03 14:41:38'),
+(148, 'App\\Models\\User', 5, 'auth_token', 'f61a9ffaf7c80f15ebac4bb881871825aeb8b547e3deb6763f886847352bc9df', '[\"*\"]', '2025-07-03 15:16:49', NULL, '2025-07-03 15:16:28', '2025-07-03 15:16:49'),
+(149, 'App\\Models\\User', 5, 'auth_token', 'c3d4bcaa53e45aaa7647e304bf98e5dd80beb91d79a71c18845ded969fdb536e', '[\"*\"]', NULL, NULL, '2025-07-03 18:09:05', '2025-07-03 18:09:05'),
+(150, 'App\\Models\\User', 5, 'auth_token', 'd9852f4122b9afbf63ccf3ca428d99177923bf3ddfed73c3f5f89d1466d97de7', '[\"*\"]', '2025-07-03 18:59:12', NULL, '2025-07-03 18:40:31', '2025-07-03 18:59:12'),
+(151, 'App\\Models\\User', 3, 'auth_token', '379d3a4b36cfd2ba4118cbefa5dfdfef7140b4bfc312adb0fe121e06cae2cd43', '[\"*\"]', '2025-07-12 20:34:04', NULL, '2025-07-06 16:33:45', '2025-07-12 20:34:04'),
+(152, 'App\\Models\\User', 5, 'auth_token', '3d8003aa2d79e31a8d0fcac783a2344c637e3e2ab447c9d88eed40254f1e6f68', '[\"*\"]', '2025-07-06 16:34:48', NULL, '2025-07-06 16:34:39', '2025-07-06 16:34:48'),
+(153, 'App\\Models\\User', 3, 'auth_token', 'ea810e268c1f72ee6a29e63b56c0e2ff338ad26093bf999b60e8580dade8d298', '[\"*\"]', '2025-07-06 16:39:08', NULL, '2025-07-06 16:35:04', '2025-07-06 16:39:08'),
+(154, 'App\\Models\\User', 4, 'auth_token', 'c5e0fbf6719bb85f58e6dcba6ff98594c183772368325503e829e7e7fbea08ea', '[\"*\"]', '2025-07-06 16:48:12', NULL, '2025-07-06 16:46:24', '2025-07-06 16:48:12'),
+(155, 'App\\Models\\User', 3, 'auth_token', 'fb8b258ed5d7fa46c6a2890400e02b7d33061193f7e1aa8526e35d0f40c133ec', '[\"*\"]', '2025-07-06 17:39:47', NULL, '2025-07-06 17:12:07', '2025-07-06 17:39:47'),
+(156, 'App\\Models\\User', 5, 'auth_token', '7946edf2cf98e370fd1016bcec75842d7f6460fd5654ee0b402d4dc78a20bd6f', '[\"*\"]', '2025-07-06 17:53:04', NULL, '2025-07-06 17:41:10', '2025-07-06 17:53:04'),
+(157, 'App\\Models\\User', 5, 'auth_token', 'bb3e8fa680ac2187d5b5c32e89911c0d1dda3830b27fae126e2a7f3fd394c216', '[\"*\"]', '2025-07-06 17:54:07', NULL, '2025-07-06 17:53:19', '2025-07-06 17:54:07'),
+(158, 'App\\Models\\User', 5, 'auth_token', '8408727f39ed5d3064e48c9b258f1324a3f9411429e44fcc079cd5d8b05b196d', '[\"*\"]', '2025-07-06 18:02:40', NULL, '2025-07-06 18:02:36', '2025-07-06 18:02:40'),
+(159, 'App\\Models\\User', 3, 'auth_token', 'f72bf5462f1854049cbc15979c3fcf7d1324a0adf592569c206cf5e346dfe806', '[\"*\"]', NULL, NULL, '2025-07-06 18:04:04', '2025-07-06 18:04:04'),
+(160, 'App\\Models\\User', 4, 'auth_token', '728f80ed7bfc8fce1766129e75891d7a7e75ea93fc020e37b85bbd9674f99345', '[\"*\"]', NULL, NULL, '2025-07-06 18:04:12', '2025-07-06 18:04:12'),
+(161, 'App\\Models\\User', 4, 'auth_token', 'a4ad48c42f64dd9252a90945532c158658843f4c578943bf88c37b5caecabf74', '[\"*\"]', NULL, NULL, '2025-07-06 18:05:25', '2025-07-06 18:05:25'),
+(162, 'App\\Models\\User', 3, 'auth_token', '3913a7b4391b60bd73adb81c57c552e1bc1a5fa86e2003db87131362056f4dfe', '[\"*\"]', NULL, NULL, '2025-07-06 18:06:00', '2025-07-06 18:06:00'),
+(163, 'App\\Models\\User', 5, 'auth_token', 'd006915d41b492ed947dea373257554ed879a61f7a37c71364d433db156babe5', '[\"*\"]', '2025-07-06 18:11:45', NULL, '2025-07-06 18:08:59', '2025-07-06 18:11:45'),
+(164, 'App\\Models\\User', 5, 'auth_token', '248e5a209959a3751288a17bb78f19a31edd3ef31b06d1482b333aa5acb1068b', '[\"*\"]', '2025-07-06 18:13:18', NULL, '2025-07-06 18:12:58', '2025-07-06 18:13:18'),
+(165, 'App\\Models\\User', 5, 'auth_token', 'eeba526c676086aa2a76f1084ec25d69a62f8236754c0288a3c13a39b58ea2f7', '[\"*\"]', '2025-07-06 18:21:58', NULL, '2025-07-06 18:21:55', '2025-07-06 18:21:58'),
+(166, 'App\\Models\\User', 5, 'auth_token', 'f22b19fdc6311d5e53385a30913c2763c1603545c47ffd646c87eee6b0bdac14', '[\"*\"]', NULL, NULL, '2025-07-06 18:24:20', '2025-07-06 18:24:20'),
+(167, 'App\\Models\\User', 5, 'auth_token', 'fc4115687cdce6705b79ec6ce4a55e085d562910a1bc34b6f1f3e7d747ca50cd', '[\"*\"]', NULL, NULL, '2025-07-06 18:25:17', '2025-07-06 18:25:17'),
+(168, 'App\\Models\\User', 5, 'auth_token', 'befec51176666d98e8df17210c518a5821287d311fdd43a911bfaac029058c52', '[\"*\"]', NULL, NULL, '2025-07-06 18:25:19', '2025-07-06 18:25:19'),
+(169, 'App\\Models\\User', 5, 'auth_token', 'd40c2c041a75197d627a8f86450099233fde9782b7a18f6ba64ab97aa8478ea4', '[\"*\"]', '2025-07-06 18:26:38', NULL, '2025-07-06 18:25:42', '2025-07-06 18:26:38'),
+(170, 'App\\Models\\User', 4, 'auth_token', 'b86ac5751e69b6e5c19e8e1add49c6238024802a657365f7007827d11f48fe32', '[\"*\"]', NULL, NULL, '2025-07-10 19:34:18', '2025-07-10 19:34:18'),
+(171, 'App\\Models\\User', 3, 'auth_token', '62e0740e2d61ec0595917fae6566e3c4ae4f8b424e123f62af46c23e8e4911ba', '[\"*\"]', '2025-07-10 19:34:39', NULL, '2025-07-10 19:34:31', '2025-07-10 19:34:39'),
+(172, 'App\\Models\\User', 5, 'auth_token', 'b586b9cadafbe8a94720af0250f7b172594669e819af064a553325fe4ba8f3be', '[\"*\"]', '2025-07-12 18:44:35', NULL, '2025-07-10 19:34:51', '2025-07-12 18:44:35'),
+(173, 'App\\Models\\User', 3, 'auth_token', '24e63088466e0aa078f7530c4d8983cfe229df59c6140291bb371b96d4c4ef4f', '[\"*\"]', '2025-07-10 19:37:00', NULL, '2025-07-10 19:36:58', '2025-07-10 19:37:00'),
+(174, 'App\\Models\\User', 5, 'auth_token', 'a92e7ec47020925d685d5d5c43d53953c6ead971c7101ffcefc0ed446edb7aee', '[\"*\"]', '2025-07-10 19:47:02', NULL, '2025-07-10 19:37:14', '2025-07-10 19:47:02'),
+(175, 'App\\Models\\User', 5, 'auth_token', '132618288ac3f82ea35b56c70cb59e288a3df1a5cb2134a4f297c9e47d902416', '[\"*\"]', '2025-07-10 19:51:03', NULL, '2025-07-10 19:50:18', '2025-07-10 19:51:03'),
+(176, 'App\\Models\\User', 4, 'auth_token', '738b8e4751759e6e8cc6f371f96a37ad98d4f1728f6183ac0915601700bdcffa', '[\"*\"]', '2025-07-10 19:51:29', NULL, '2025-07-10 19:51:23', '2025-07-10 19:51:29'),
+(177, 'App\\Models\\User', 5, 'auth_token', '0c163666fa3962e69468480612bca4cbe0cf1a0e0308e7584a0541a710076f0b', '[\"*\"]', '2025-07-10 20:53:14', NULL, '2025-07-10 19:51:53', '2025-07-10 20:53:14'),
+(178, 'App\\Models\\User', 5, 'auth_token', 'af147ae1292362e4f0939e8943c2c22c2647843f98c6d150d8ddd58d9aa2b261', '[\"*\"]', '2025-07-10 21:06:48', NULL, '2025-07-10 20:56:22', '2025-07-10 21:06:48'),
+(179, 'App\\Models\\User', 5, 'auth_token', '407218ebd89be981a4b1704f3ce994576df55ded28bfb08f023b7c3cc6f610b0', '[\"*\"]', '2025-07-12 19:33:22', NULL, '2025-07-12 18:13:24', '2025-07-12 19:33:22'),
+(180, 'App\\Models\\User', 4, 'auth_token', '0117ab21576cb943e79e3cdf98c790c536a66daab8e72bf48f239c4710c7e011', '[\"*\"]', '2025-07-12 19:34:11', NULL, '2025-07-12 19:34:01', '2025-07-12 19:34:11'),
+(181, 'App\\Models\\User', 3, 'auth_token', 'f6addb380e65c28aa957b60bbd5af0470bbe1d0857663130c738c7b002dec25a', '[\"*\"]', '2025-07-12 19:34:40', NULL, '2025-07-12 19:34:33', '2025-07-12 19:34:40'),
+(182, 'App\\Models\\User', 4, 'auth_token', 'c57c7a642fceb8a8cd598374a89a6028622621059081f41762d6f0811f0cd26d', '[\"*\"]', '2025-07-12 21:19:06', NULL, '2025-07-12 19:34:53', '2025-07-12 21:19:06'),
+(183, 'App\\Models\\User', 4, 'auth_token', 'c153a2be953ec1f80130680a74d801297aae1288f0d96115fa3c27d390014968', '[\"*\"]', '2025-07-12 19:59:11', NULL, '2025-07-12 19:57:31', '2025-07-12 19:59:11'),
+(184, 'App\\Models\\User', 3, 'auth_token', '4c7af2bbfe49a245e296b9af32dcbe88f91acc63cb612b237a65103c01483533', '[\"*\"]', '2025-07-12 21:14:23', NULL, '2025-07-12 20:34:22', '2025-07-12 21:14:23'),
+(185, 'App\\Models\\User', 3, 'auth_token', '51ea5c3f8e5b6217efc220c9dda16b3f71e4aca6371adede5a66f1ec504e0c37', '[\"*\"]', '2025-07-12 21:17:17', NULL, '2025-07-12 21:02:34', '2025-07-12 21:17:17'),
+(186, 'App\\Models\\User', 5, 'auth_token', '51adc5710a904d19a16c77522428d3ec0ea9f83aa2b1786bd4c88c1e83f17afb', '[\"*\"]', '2025-07-12 21:18:44', NULL, '2025-07-12 21:15:45', '2025-07-12 21:18:44'),
+(187, 'App\\Models\\User', 5, 'auth_token', '66be0d96d60307a68a694ace3df65fb62324c788c75f22bb805ca0c7289c921b', '[\"*\"]', '2025-07-12 21:18:03', NULL, '2025-07-12 21:17:34', '2025-07-12 21:18:03'),
+(188, 'App\\Models\\User', 4, 'auth_token', '2af9c60cc7b8b9ce83d901524046e874bb852b8b06a76f77bf29d190af648cfb', '[\"*\"]', '2025-07-12 21:20:59', NULL, '2025-07-12 21:20:58', '2025-07-12 21:20:59'),
+(189, 'App\\Models\\User', 4, 'auth_token', 'c7c1c3f84a0268661dd5d2d64d2097fb182116206b5d10b4d03f4dc3fa6c8ac5', '[\"*\"]', '2025-07-12 21:28:12', NULL, '2025-07-12 21:28:11', '2025-07-12 21:28:12'),
+(190, 'App\\Models\\User', 4, 'auth_token', '0b09c4bc437b1ab71c6775105fb582675fa3d80ff11ca9481b6ecd1bcc410c11', '[\"*\"]', '2025-07-12 21:36:37', NULL, '2025-07-12 21:28:54', '2025-07-12 21:36:37'),
+(191, 'App\\Models\\User', 4, 'auth_token', '8c9e9114483863587186ecd987fd74c85cee78c668e4856feb86e3e1ae89309d', '[\"*\"]', '2025-07-12 21:37:01', NULL, '2025-07-12 21:37:00', '2025-07-12 21:37:01');
 
 -- --------------------------------------------------------
 
@@ -502,16 +622,17 @@ CREATE TABLE `restaurants` (
   `is_most_popular` tinyint(1) NOT NULL DEFAULT '0',
   `owner_id` bigint UNSIGNED DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `deleted_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `restaurants`
 --
 
-INSERT INTO `restaurants` (`id`, `name`, `image`, `rate`, `rating`, `type`, `food_type`, `location`, `delivery_fee`, `is_most_popular`, `owner_id`, `created_at`, `updated_at`) VALUES
-(2, 'Resto April Jaya', '1747165145.jpg', 2.5, 0, 'Restoran Keluarga', 'Masakan Rumah', 'lohbener', 5000.00, 0, 3, '2025-05-13 12:39:06', '2025-05-13 12:39:06'),
-(3, 'Resto Sarul Gih', '1748246133.jpg', 0.0, 0, 'Restoran Keluarga', 'Masakan Rumah', 'lohbener', 5000.00, 0, 5, '2025-05-26 00:55:33', '2025-05-26 00:55:33');
+INSERT INTO `restaurants` (`id`, `name`, `image`, `rate`, `rating`, `type`, `food_type`, `location`, `delivery_fee`, `is_most_popular`, `owner_id`, `created_at`, `updated_at`, `deleted_at`) VALUES
+(2, 'Resto April Jaya', '1747165145.jpg', 4.5, 4, 'Restoran Keluarga', 'Masakan Rumah', 'lohbener', 5000.00, 0, 3, '2025-05-13 12:39:06', '2025-07-12 21:14:21', NULL),
+(3, 'Resto Sarul Gih', '1748246133.jpg', 3.0, 1, 'Restoran Keluarga', 'Masakan Rumah', 'lohbener', 5000.00, 0, 5, '2025-05-26 00:55:33', '2025-07-12 21:18:37', NULL);
 
 -- --------------------------------------------------------
 
@@ -532,41 +653,42 @@ CREATE TABLE `users` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   `address_latitude` double DEFAULT NULL,
-  `address_longitude` double DEFAULT NULL
+  `address_longitude` double DEFAULT NULL,
+  `deleted_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`id`, `name`, `address`, `photo`, `phone`, `email`, `password`, `role`, `is_active_driver`, `created_at`, `updated_at`, `address_latitude`, `address_longitude`) VALUES
-(1, 'Admin User', 'Admin Address', NULL, '111111111', 'admin@gmail.com', '$2y$12$aRT4tRzAI2VwYhhVJdjUSebDCbfbRV3AqCpVl6i1K8LCcfit6XEAm', 'admin', 0, '2025-05-12 15:03:56', '2025-05-12 15:03:56', NULL, NULL),
-(2, 'adit updated', 'Jl. Baru No. 123', NULL, '085312345678', 'aditupdated@example.com', '$2y$12$T3KzY66N5uMwmouGl41iuuWRSDRhQ6MJN5yv8WSe1RAHz9o/Ds8rK', 'customer', 0, '2025-05-12 15:04:07', '2025-06-21 05:24:28', -6.327, 108.323),
-(3, 'April', 'indramayu Kota', NULL, '081234567890', 'april@gmail.com', '$2y$12$AZz2PTq9bARBCAPGLuDwr.xs7zHW4FCdZfT5v9FSnQS57bHN3l9MW', 'restaurant_owner', 0, '2025-05-12 15:07:51', '2025-05-12 15:07:51', NULL, NULL),
-(4, 'wiranto', 'Gg. 7 Utara No.49, Karangampel, Kecamatan Karangampel', 'user_4.jpg', '0895340891989', 'wiranto@gmail.com', '$2y$12$W7U5RW2BxpiqTSe5LNg40ufRChQCjeVtlxr9ILBXDpRr2f5m1EkEm', 'customer', 0, '2025-05-13 13:38:37', '2025-06-21 14:04:59', -6.4642294794704, 108.44227179018),
-(5, 'Sarul Resto', 'indramayu Kota', NULL, '0812929222', 'Sarul@gmail.com', '$2y$12$K7/5462qimEwQu5Qrx6ScOYnraEFmIYAL4.W22hTdUUQ9HoiNnlm6', 'restaurant_owner', 0, '2025-05-26 00:52:24', '2025-05-26 00:52:24', NULL, NULL),
-(6, 'parhan', 'teluk agung', NULL, '085461265481', 'parhan@gmail.com', '$2y$12$D2OAq7eH3xTYMfwn/fUFpeNG37DRzzlpaHuzvB/WJ7V9Yc82qzS1G', 'customer', 0, '2025-06-13 08:11:21', '2025-06-13 08:11:21', NULL, NULL),
-(7, 'riyan', 'H7WJ+XVH, Lohbener, Kecamatan Lohbener', NULL, '08546162532', 'riyan@gmail.com', '$2y$12$M.T.VLYCQ9UildiU4AQA6uQuu/yJfCh.pj.zIxeIB/vxN2ymsnGVq', 'customer', 0, '2025-06-19 11:42:46', '2025-06-19 11:42:46', NULL, NULL),
-(8, 'adit', 'indramayu', NULL, '085398389383', 'adit22@gmail.com', '$2y$12$h7TyDeGffMWOA0OoLRVdKeeXfvWD4goykIZXdI2bamVK0sGjOV.wi', 'customer', 0, '2025-06-19 12:24:52', '2025-06-19 12:24:52', NULL, NULL),
-(9, 'adit', 'indramayu', NULL, '085398389383', 'adit223@gmail.com', '$2y$12$tdwJbrSPjcUMo0EylmLrG.mLJwcznHJCmt.3P90Ndgox7pL5hPE3C', 'customer', 0, '2025-06-19 12:27:28', '2025-06-19 12:27:28', NULL, NULL),
-(10, 'adit', 'indramayu', NULL, '085398389383', 'adit2232@gmail.com', '$2y$12$tlWynmvog6NntftEauJl0uzRCN70wjhoAC0Cf4y.W2YG4zOENfOxS', 'customer', 0, '2025-06-19 12:28:41', '2025-06-19 12:28:41', NULL, NULL),
-(11, 'adit', 'indramayu', NULL, '085398389383', 'adit22323@gmail.com', '$2y$12$J/d80TEjmCd4mlbHBOuDhOXLi67bzbFcmzX5RpIggntxPTo16bqC6', 'customer', 0, '2025-06-19 12:28:58', '2025-06-19 12:28:58', NULL, NULL),
-(12, 'adit', 'indramayu', NULL, '085398389383', 'adit223231@gmail.com', '$2y$12$5vxhusIwpE4L.YvKU4SVtO8JHeGKef6LCpsOEbZ.XiibTxjj.4WtC', 'customer', 0, '2025-06-19 12:34:37', '2025-06-19 12:34:37', NULL, NULL),
-(13, 'adit', 'indramayu', NULL, '085398389383', 'adit2232313@gmail.com', '$2y$12$JoMD3xLH2j482hvwEOhEx.pAgswXBYY8ork50wMDTvhZc.bucPU22', 'customer', 0, '2025-06-19 12:37:02', '2025-06-19 12:37:02', NULL, NULL),
-(14, 'riyan', 'Jl. Raya Lohbener Lama Blok Celo No.31, Lohbener, Kecamatan Lohbener', NULL, '0854311654', 'riyannn@gmail.com', '$2y$12$E1sIfcV.arkdDoZ7Udu8MuTuygjNMqAhKxB6FHRD4mWTBbdKRZYQW', 'customer', 0, '2025-06-19 13:23:27', '2025-06-19 13:23:27', NULL, NULL),
-(15, 'adit', 'indramayu', NULL, '085398389383', 'adit2232312333@gmail.com', '$2y$12$Kst2xeYVi5oS5h/8ikn2fuAlutjmDP0pg17gQvB0LeU5btLDTZP9a', 'customer', 0, '2025-06-19 13:24:19', '2025-06-19 13:24:19', NULL, NULL),
-(16, 'adit', 'indramayu', NULL, '085398389383', 'adit22323123333@gmail.com', '$2y$12$uXvcs0HmdPHC0.YlpXS1i.xlQDVmpEjvemcCbmWBd8l6ge7OS004e', 'customer', 0, '2025-06-19 13:41:27', '2025-06-19 13:41:27', NULL, NULL),
-(17, 'adit', 'indramayu', NULL, '085398389383', 'adit223231233323@gmail.com', '$2y$12$vbKfQ0QURic.Q7nAnJwP3eeGSWdFOpAX.SNbMmD0IsUx6ZR31Fx2O', 'customer', 0, '2025-06-19 13:42:22', '2025-06-19 13:42:22', NULL, NULL),
-(18, 'adit', 'indramayu', NULL, '085398389383', 'adit2232312933323@gmail.com', '$2y$12$J1otIccuWPq//v3.4ujh3Of6aXU9VLZhKLiC7nwgiyUqgiiRVVp02', 'customer', 0, '2025-06-19 13:47:41', '2025-06-19 13:47:41', -6.3, 108.323),
-(19, 'adit', 'indramayu', NULL, '085398389383', 'adit22323123332223@gmail.com', '$2y$12$HxlMbBs6DzDtVGfxrtmO0OTCi3tbF6TbnK2hfyLD64dRrLbJwjhAW', 'customer', 0, '2025-06-19 13:50:53', '2025-06-19 13:50:53', NULL, NULL),
-(20, 'adit', 'indramayu', NULL, '085398389383', 'adit223223332223@gmail.com', '$2y$12$7HWw4wgF.de2S8rBnDRSTeJFHAfgqAbtOR79uNU2oqyKZfkdJLswi', 'customer', 0, '2025-06-19 13:51:39', '2025-06-19 13:51:39', -6.3, 108.323),
-(21, 'tesss', 'H7WJ+XVH, Lohbener, Kecamatan Lohbener', NULL, '05498642826', 'twssss@gmail.com', '$2y$12$AcZ6DMjb/f95qfWDA2ugX.fiErcefEvFQeTSnV2D0ottncHPh0U.K', 'customer', 0, '2025-06-19 13:55:14', '2025-06-19 13:55:14', -6.4024746, 108.2822715),
-(22, 'amel', 'H7WJ+XVH, Lohbener, Kecamatan Lohbener', 'user_22.jpg', '08549761542', 'amel@gmail.com', '$2y$12$lStxomfmre7dxptETxNCruw02.3V2/XVf/BleNPvtB1PmKRYFfOA.', 'customer', 0, '2025-06-21 01:06:32', '2025-06-21 05:28:51', -6.402482, 108.2822567),
-(23, 'rista', 'M83H+2GX, Kepandean, Kecamatan Indramayu', NULL, '08975734600', 'rista@gmail.com', '$2y$12$0.8MuA0Po7tHNVYdPvbmiuNFxxhgdO/c5o4WcGBW8DD1gvHJEBDIW', 'customer', 0, '2025-06-26 10:37:58', '2025-06-26 10:37:58', -6.3465831989407, 108.32778482963),
-(24, 'Rudi Supir', 'Jalan Mangga No.12', NULL, '08953413932', 'rudi.driver@example.com', '$2y$12$yqwNOVNnqkN41LWp0mR2seFBU/O5w4wmpW7Hu9e4/r4bzdG6BJl4e', 'driver', 0, '2025-06-30 07:05:26', '2025-06-30 07:05:26', NULL, NULL),
-(25, 'Rudi Supir2', '-', NULL, '', 'rudi.driver2@example.com', '$2y$12$IQjlo8lEZ6PtPyyCKpe38u8o8PeUax/viAXne9iBoYUDPd4Uyk/0q', 'driver', 0, '2025-06-30 08:35:01', '2025-06-30 08:35:01', NULL, NULL),
-(26, 'Rudi Supir2', '-', NULL, '', 'rudi.driver3@example.com', '$2y$12$0GOTWX83gjO5tsYtTwBxguI8rj3WzWG2v8xF2dN/UCBBUuXHKha82', 'driver', 0, '2025-06-30 08:36:17', '2025-06-30 08:36:17', NULL, NULL),
-(27, 'Rudi Supir2', '-', NULL, '', 'rudi.driver4@example.com', '$2y$12$ReMcDaaaPr.3sHorwigjf.o5W0a7/MJzfQ.OLd.Q1eC2qxLdELivu', 'driver', 0, '2025-06-30 08:37:01', '2025-06-30 08:37:01', NULL, NULL);
+INSERT INTO `users` (`id`, `name`, `address`, `photo`, `phone`, `email`, `password`, `role`, `is_active_driver`, `created_at`, `updated_at`, `address_latitude`, `address_longitude`, `deleted_at`) VALUES
+(1, 'Admin User', 'Admin Address', NULL, '111111111', 'admin@gmail.com', '$2y$12$aRT4tRzAI2VwYhhVJdjUSebDCbfbRV3AqCpVl6i1K8LCcfit6XEAm', 'admin', 0, '2025-05-12 15:03:56', '2025-05-12 15:03:56', NULL, NULL, NULL),
+(2, 'adit updated', 'Jl. Baru No. 123', NULL, '085312345678', 'aditupdated@example.com', '$2y$12$T3KzY66N5uMwmouGl41iuuWRSDRhQ6MJN5yv8WSe1RAHz9o/Ds8rK', 'customer', 0, '2025-05-12 15:04:07', '2025-06-21 05:24:28', -6.327, 108.323, NULL),
+(3, 'April', 'indramayu Kota', NULL, '081234567890', 'april@gmail.com', '$2y$12$AZz2PTq9bARBCAPGLuDwr.xs7zHW4FCdZfT5v9FSnQS57bHN3l9MW', 'restaurant_owner', 0, '2025-05-12 15:07:51', '2025-05-12 15:07:51', NULL, NULL, NULL),
+(4, 'wiranto', 'Gg. 7 Utara No.49, Karangampel, Kecamatan Karangampel', 'user_4.jpg', '0895340891989', 'wiranto@gmail.com', '$2y$12$W7U5RW2BxpiqTSe5LNg40ufRChQCjeVtlxr9ILBXDpRr2f5m1EkEm', 'customer', 0, '2025-05-13 13:38:37', '2025-06-21 14:04:59', -6.4642294794704, 108.44227179018, NULL),
+(5, 'Sarul Resto', 'indramayu Kota', NULL, '0812929222', 'Sarul@gmail.com', '$2y$12$K7/5462qimEwQu5Qrx6ScOYnraEFmIYAL4.W22hTdUUQ9HoiNnlm6', 'restaurant_owner', 0, '2025-05-26 00:52:24', '2025-05-26 00:52:24', NULL, NULL, NULL),
+(6, 'parhan', 'teluk agung', NULL, '085461265481', 'parhan@gmail.com', '$2y$12$D2OAq7eH3xTYMfwn/fUFpeNG37DRzzlpaHuzvB/WJ7V9Yc82qzS1G', 'customer', 0, '2025-06-13 08:11:21', '2025-06-13 08:11:21', NULL, NULL, NULL),
+(7, 'riyan', 'H7WJ+XVH, Lohbener, Kecamatan Lohbener', NULL, '08546162532', 'riyan@gmail.com', '$2y$12$M.T.VLYCQ9UildiU4AQA6uQuu/yJfCh.pj.zIxeIB/vxN2ymsnGVq', 'customer', 0, '2025-06-19 11:42:46', '2025-06-19 11:42:46', NULL, NULL, NULL),
+(8, 'adit', 'indramayu', NULL, '085398389383', 'adit22@gmail.com', '$2y$12$h7TyDeGffMWOA0OoLRVdKeeXfvWD4goykIZXdI2bamVK0sGjOV.wi', 'customer', 0, '2025-06-19 12:24:52', '2025-06-19 12:24:52', NULL, NULL, NULL),
+(9, 'adit', 'indramayu', NULL, '085398389383', 'adit223@gmail.com', '$2y$12$tdwJbrSPjcUMo0EylmLrG.mLJwcznHJCmt.3P90Ndgox7pL5hPE3C', 'customer', 0, '2025-06-19 12:27:28', '2025-06-19 12:27:28', NULL, NULL, NULL),
+(10, 'adit', 'indramayu', NULL, '085398389383', 'adit2232@gmail.com', '$2y$12$tlWynmvog6NntftEauJl0uzRCN70wjhoAC0Cf4y.W2YG4zOENfOxS', 'customer', 0, '2025-06-19 12:28:41', '2025-06-19 12:28:41', NULL, NULL, NULL),
+(11, 'adit', 'indramayu', NULL, '085398389383', 'adit22323@gmail.com', '$2y$12$J/d80TEjmCd4mlbHBOuDhOXLi67bzbFcmzX5RpIggntxPTo16bqC6', 'customer', 0, '2025-06-19 12:28:58', '2025-06-19 12:28:58', NULL, NULL, NULL),
+(12, 'adit', 'indramayu', NULL, '085398389383', 'adit223231@gmail.com', '$2y$12$5vxhusIwpE4L.YvKU4SVtO8JHeGKef6LCpsOEbZ.XiibTxjj.4WtC', 'customer', 0, '2025-06-19 12:34:37', '2025-06-19 12:34:37', NULL, NULL, NULL),
+(13, 'adit', 'indramayu', NULL, '085398389383', 'adit2232313@gmail.com', '$2y$12$JoMD3xLH2j482hvwEOhEx.pAgswXBYY8ork50wMDTvhZc.bucPU22', 'customer', 0, '2025-06-19 12:37:02', '2025-06-19 12:37:02', NULL, NULL, NULL),
+(14, 'riyan', 'Jl. Raya Lohbener Lama Blok Celo No.31, Lohbener, Kecamatan Lohbener', NULL, '0854311654', 'riyannn@gmail.com', '$2y$12$E1sIfcV.arkdDoZ7Udu8MuTuygjNMqAhKxB6FHRD4mWTBbdKRZYQW', 'customer', 0, '2025-06-19 13:23:27', '2025-06-19 13:23:27', NULL, NULL, NULL),
+(15, 'adit', 'indramayu', NULL, '085398389383', 'adit2232312333@gmail.com', '$2y$12$Kst2xeYVi5oS5h/8ikn2fuAlutjmDP0pg17gQvB0LeU5btLDTZP9a', 'customer', 0, '2025-06-19 13:24:19', '2025-06-19 13:24:19', NULL, NULL, NULL),
+(16, 'adit', 'indramayu', NULL, '085398389383', 'adit22323123333@gmail.com', '$2y$12$uXvcs0HmdPHC0.YlpXS1i.xlQDVmpEjvemcCbmWBd8l6ge7OS004e', 'customer', 0, '2025-06-19 13:41:27', '2025-06-19 13:41:27', NULL, NULL, NULL),
+(17, 'adit', 'indramayu', NULL, '085398389383', 'adit223231233323@gmail.com', '$2y$12$vbKfQ0QURic.Q7nAnJwP3eeGSWdFOpAX.SNbMmD0IsUx6ZR31Fx2O', 'customer', 0, '2025-06-19 13:42:22', '2025-06-19 13:42:22', NULL, NULL, NULL),
+(18, 'adit', 'indramayu', NULL, '085398389383', 'adit2232312933323@gmail.com', '$2y$12$J1otIccuWPq//v3.4ujh3Of6aXU9VLZhKLiC7nwgiyUqgiiRVVp02', 'customer', 0, '2025-06-19 13:47:41', '2025-06-19 13:47:41', -6.3, 108.323, NULL),
+(19, 'adit', 'indramayu', NULL, '085398389383', 'adit22323123332223@gmail.com', '$2y$12$HxlMbBs6DzDtVGfxrtmO0OTCi3tbF6TbnK2hfyLD64dRrLbJwjhAW', 'customer', 0, '2025-06-19 13:50:53', '2025-06-19 13:50:53', NULL, NULL, NULL),
+(20, 'adit', 'indramayu', NULL, '085398389383', 'adit223223332223@gmail.com', '$2y$12$7HWw4wgF.de2S8rBnDRSTeJFHAfgqAbtOR79uNU2oqyKZfkdJLswi', 'customer', 0, '2025-06-19 13:51:39', '2025-06-19 13:51:39', -6.3, 108.323, NULL),
+(21, 'tesss', 'H7WJ+XVH, Lohbener, Kecamatan Lohbener', NULL, '05498642826', 'twssss@gmail.com', '$2y$12$AcZ6DMjb/f95qfWDA2ugX.fiErcefEvFQeTSnV2D0ottncHPh0U.K', 'customer', 0, '2025-06-19 13:55:14', '2025-06-19 13:55:14', -6.4024746, 108.2822715, NULL),
+(22, 'amel', 'H7WJ+XVH, Lohbener, Kecamatan Lohbener', 'user_22.jpg', '08549761542', 'amel@gmail.com', '$2y$12$lStxomfmre7dxptETxNCruw02.3V2/XVf/BleNPvtB1PmKRYFfOA.', 'customer', 0, '2025-06-21 01:06:32', '2025-06-21 05:28:51', -6.402482, 108.2822567, NULL),
+(23, 'rista', 'M83H+2GX, Kepandean, Kecamatan Indramayu', NULL, '08975734600', 'rista@gmail.com', '$2y$12$0.8MuA0Po7tHNVYdPvbmiuNFxxhgdO/c5o4WcGBW8DD1gvHJEBDIW', 'customer', 0, '2025-06-26 10:37:58', '2025-06-26 10:37:58', -6.3465831989407, 108.32778482963, NULL),
+(24, 'Rudi Supir', 'Jalan Mangga No.12', NULL, '08953413932', 'rudi.driver@example.com', '$2y$12$yqwNOVNnqkN41LWp0mR2seFBU/O5w4wmpW7Hu9e4/r4bzdG6BJl4e', 'driver', 0, '2025-06-30 07:05:26', '2025-06-30 07:05:26', NULL, NULL, NULL),
+(25, 'Rudi Supir2', '-', NULL, '', 'rudi.driver2@example.com', '$2y$12$IQjlo8lEZ6PtPyyCKpe38u8o8PeUax/viAXne9iBoYUDPd4Uyk/0q', 'driver', 0, '2025-06-30 08:35:01', '2025-06-30 08:35:01', NULL, NULL, NULL),
+(26, 'Rudi Supir2', '-', NULL, '', 'rudi.driver3@example.com', '$2y$12$0GOTWX83gjO5tsYtTwBxguI8rj3WzWG2v8xF2dN/UCBBUuXHKha82', 'driver', 0, '2025-06-30 08:36:17', '2025-06-30 08:36:17', NULL, NULL, NULL),
+(27, 'Rudi Supir2', '-', NULL, '', 'rudi.driver4@example.com', '$2y$12$ReMcDaaaPr.3sHorwigjf.o5W0a7/MJzfQ.OLd.Q1eC2qxLdELivu', 'driver', 0, '2025-06-30 08:37:01', '2025-06-30 08:37:01', NULL, NULL, NULL);
 
 --
 -- Indexes for dumped tables
@@ -675,19 +797,19 @@ ALTER TABLE `addresses`
 -- AUTO_INCREMENT for table `carts`
 --
 ALTER TABLE `carts`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=57;
 
 --
 -- AUTO_INCREMENT for table `drivers`
 --
 ALTER TABLE `drivers`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `items`
 --
 ALTER TABLE `items`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
 
 --
 -- AUTO_INCREMENT for table `item_categories`
@@ -699,7 +821,7 @@ ALTER TABLE `item_categories`
 -- AUTO_INCREMENT for table `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=44;
 
 --
 -- AUTO_INCREMENT for table `notifications`
@@ -711,19 +833,19 @@ ALTER TABLE `notifications`
 -- AUTO_INCREMENT for table `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
 
 --
 -- AUTO_INCREMENT for table `order_items`
 --
 ALTER TABLE `order_items`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=45;
 
 --
 -- AUTO_INCREMENT for table `personal_access_tokens`
 --
 ALTER TABLE `personal_access_tokens`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=129;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=192;
 
 --
 -- AUTO_INCREMENT for table `restaurants`

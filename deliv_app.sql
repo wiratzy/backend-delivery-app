@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Jul 12, 2025 at 09:41 PM
+-- Generation Time: Jul 14, 2025 at 08:09 PM
 -- Server version: 8.0.30
 -- PHP Version: 7.4.33
 
@@ -120,12 +120,12 @@ INSERT INTO `items` (`id`, `name`, `image`, `rate`, `rating`, `type`, `price`, `
 (2, 'Soup Enak', '1747168579.jpg', 4.0, 12, 'Kuah', 15000.00, 2, 2, '2025-05-13 13:36:20', '2025-07-12 20:33:32', '2025-07-12 20:33:32'),
 (3, 'Soup Enak punya sarul', '1748246629.jpeg', 5.0, 1, 'Kuah', 12000.00, 2, 3, '2025-05-26 01:03:49', '2025-07-12 21:18:37', NULL),
 (4, 'Pizza Margherita', '1748246629.jpeg', 4.5, 150, 'Italian Food', 75000.00, 4, 2, '2025-06-21 12:57:15', '2025-07-12 19:34:40', '2025-07-12 19:34:40'),
-(5, 'Burger Combo', '1748246629.jpeg', 4.2, 100, 'Fast Food', 50000.00, 4, 2, '2025-06-21 12:57:15', '2025-06-21 12:57:15', NULL),
-(6, 'Coca Cola (Small)', '1748246629.jpeg', 4.0, 80, 'Soft Drink', 10000.00, 5, 2, '2025-06-21 12:57:15', '2025-06-21 12:57:15', NULL),
-(7, 'Laptop X100', '1748246629.jpeg', 4.8, 200, 'Gadget', 12000000.00, 3, 2, '2025-06-21 12:57:15', '2025-06-21 12:57:15', NULL),
-(8, 'Test Item 1', '1748246629.jpeg', 4.5, 4, 'Misc', 47759.00, 5, 2, '2025-06-21 12:57:15', '2025-07-12 21:14:21', NULL),
+(5, 'Burger Combo', '1748246629.jpeg', 4.2, 100, 'Fast Food', 50000.00, 4, 2, '2025-06-21 12:57:15', '2025-07-14 12:50:59', '2025-07-14 12:50:59'),
+(6, 'Coca Cola (Small)', '1748246629.jpeg', 4.0, 80, 'Soft Drink', 10000.00, 5, 2, '2025-06-21 12:57:15', '2025-07-14 12:51:09', '2025-07-14 12:51:09'),
+(7, 'Laptop X100', '1748246629.jpeg', 4.8, 200, 'Gadget', 12000000.00, 3, 2, '2025-06-21 12:57:15', '2025-07-14 12:51:15', '2025-07-14 12:51:15'),
+(8, 'Test Item 1', '1748246629.jpeg', 4.5, 4, 'Misc', 47759.00, 5, 2, '2025-06-21 12:57:15', '2025-07-14 12:51:19', '2025-07-14 12:51:19'),
 (9, 'Test Item 2', '1748246629.jpeg', 4.5, 4, 'Misc', 33317.00, 4, 2, '2025-06-21 12:57:15', '2025-07-12 21:14:21', NULL),
-(10, 'Test Item 3', '1748246629.jpeg', 4.7, 17, 'Misc', 13228.00, 5, 2, '2025-06-21 12:57:15', '2025-06-21 12:57:15', NULL),
+(10, 'Test Item', '1748246629.jpeg', 4.7, 17, 'Misc', 13228.00, 5, 2, '2025-06-21 12:57:15', '2025-07-14 12:55:16', NULL),
 (11, 'Test Item 4', '1748246629.jpeg', 5.0, 42, 'Misc', 38699.00, 4, 2, '2025-06-21 12:57:15', '2025-06-21 12:57:15', NULL),
 (12, 'Test Item 5', '1748246629.jpeg', 4.5, 93, 'Misc', 25710.00, 5, 2, '2025-06-21 12:57:15', '2025-06-21 12:57:15', NULL),
 (13, 'Test Item 6', '1748246629.jpeg', 3.6, 99, 'Misc', 30757.00, 4, 2, '2025-06-21 12:57:15', '2025-06-21 12:57:15', NULL),
@@ -319,7 +319,8 @@ INSERT INTO `orders` (`id`, `user_id`, `restaurant_id`, `driver_id`, `driver_con
 (34, 4, 2, 1, '2025-07-12 21:05:39', 86076.00, 5000.00, 'Cash on delivery', 'Gg. 7 Utara No.49, Karangampel, Kecamatan Karangampel', -6.4642294794704, 108.44227179018, 'berhasil', '2025-07-12 21:05:07', '2025-07-12 21:06:05', '2025-07-12 21:10:07', NULL, 5, 5),
 (35, 4, 2, 1, '2025-07-12 21:10:40', 86076.00, 5000.00, 'Cash on delivery', 'Gg. 7 Utara No.49, Karangampel, Kecamatan Karangampel', -6.4642294794704, 108.44227179018, 'berhasil', '2025-07-12 21:10:02', '2025-07-12 21:10:51', '2025-07-12 21:15:02', NULL, 5, 5),
 (36, 4, 2, 1, '2025-07-12 21:14:14', 86076.00, 5000.00, 'Cash on delivery', 'Gg. 7 Utara No.49, Karangampel, Kecamatan Karangampel', -6.4642294794704, 108.44227179018, 'berhasil', '2025-07-12 21:13:56', '2025-07-12 21:14:21', '2025-07-12 21:18:56', NULL, 3, 3),
-(37, 4, 3, 3, '2025-07-12 21:18:13', 17000.00, 5000.00, 'Cash on delivery', 'Gg. 7 Utara No.49, Karangampel, Kecamatan Karangampel', -6.4642294794704, 108.44227179018, 'berhasil', '2025-07-12 21:15:26', '2025-07-12 21:18:37', '2025-07-12 21:20:26', NULL, 3, 5);
+(37, 4, 3, 3, '2025-07-12 21:18:13', 17000.00, 5000.00, 'Cash on delivery', 'Gg. 7 Utara No.49, Karangampel, Kecamatan Karangampel', -6.4642294794704, 108.44227179018, 'berhasil', '2025-07-12 21:15:26', '2025-07-12 21:18:37', '2025-07-12 21:20:26', NULL, 3, 5),
+(38, 4, 2, NULL, NULL, 163214.00, 5000.00, 'Cash on delivery', 'Jalan Manoa, Paoman, Indramayu, Jawa Barat, Jawa, 45211, Indonesia', -6.3194981747056, 108.32295625107, 'dibatalkan', '2025-07-14 12:43:02', '2025-07-14 12:44:56', '2025-07-14 12:48:02', NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -385,7 +386,10 @@ INSERT INTO `order_items` (`id`, `order_id`, `item_id`, `quantity`, `price`, `cr
 (41, 35, 9, 1, 33317.00, '2025-07-12 21:10:02', '2025-07-12 21:10:02'),
 (42, 36, 8, 1, 47759.00, '2025-07-12 21:13:56', '2025-07-12 21:13:56'),
 (43, 36, 9, 1, 33317.00, '2025-07-12 21:13:56', '2025-07-12 21:13:56'),
-(44, 37, 3, 1, 12000.00, '2025-07-12 21:15:26', '2025-07-12 21:15:26');
+(44, 37, 3, 1, 12000.00, '2025-07-12 21:15:26', '2025-07-12 21:15:26'),
+(45, 38, 6, 8, 10000.00, '2025-07-14 12:43:02', '2025-07-14 12:43:02'),
+(46, 38, 8, 1, 47759.00, '2025-07-14 12:43:02', '2025-07-14 12:43:02'),
+(47, 38, 32, 1, 30455.00, '2025-07-14 12:43:02', '2025-07-14 12:43:02');
 
 -- --------------------------------------------------------
 
@@ -601,7 +605,13 @@ INSERT INTO `personal_access_tokens` (`id`, `tokenable_type`, `tokenable_id`, `n
 (188, 'App\\Models\\User', 4, 'auth_token', '2af9c60cc7b8b9ce83d901524046e874bb852b8b06a76f77bf29d190af648cfb', '[\"*\"]', '2025-07-12 21:20:59', NULL, '2025-07-12 21:20:58', '2025-07-12 21:20:59'),
 (189, 'App\\Models\\User', 4, 'auth_token', 'c7c1c3f84a0268661dd5d2d64d2097fb182116206b5d10b4d03f4dc3fa6c8ac5', '[\"*\"]', '2025-07-12 21:28:12', NULL, '2025-07-12 21:28:11', '2025-07-12 21:28:12'),
 (190, 'App\\Models\\User', 4, 'auth_token', '0b09c4bc437b1ab71c6775105fb582675fa3d80ff11ca9481b6ecd1bcc410c11', '[\"*\"]', '2025-07-12 21:36:37', NULL, '2025-07-12 21:28:54', '2025-07-12 21:36:37'),
-(191, 'App\\Models\\User', 4, 'auth_token', '8c9e9114483863587186ecd987fd74c85cee78c668e4856feb86e3e1ae89309d', '[\"*\"]', '2025-07-12 21:37:01', NULL, '2025-07-12 21:37:00', '2025-07-12 21:37:01');
+(191, 'App\\Models\\User', 4, 'auth_token', '8c9e9114483863587186ecd987fd74c85cee78c668e4856feb86e3e1ae89309d', '[\"*\"]', '2025-07-12 21:37:01', NULL, '2025-07-12 21:37:00', '2025-07-12 21:37:01'),
+(192, 'App\\Models\\User', 4, 'auth_token', '31b2e1d975c80749125cd0a0d4ca65ab27816a83f649a885acf06ac1a98dcf6b', '[\"*\"]', '2025-07-14 04:50:53', NULL, '2025-07-14 04:42:33', '2025-07-14 04:50:53'),
+(193, 'App\\Models\\User', 4, 'auth_token', 'f64ba69f9152f9b5ceec2e70aff0c39bd984bebb2183243029fe439d6c87827b', '[\"*\"]', '2025-07-14 12:43:59', NULL, '2025-07-14 04:51:05', '2025-07-14 12:43:59'),
+(194, 'App\\Models\\User', 3, 'auth_token', 'bdfa65658574d0b7387cc7f9cf6c8cddf35425c1a146d223c83e43470bf3ade2', '[\"*\"]', '2025-07-14 12:44:57', NULL, '2025-07-14 12:44:40', '2025-07-14 12:44:57'),
+(195, 'App\\Models\\User', 3, 'auth_token', '507f0e6f20f1450780b69a2596cc4a55b82e3ea0479b497d7af38178931fdbcc', '[\"*\"]', '2025-07-14 12:55:26', NULL, '2025-07-14 12:48:00', '2025-07-14 12:55:26'),
+(196, 'App\\Models\\User', 4, 'auth_token', '6ff2d18de326e407512835672dd4d730e80ea4311bc7f767c77282e5f0e8f246', '[\"*\"]', '2025-07-14 18:01:20', NULL, '2025-07-14 12:56:58', '2025-07-14 18:01:20'),
+(197, 'App\\Models\\User', 5, 'auth_token', '12ca22aafde85891e4ee0073aeea2f5c53b6144adaa9a58c56b972bda9379f34', '[\"*\"]', '2025-07-14 19:36:19', NULL, '2025-07-14 19:22:30', '2025-07-14 19:36:19');
 
 -- --------------------------------------------------------
 
@@ -665,7 +675,7 @@ INSERT INTO `users` (`id`, `name`, `address`, `photo`, `phone`, `email`, `passwo
 (1, 'Admin User', 'Admin Address', NULL, '111111111', 'admin@gmail.com', '$2y$12$aRT4tRzAI2VwYhhVJdjUSebDCbfbRV3AqCpVl6i1K8LCcfit6XEAm', 'admin', 0, '2025-05-12 15:03:56', '2025-05-12 15:03:56', NULL, NULL, NULL),
 (2, 'adit updated', 'Jl. Baru No. 123', NULL, '085312345678', 'aditupdated@example.com', '$2y$12$T3KzY66N5uMwmouGl41iuuWRSDRhQ6MJN5yv8WSe1RAHz9o/Ds8rK', 'customer', 0, '2025-05-12 15:04:07', '2025-06-21 05:24:28', -6.327, 108.323, NULL),
 (3, 'April', 'indramayu Kota', NULL, '081234567890', 'april@gmail.com', '$2y$12$AZz2PTq9bARBCAPGLuDwr.xs7zHW4FCdZfT5v9FSnQS57bHN3l9MW', 'restaurant_owner', 0, '2025-05-12 15:07:51', '2025-05-12 15:07:51', NULL, NULL, NULL),
-(4, 'wiranto', 'Gg. 7 Utara No.49, Karangampel, Kecamatan Karangampel', 'user_4.jpg', '0895340891989', 'wiranto@gmail.com', '$2y$12$W7U5RW2BxpiqTSe5LNg40ufRChQCjeVtlxr9ILBXDpRr2f5m1EkEm', 'customer', 0, '2025-05-13 13:38:37', '2025-06-21 14:04:59', -6.4642294794704, 108.44227179018, NULL),
+(4, 'wirantooo', 'Jalan Ketapang, Indramayu, Jawa Barat, Jawa, 45211, Indonesia', 'user_4.jpg', '0895340891989', 'wiranto@gmail.com', '$2y$12$W7U5RW2BxpiqTSe5LNg40ufRChQCjeVtlxr9ILBXDpRr2f5m1EkEm', 'customer', 0, '2025-05-13 13:38:37', '2025-07-14 12:37:09', -6.321279, 108.3220598, NULL),
 (5, 'Sarul Resto', 'indramayu Kota', NULL, '0812929222', 'Sarul@gmail.com', '$2y$12$K7/5462qimEwQu5Qrx6ScOYnraEFmIYAL4.W22hTdUUQ9HoiNnlm6', 'restaurant_owner', 0, '2025-05-26 00:52:24', '2025-05-26 00:52:24', NULL, NULL, NULL),
 (6, 'parhan', 'teluk agung', NULL, '085461265481', 'parhan@gmail.com', '$2y$12$D2OAq7eH3xTYMfwn/fUFpeNG37DRzzlpaHuzvB/WJ7V9Yc82qzS1G', 'customer', 0, '2025-06-13 08:11:21', '2025-06-13 08:11:21', NULL, NULL, NULL),
 (7, 'riyan', 'H7WJ+XVH, Lohbener, Kecamatan Lohbener', NULL, '08546162532', 'riyan@gmail.com', '$2y$12$M.T.VLYCQ9UildiU4AQA6uQuu/yJfCh.pj.zIxeIB/vxN2ymsnGVq', 'customer', 0, '2025-06-19 11:42:46', '2025-06-19 11:42:46', NULL, NULL, NULL),
@@ -797,7 +807,7 @@ ALTER TABLE `addresses`
 -- AUTO_INCREMENT for table `carts`
 --
 ALTER TABLE `carts`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=57;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=60;
 
 --
 -- AUTO_INCREMENT for table `drivers`
@@ -833,19 +843,19 @@ ALTER TABLE `notifications`
 -- AUTO_INCREMENT for table `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=39;
 
 --
 -- AUTO_INCREMENT for table `order_items`
 --
 ALTER TABLE `order_items`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=45;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=48;
 
 --
 -- AUTO_INCREMENT for table `personal_access_tokens`
 --
 ALTER TABLE `personal_access_tokens`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=192;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=198;
 
 --
 -- AUTO_INCREMENT for table `restaurants`

@@ -2,153 +2,168 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\User;
-use App\Models\Restaurant;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
+use App\Models\Restaurant;
+use App\Models\User;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 
 class AdminRestaurantController extends Controller
 {
-    public function getAllRestaurant()
-{
-    Log::info('All Restaurants called');
-
-    try {
-        // Mengambil semua pengguna dengan role 'restaurant' dan eager load restoran yang dimiliki
-        $restaurantOwners = User::whereHas('roles', function ($query) {
-            $query->where('name', 'restaurant'); // Filter role 'restaurant'
-        })->with('restaurants')->get(); // Eager load relasi 'restaurants'
-
-        Log::info('Restaurant owners retrieved', ['count' => $restaurantOwners->count()]);
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Restaurant owners retrieved successfully',
-            'restaurant' => $restaurantOwners,
-        ], 200);
-    } catch (\Exception $e) {
-        Log::error('Failed to retrieve restaurant owners', ['error' => $e->getMessage()]);
-        return response()->json([
-            'success' => false,
-            'message' => 'Failed to retrieve restaurant owners: ' . $e->getMessage(),
-        ], 500);
-    }
-}
     public function index()
     {
-        Log::info('indexRestaurantOwners called');
+        $restaurants = Restaurant::with('owner')->latest()->get();
+    $data = $restaurants->map(function ($r) {
+        return [
+            'id' => $r->id,
+            'name' => $r->name,
+            'location' => $r->location,
+            'phone' => $r->phone,
+            'image' => $r->image ? $r->image : null,
+            'type' => $r->type,
+            'food_type' => $r->food_type,
+            'email' => $r->owner->email ?? null,   // <-- Tambahkan ini
+            // 'password' tidak boleh ditampilkan
+        ];
+    });
 
-        try {
-            $restaurant_owners = User::where('role', 'restaurant_owner')
-                ->with('restaurants') // Eager load restoran yang dimiliki
-                ->get();
-
-            Log::info('Restaurant owners retrieved', ['count' => $restaurant_owners->count()]);
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Restaurant owners retrieved successfully',
-                'restaurant_owners' => $restaurant_owners,
-            ], 200);
-        } catch (\Exception $e) {
-            Log::error('Failed to retrieve restaurant owners', ['error' => $e->getMessage()]);
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to retrieve restaurant owners: ' . $e->getMessage(),
-            ], 500);
-        }
+    return response()->json([
+        'success' => true,
+        'data' => $data
+    ]);
     }
 
-    public function showRestaurantOwner($id)
+    public function show($id)
+{
+    $restaurant = Restaurant::with('owner')->findOrFail($id);
+
+    return response()->json([
+        'success' => true,
+        'data' => [
+            'id'         => $restaurant->id,
+            'name'       => $restaurant->name,
+            'location'   => $restaurant->location,
+            'phone'      => $restaurant->phone ?? $restaurant->owner->phone ?? null, // 🔧 PENTING
+            'type'       => $restaurant->type,
+            'food_type'  => $restaurant->food_type,
+            'image'      => $restaurant->image,
+            'email'      => $restaurant->owner->email ?? null, // <-- ini dia
+            // Jangan kembalikan password
+        ]
+    ]);
+}
+
+
+    public function store(Request $request)
     {
-        Log::info('show called', ['id' => $id]);
-
-        try {
-            $restaurant = Restaurant::findOrFail($id);
-
-            Log::info('Restaurant retrieved', ['restaurant' => $restaurant]);
-            return response()->json([
-                'success' => true,
-                'message' => 'Restaurant retrieved successfully',
-                'restaurant' => $restaurant,
-            ], 200);
-        } catch (\Exception $e) {
-            Log::error('Failed to retrieve restaurant', ['error' => $e->getMessage()]);
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to retrieve restaurant: ' . $e->getMessage(),
-            ], 404);
-        }
-    }
-    public function update(Request $request, $id)
-    {
-        Log::info('update called', ['id' => $id, 'request' => $request->all()]);
-
         $request->validate([
-            'name' => 'required|string|max:255',
-            'image' => 'nullable|string|max:255',
-            'rate' => 'nullable|numeric|min:0|max:10',
-            'rating' => 'nullable|string|max:10',
-            'type' => 'required|string|max:255',
-            'food_type' => 'nullable|string|max:255',
-            'location' => 'nullable|string|max:255',
-            'is_most_popular' => 'nullable|boolean',
-            'restaurant_category_id' => 'nullable|exists:restaurant_categories,id',
+            'name'        => 'required|string|max:255',
+            'location'    => 'required|string',
+            'phone'       => 'nullable|string|max:20',
+            'email'       => 'required|email|unique:users,email',
+            'password'    => 'required|string|min:6',
+            'type'        => 'nullable|string|max:100',
+            'food_type'   => 'nullable|string|max:100',
+            'image'       => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
-        try {
-            $restaurant = Restaurant::findOrFail($id);
+        // Simpan user dengan role restaurant_owner
+        $user = User::create([
+            'name'     => $request->name,
+            'email'    => $request->email,
+            'phone'    => $request->phone,
+            'password' => Hash::make($request->password),
+            'role'     => 'restaurant_owner',
+        ]);
 
-            $restaurant->update([
-                'name' => $request->name,
-                'image' => $request->image ?? $restaurant->image,
-                'rate' => $request->rate ?? $restaurant->rate,
-                'rating' => $request->rating ?? $restaurant->rating,
-                'type' => $request->type,
-                'food_type' => $request->food_type,
-                'location' => $request->location,
-                'is_most_popular' => $request->is_most_popular ?? $restaurant->is_most_popular,
-                'restaurant_category_id' => $request->restaurant_category_id,
-            ]);
-
-            $updatedRestaurant = $restaurant->fresh();
-            Log::info('Restaurant updated by admin', ['restaurant' => $updatedRestaurant]);
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Restaurant updated successfully',
-                'restaurant' => $updatedRestaurant,
-            ], 200);
-        } catch (\Exception $e) {
-            Log::error('Failed to update restaurant', ['error' => $e->getMessage()]);
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to update restaurant: ' . $e->getMessage(),
-            ], 500);
-        }
+        // Upload image jika ada
+      $imageFilename = null;
+    if ($request->hasFile('image')) {
+        $file = $request->file('image');
+        $imageFilename = 'restaurant_' . $user->id . '.' . $file->getClientOriginalExtension();
+        $file->storeAs('restaurants', $imageFilename, 'public');
     }
+
+        // Simpan restaurant
+        $restaurant = Restaurant::create([
+            'name'       => $request->name,
+            'location'   => $request->location,
+            'phone'      => $request->phone,
+            'type'       => $request->type,
+            'food_type'  => $request->food_type,
+            'image'      => $imageFilename,
+            'user_id'    => $user->id,
+        ]);
+
+        return response()->json(['success' => true, 'data' => $restaurant]);
+    }
+
+  public function update(Request $request, $id)
+{
+    $restaurant = Restaurant::findOrFail($id);
+    $user = $restaurant->owner;
+
+    $validated = $request->validate([
+        'name' => 'required|string|max:255',
+        'email' => 'nullable|email|unique:users,email,' . $user->id,
+        'password' => 'nullable|string|min:6',
+        'phone' => 'nullable|string|max:20',
+        'location' => 'nullable|string|max:255',
+        'type' => 'nullable|string|max:255',
+        'food_type' => 'nullable|string|max:255',
+        'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+    ]);
+
+    // Update user
+    $user->name = $validated['name'];
+    $user->email = $validated['email'] ?? $user->email;
+    if (!empty($validated['password'])) {
+        $user->password = bcrypt($validated['password']);
+    }
+    $user->save();
+
+    // Handle upload gambar baru jika ada
+    if ($request->hasFile('image')) {
+        $file = $request->file('image');
+        $imageFilename = 'restaurant_' . $user->id . '.' . $file->getClientOriginalExtension();
+        $file->storeAs('restaurants', $imageFilename, 'public');
+        $restaurant->image = $imageFilename;
+    }
+
+    // Update restoran
+    $restaurant->update([
+        'name' => $validated['name'],
+        'location' => $validated['location'] ?? $restaurant->location,
+        'phone' => $validated['phone'] ?? $restaurant->phone,
+        'type' => $validated['type'] ?? $restaurant->type,
+        'food_type' => $validated['food_type'] ?? $restaurant->food_type,
+    ]);
+
+    return response()->json([
+        'success' => true,
+        'message' => 'Restaurant updated',
+        'data' => $restaurant,
+    ]);
+}
+
+
     public function destroy($id)
     {
-        Log::info('destroy called', ['id' => $id]);
+        $restaurant = Restaurant::findOrFail($id);
 
-        try {
-            $restaurant = Restaurant::findOrFail($id);
-            $restaurant->delete();
-
-            Log::info('Restaurant deleted by admin', ['id' => $id]);
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Restaurant deleted successfully',
-            ], 200);
-        } catch (\Exception $e) {
-            Log::error('Failed to delete restaurant', ['error' => $e->getMessage()]);
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to delete restaurant: ' . $e->getMessage(),
-            ], 500);
+        // Hapus gambar jika ada
+        if ($restaurant->image && Storage::disk('public')->exists($restaurant->image)) {
+            Storage::disk('public')->delete($restaurant->image);
         }
-    }
 
+        // Hapus user juga (pemilik resto)
+        $user = $restaurant->user;
+        $restaurant->delete();
+        if ($user) {
+            $user->delete();
+        }
+
+        return response()->json(['success' => true, 'message' => 'Restoran berhasil dihapus']);
+    }
 }

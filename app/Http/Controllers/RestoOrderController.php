@@ -73,27 +73,6 @@ class RestoOrderController extends Controller
             ->latest()
             ->get();
 
-        $orders = $orders->map(function ($order) {
-            $orderArray = $order->toArray();
-
-            $orderArray['items'] = collect($order->items)->map(function ($orderItem) {
-                $item = $orderItem->item;
-                $itemArray = $item->toArray();
-
-                // ✅ Tambahkan relasi restaurant secara eksplisit
-                $itemArray['restaurant'] = $item->restaurant ? $item->restaurant->toArray() : null;
-
-                // ✅ Pastikan image sudah berupa full URL
-                $itemArray['image'] = url('storage/items/' . $item->image);
-
-                $orderItemArray = $orderItem->toArray();
-                $orderItemArray['item'] = $itemArray;
-
-                return $orderItemArray;
-            });
-
-            return $orderArray;
-        });
 
         return response()->json([
             'success' => true,

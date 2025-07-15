@@ -13,11 +13,11 @@ use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\RestaurantItemController;
+use App\Http\Controllers\Admin\AdminRestaurantController;
 use App\Http\Controllers\Owner\RestaurantController;
 use App\Http\Controllers\Admin\AdminAccountController;
 use App\Http\Controllers\Admin\ItemCategoryController;
 use App\Http\Controllers\UserController\HomeController;
-use App\Http\Controllers\Admin\AdminRestaurantController;
 use App\Http\Controllers\UserController\UserOrderController;
 
 Route::post('/register', [AuthController::class, 'register'])->middleware('guest')->name('register');
@@ -82,14 +82,16 @@ Route::middleware('auth:sanctum')->group(function () {
         });
         Route::apiResource('admin-item-categories', ItemCategoryController::class);
         Route::get('/users/customer', [AdminAccountController::class, 'getAllCustomer']);
+        Route::put('/users/customer/{id}', [AdminAccountController::class, 'update']);
+        Route::delete('/users/customer/{id}', [AdminAccountController::class, 'delete']);
         Route::get('/users', [AdminAccountController::class, 'index']);
         Route::get('/admin/restaurants', [AdminRestaurantController::class, 'index']);
-        Route::prefix('admin-restaurant-owner')->group(function () {
-            Route::get('/', [AdminRestaurantController::class, 'index']);
-            Route::get('/{id}', [AdminRestaurantController::class, 'showRestaurantOwner']);
-            Route::post('/', [AdminAccountController::class, 'storeRestaurantOwner']);
-            Route::put('/{id}', [AdminAccountController::class, 'UpdateRestaurantOwner']);
-            Route::delete('/{id}', [AdminAccountController::class, 'DestroyRestaurantOwner']);
+        Route::prefix('/admin')->group(function () {
+            Route::get('/restaurants', [AdminRestaurantController::class, 'index']);
+            Route::post('/restaurants', [AdminRestaurantController::class, 'store']);
+            Route::get('/restaurants/{id}', [AdminRestaurantController::class, 'show']);
+            Route::put('/restaurants/{id}', [AdminRestaurantController::class, 'update']);
+            Route::delete('/restaurants/{id}', [AdminRestaurantController::class, 'destroy']);
         });
         Route::prefix('admin-items')->group(function () {
             Route::get('/', [ItemController::class, 'index']);

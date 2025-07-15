@@ -27,7 +27,7 @@ class ItemCategoryController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Categories retrieved successfully',
-                'categories' => $categories,
+                'data' => $categories,
             ], 200);
         } catch (\Exception $e) {
             Log::error('Failed to fetch item categories', ['error' => $e->getMessage()]);
@@ -90,7 +90,7 @@ class ItemCategoryController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Category retrieved successfully',
-                'category' => $category,
+                'data' => $category,
             ], 200);
         } catch (\Exception $e) {
             Log::error('Failed to fetch item category', ['error' => $e->getMessage()]);
@@ -133,7 +133,7 @@ class ItemCategoryController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Category updated successfully',
-                'category' => $category,
+                'data' => $category,
             ], 200);
         } catch (\Exception $e) {
             Log::error('Failed to update item category', ['error' => $e->getMessage()]);

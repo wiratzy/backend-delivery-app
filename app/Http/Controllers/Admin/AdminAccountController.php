@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
+
 
 class AdminAccountController extends Controller
 {
@@ -43,6 +46,75 @@ class AdminAccountController extends Controller
                 'success' => false,
                 'message' => 'Failed to retrieve users: ' . $e->getMessage(),
             ], 500); // Kode status 500 untuk error server
+        }
+    }
+
+      public function show(User $user)
+    {
+        // Berkat Route Model Binding, $user sudah merupakan instance dari user yang dicari.
+        return response()->json($user);
+    }
+
+    /**
+     * Mengupdate data pengguna oleh admin.
+     * PUT /api/admin/users/{user}
+     */
+  public function update(Request $request, User $user)
+{
+    // Debugging (opsional): Pastikan Anda mendapatkan user yang benar dari URL
+    // dd($user->toArray());
+
+    $validator = Validator::make($request->all(), [
+        'name' => 'required|string|max:255',
+        'email' => [
+            'required',
+            'email',
+            'max:255',
+            // ### INI SOLUSINYA ###
+            // Serahkan seluruh object $user, Laravel akan otomatis menangani primary key-nya.
+            Rule::unique('users')->ignore($user),
+        ],
+        'phone' => 'required|string|max:20',
+        'address' => 'required|string',
+        'role' => ['required', Rule::in(['customer', 'admin', 'owner', 'driver'])],
+    ]);
+
+    if ($validator->fails()) {
+        return response()->json($validator->errors(), 422);
+    }
+
+    $user->update($validator->validated());
+    $user->refresh();
+
+    return response()->json([
+        'message' => 'Pengguna berhasil diperbarui.',
+        'user' => $user,
+    ]);
+}
+
+    /**
+     * Menghapus pengguna dari database.
+     * DELETE /api/admin/users/{user}
+     */
+    public function delete(User $user)
+    {
+        // Keamanan tambahan: Admin tidak bisa menghapus dirinya sendiri
+        if (auth()->id() === $user->id) {
+            return response()->json(['message' => 'Anda tidak dapat menghapus akun Anda sendiri.'], 403);
+        }
+
+        try {
+            // Hapus foto jika ada (opsional, tapi praktik yang baik)
+            // if ($user->photo) {
+            //     Storage::disk('public')->delete('photos/' . $user->photo);
+            // }
+
+            $user->delete();
+
+            return response()->json(['message' => 'Pengguna berhasil dihapus.'], 200);
+
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Gagal menghapus pengguna.', 'error' => $e->getMessage()], 500);
         }
     }
 

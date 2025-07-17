@@ -20,6 +20,8 @@ class AdminRestaurantController extends Controller
             'name' => $r->name,
             'location' => $r->location,
             'phone' => $r->phone,
+            'rate' => $r->rate,
+            'rating' => $r->rating,
             'image' => $r->image ? $r->image : null,
             'type' => $r->type,
             'food_type' => $r->food_type,

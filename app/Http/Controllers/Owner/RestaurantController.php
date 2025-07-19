@@ -257,4 +257,77 @@ class RestaurantController extends Controller
             ], 500);
         }
     }
+
+
+
+public function indexForCustomer(Request $request)
+{
+    $query = Restaurant::query()->with('owner');
+
+    // 🔍 Filter search by name (optional)
+    if ($request->has('search') && !empty($request->search)) {
+        $query->where('name', 'like', '%' . $request->search . '%');
+    }
+
+    // ⭐ Filter by minimum rate (optional)
+    if ($request->has('rate') && is_numeric($request->rate)) {
+        $query->where('rate', '>=', $request->rate);
+    }
+
+    $restaurants = $query->latest()->get();
+
+    $data = $restaurants->map(function ($r) {
+        return [
+            'id'         => $r->id,
+            'name'       => $r->name,
+            'location'   => $r->location,
+            'phone'      => $r->phone ?? null,
+            'type'       => $r->type,
+            'food_type'  => $r->food_type,
+            'rate'       => $r->rate,
+            'rating'     => $r->rating,
+            'image'      => $r->image,
+        ];
+    });
+
+    return response()->json([
+        'success' => true,
+        'data' => $data
+    ]);
+}
+
+
+public function showForCustomer($id)
+{
+    $restaurant = Restaurant::with('items')->findOrFail($id);
+
+    return response()->json([
+        'success' => true,
+        'data' => [
+            'id' => $restaurant->id,
+            'name' => $restaurant->name,
+            'location' => $restaurant->location,
+            'phone' => $restaurant->phone,
+            'type' => $restaurant->type,
+            'rate' => $restaurant->rate,
+            'rating' => $restaurant->rating,
+            'food_type' => $restaurant->food_type,
+            'image' => $restaurant->image,
+            'items' => $restaurant->items->map(function ($item) {
+                return [
+                    'id' => $item->id,
+                    'name' => $item->name,
+                    'price' => $item->price,
+                    'image' => $item->image,
+                    'item_category_id' => $item->item_category_id,
+                    'restaurant_id' => $item->restaurant_id,
+                    'type' => $item->type,
+                    'rate' => $item->rate,
+                    'rating' => $item->rating,
+                ];
+            }),
+        ]
+    ]);
+}
+
 }

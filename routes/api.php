@@ -53,6 +53,8 @@ Route::middleware('auth:sanctum')->group(function () {
         // Route::get('/user/popular-restaurants', [HomeController::class, 'getPopularRestaurants']);
         // Route::get('/user/most-popular-restaurants', [HomeController::class, 'getMostPopularRestaurants']);
         // Route::get('/user/recent-items', [ItemController::class, 'recent']);
+        Route::get('/user/restaurants', [RestaurantController::class, 'indexForCustomer']);
+        Route::get('/user/restaurants/{id}', [RestaurantController::class, 'showForCustomer']);
 
         Route::get('/user/cart', [CartController::class, 'index']);
         Route::post('/user/cart', [CartController::class, 'store']);
@@ -60,7 +62,6 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/user/cart/increase', [CartController::class, 'increase']);
         Route::post('/user/cart/decrease', [CartController::class, 'decrease']);
 
-        Route::get('/user/restaurants', [RestaurantController::class, 'index']);
         Route::get('/user/popular', [RestaurantController::class, 'popular']);
         Route::get('/user/most-popular', [RestaurantController::class, 'mostPopular']);
         Route::get('/user/recent', [ItemController::class, 'recent']);

@@ -299,8 +299,9 @@ public function indexForCustomer(Request $request)
 
 public function showForCustomer($id)
 {
-    $restaurant = Restaurant::with('items')->findOrFail($id);
+    $restaurant = Restaurant::with(['items.itemCategory'])->findOrFail($id); // pastikan ada relasi 'category' di model Item
 
+    $categories = $restaurant->items->pluck('itemCategory.name')->unique()->values();
     return response()->json([
         'success' => true,
         'data' => [
@@ -313,6 +314,7 @@ public function showForCustomer($id)
             'rating' => $restaurant->rating,
             'food_type' => $restaurant->food_type,
             'image' => $restaurant->image,
+            'categories' => $categories,
             'items' => $restaurant->items->map(function ($item) {
                 return [
                     'id' => $item->id,
@@ -324,6 +326,7 @@ public function showForCustomer($id)
                     'type' => $item->type,
                     'rate' => $item->rate,
                     'rating' => $item->rating,
+        'category_name' => optional($item->itemCategory)->name, // ini penting
                 ];
             }),
         ]

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Jul 15, 2025 at 08:26 PM
+-- Generation Time: Jul 19, 2025 at 10:03 AM
 -- Server version: 8.0.30
 -- PHP Version: 7.4.33
 
@@ -20,23 +20,6 @@ SET time_zone = "+00:00";
 --
 -- Database: `deliv_app`
 --
-
--- --------------------------------------------------------
-
---
--- Table structure for table `addresses`
---
-
-CREATE TABLE `addresses` (
-  `id` bigint UNSIGNED NOT NULL,
-  `user_id` bigint UNSIGNED NOT NULL,
-  `address_line` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `city` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `province` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `postal_code` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -616,7 +599,10 @@ INSERT INTO `personal_access_tokens` (`id`, `tokenable_type`, `tokenable_id`, `n
 (199, 'App\\Models\\User', 4, 'auth_token', 'a8f667bf7dc4e5b9ec6c5b29f391eed66cd74af0fa3598e9f3ce525d253742d4', '[\"*\"]', '2025-07-15 15:19:58', NULL, '2025-07-15 15:19:01', '2025-07-15 15:19:58'),
 (200, 'App\\Models\\User', 1, 'auth_token', '103adea619d65bc63d0ea93bf37111931bd6a6c62e585bcc6c61f9362a1d17ce', '[\"*\"]', '2025-07-15 19:58:32', NULL, '2025-07-15 15:23:10', '2025-07-15 19:58:32'),
 (201, 'App\\Models\\User', 1, 'auth_token', '5ee43510fe53f97e474fe2fbe098e81f53c6a49af7abff05d828f4b80088be94', '[\"*\"]', '2025-07-15 19:56:14', NULL, '2025-07-15 16:44:13', '2025-07-15 19:56:14'),
-(202, 'App\\Models\\User', 5, 'auth_token', '058dc1c70e631838f199c2d0d7063f6332c0e1b498832224cebc6f73c049dc68', '[\"*\"]', '2025-07-15 20:06:52', NULL, '2025-07-15 20:06:34', '2025-07-15 20:06:52');
+(202, 'App\\Models\\User', 5, 'auth_token', '058dc1c70e631838f199c2d0d7063f6332c0e1b498832224cebc6f73c049dc68', '[\"*\"]', '2025-07-15 20:06:52', NULL, '2025-07-15 20:06:34', '2025-07-15 20:06:52'),
+(203, 'App\\Models\\User', 4, 'auth_token', '1645370bb62162ce6e39945e73cabffbbd2df90d56a7973750b4705f06a94b7d', '[\"*\"]', NULL, NULL, '2025-07-17 14:56:48', '2025-07-17 14:56:48'),
+(204, 'App\\Models\\User', 4, 'auth_token', '60090ce06399d6100b7170f18cc06a7e076f177f20ceff97c0b00b3334ce8e88', '[\"*\"]', '2025-07-19 09:50:40', NULL, '2025-07-17 15:45:30', '2025-07-19 09:50:40'),
+(205, 'App\\Models\\User', 4, 'auth_token', 'd576d599076ab32f1cb2c0fe6bc723a577e047a634c1759ac265ee9f66aa5441', '[\"*\"]', '2025-07-19 09:24:00', NULL, '2025-07-19 09:19:58', '2025-07-19 09:24:00');
 
 -- --------------------------------------------------------
 
@@ -714,13 +700,6 @@ INSERT INTO `users` (`id`, `name`, `address`, `photo`, `phone`, `email`, `passwo
 --
 
 --
--- Indexes for table `addresses`
---
-ALTER TABLE `addresses`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `addresses_user_id_foreign` (`user_id`);
-
---
 -- Indexes for table `carts`
 --
 ALTER TABLE `carts`
@@ -807,12 +786,6 @@ ALTER TABLE `users`
 --
 
 --
--- AUTO_INCREMENT for table `addresses`
---
-ALTER TABLE `addresses`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
-
---
 -- AUTO_INCREMENT for table `carts`
 --
 ALTER TABLE `carts`
@@ -864,7 +837,7 @@ ALTER TABLE `order_items`
 -- AUTO_INCREMENT for table `personal_access_tokens`
 --
 ALTER TABLE `personal_access_tokens`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=203;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=206;
 
 --
 -- AUTO_INCREMENT for table `restaurants`
@@ -881,12 +854,6 @@ ALTER TABLE `users`
 --
 -- Constraints for dumped tables
 --
-
---
--- Constraints for table `addresses`
---
-ALTER TABLE `addresses`
-  ADD CONSTRAINT `addresses_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `carts`

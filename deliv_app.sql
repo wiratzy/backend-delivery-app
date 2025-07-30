@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Jul 29, 2025 at 07:34 PM
+-- Generation Time: Jul 30, 2025 at 06:02 PM
 -- Server version: 8.0.30
 -- PHP Version: 7.4.33
 
@@ -217,7 +217,8 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (42, '2025_07_04_000009_add_deleted_at_to_users_table', 13),
 (43, '2025_07_13_034114_add_ratings_to_orders_table', 14),
 (44, '2025_07_28_105414_update_users_remove_driver_column_and_enum', 15),
-(45, '2025_07_28_121526_create_restaurant_applications_table', 16);
+(45, '2025_07_28_121526_create_restaurant_applications_table', 16),
+(46, '2025_07_30_035248_add_restaurant_type_and_food_type_to_restaurant_applications_table', 17);
 
 -- --------------------------------------------------------
 
@@ -609,8 +610,9 @@ INSERT INTO `personal_access_tokens` (`id`, `tokenable_type`, `tokenable_id`, `n
 (207, 'App\\Models\\User', 4, 'auth_token', 'd88f1a8e78ac669b3bc042dfdcd7c14b738f7bf63d17cbe44436bc1053a17264', '[\"*\"]', '2025-07-24 23:07:56', NULL, '2025-07-24 23:06:32', '2025-07-24 23:07:56'),
 (208, 'App\\Models\\User', 1, 'auth_token', '92708967230ac42ef695fbac24b2d81460ddef36be2cd29a3219d48ffb73b5cc', '[\"*\"]', '2025-07-28 18:42:28', NULL, '2025-07-28 18:17:13', '2025-07-28 18:42:28'),
 (209, 'App\\Models\\User', 1, 'auth_token', '2311a1ffed7343efa19c0e6342fa7b74fb236e7056957e95e3995c80966432a9', '[\"*\"]', '2025-07-29 18:43:53', NULL, '2025-07-28 18:49:23', '2025-07-29 18:43:53'),
-(210, 'App\\Models\\User', 1, 'auth_token', 'c60da792a5028a3e248a94f0743dde47aaedd80b2e20319afc8253c9a27b74bc', '[\"*\"]', '2025-07-29 19:04:31', NULL, '2025-07-28 18:56:24', '2025-07-29 19:04:31'),
-(211, 'App\\Models\\User', 1, 'auth_token', 'e03df52d06665236f8eb18e8b9f45a08fdbabb242db78fa602ef3915170ca34c', '[\"*\"]', '2025-07-29 19:32:21', NULL, '2025-07-29 19:19:27', '2025-07-29 19:32:21');
+(210, 'App\\Models\\User', 1, 'auth_token', 'c60da792a5028a3e248a94f0743dde47aaedd80b2e20319afc8253c9a27b74bc', '[\"*\"]', '2025-07-29 22:18:34', NULL, '2025-07-28 18:56:24', '2025-07-29 22:18:34'),
+(211, 'App\\Models\\User', 1, 'auth_token', 'e03df52d06665236f8eb18e8b9f45a08fdbabb242db78fa602ef3915170ca34c', '[\"*\"]', '2025-07-30 15:45:51', NULL, '2025-07-29 19:19:27', '2025-07-30 15:45:51'),
+(212, 'App\\Models\\User', 1, 'auth_token', 'dd2f86176bbd42cf26d875049b4dc8762ae7e23eb4b77971fc321eefbadce958', '[\"*\"]', '2025-07-30 15:34:46', NULL, '2025-07-30 15:34:30', '2025-07-30 15:34:46');
 
 -- --------------------------------------------------------
 
@@ -643,7 +645,12 @@ INSERT INTO `restaurants` (`id`, `name`, `image`, `rate`, `rating`, `type`, `foo
 (2, 'Resto April Jaya', '1747165145.jpg', 4.5, 4, 'Restoran Keluarga', 'Masakan Rumah', 'lohbener', 5000.00, 0, 3, '2025-05-13 12:39:06', '2025-07-12 21:14:21', NULL),
 (3, 'Resto Sarul Gih', 'restaurant_5.jpg', 3.0, 1, 'Restoran Keluarga', 'Masakan Rumah', 'lohbener', 5000.00, 0, 5, '2025-05-26 00:55:33', '2025-07-15 19:42:25', NULL),
 (4, 'seblak karpel', 'restaurants/b8vR9iIRpHf6SxJA2mvQgNNE6xIUkZUAZrRsR0Vm.jpg', 0.0, 0, 'Cafe', 'Padang', 'mbuh ning endi', 5000.00, 0, NULL, '2025-07-15 18:42:29', '2025-07-15 18:44:09', '2025-07-15 18:44:09'),
-(5, 'seblak karpel', 'C:\\xampp\\tmp\\php949E.tmp', 0.0, 0, 'Street food', 'makanan berat', 'karangapel', 5000.00, 0, NULL, '2025-07-15 19:10:06', '2025-07-15 19:20:42', '2025-07-15 19:20:42');
+(5, 'seblak karpel', 'C:\\xampp\\tmp\\php949E.tmp', 0.0, 0, 'Street food', 'makanan berat', 'karangapel', 5000.00, 0, NULL, '2025-07-15 19:10:06', '2025-07-15 19:20:42', '2025-07-15 19:20:42'),
+(6, 'Tes Resto', 'restaurant_applications/NR6u9e7Gi2Bg9v9yMkVKeoYy5Njcll9s2cb0iXOz.png', 0.0, 0, 'restoran Keluarga', 'Fast Food', 'Karangampel lor', 5000.00, 0, 30, '2025-07-29 21:41:47', '2025-07-29 22:37:09', '2025-07-29 22:37:09'),
+(7, 'resto adit', 'restaurant_applications/AuxyTxFMMYfJ5BhUBmoP8FPHukVdkYhq0ws9x4Im.png', 0.0, 0, 'Restoran Keluarga', 'Fast Food', 'Restoran Adit Karangampel', 5000.00, 0, NULL, '2025-07-29 21:45:31', '2025-07-29 22:37:13', '2025-07-29 22:37:13'),
+(8, 'Resto adit 2', 'restaurant_applications/fs7DLL4bFl4kjUKesGaIIW8g6IIOfW4Sko3dTT3P.png', 0.0, 0, 'restoran Keluarga', 'Fast Food', 'Karangampel Food', 5000.00, 0, NULL, '2025-07-29 21:55:30', '2025-07-29 22:37:16', '2025-07-29 22:37:16'),
+(9, 'Resto adit 3', 'restaurant_applications/pBjDUN15RpiJhqkZY6ogYt7m8XeTJFrIJOzTpjsE.png', 0.0, 0, 'Restoran Keluarga', 'Fast Food', 'Resto Karangampel lor', 5000.00, 0, NULL, '2025-07-29 22:02:58', '2025-07-29 22:37:19', '2025-07-29 22:37:19'),
+(10, 'Resto adit 4', 'restaurant_applications/PvKByFhbxQlis0DBOR8gahEHeKmwQ3garKFYzcJS.png', 0.0, 0, 'Restoran Keluarga', 'Fast Food', 'Karpel Lor', 5000.00, 0, 35, '2025-07-29 22:06:03', '2025-07-29 22:37:21', '2025-07-29 22:37:21');
 
 -- --------------------------------------------------------
 
@@ -658,6 +665,8 @@ CREATE TABLE `restaurant_applications` (
   `phone` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `location` text COLLATE utf8mb4_unicode_ci,
   `image` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `type` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `food_type` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `status` enum('pending','approved','rejected') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'pending',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
@@ -667,9 +676,12 @@ CREATE TABLE `restaurant_applications` (
 -- Dumping data for table `restaurant_applications`
 --
 
-INSERT INTO `restaurant_applications` (`id`, `name`, `email`, `phone`, `location`, `image`, `status`, `created_at`, `updated_at`) VALUES
-(1, 'Courtney Townsend', 'wynusixa@mailinator.com', '+1 (964) 864-5853', 'Voluptas eum libero', 'restaurants/IDNrZf3HDH39kV6UYnN5fpSNEV4erkClxzxuw0Yd.png', 'pending', '2025-07-28 06:07:21', '2025-07-28 06:07:21'),
-(4, 'Michael Reeves', 'qocuguhyry@mailinator.com', '+1 (195) 945-4832', 'Saepe eos accusanti', NULL, 'pending', '2025-07-28 18:01:59', '2025-07-28 18:01:59');
+INSERT INTO `restaurant_applications` (`id`, `name`, `email`, `phone`, `location`, `image`, `type`, `food_type`, `status`, `created_at`, `updated_at`) VALUES
+(1, 'Courtney Townsend', 'wynusixa@mailinator.com', '+1 (964) 864-5853', 'Voluptas eum libero', 'restaurants/IDNrZf3HDH39kV6UYnN5fpSNEV4erkClxzxuw0Yd.png', '', '', 'rejected', '2025-07-28 06:07:21', '2025-07-29 22:18:34'),
+(4, 'Michael Reeves', 'qocuguhyry@mailinator.com', '+1 (195) 945-4832', 'Saepe eos accusanti', NULL, '', '', 'rejected', '2025-07-28 18:01:59', '2025-07-29 22:26:51'),
+(5, 'Neville Solomon', 'wirantoluya@gmail.com', '+62895340891989', 'Ut id id dolor ipsa', 'restaurant_applications/j6CjMbEhebz2TNAA0UMPgb5uQQIfjTbisj7p6N7V.png', '', '', 'rejected', '2025-07-29 20:46:14', '2025-07-29 22:24:52'),
+(6, 'Tes Resto', 'aprilbilekk@gmail.com', '+62895340891989', 'Karangampel lor', 'restaurant_applications/NR6u9e7Gi2Bg9v9yMkVKeoYy5Njcll9s2cb0iXOz.png', 'restoran Keluarga', 'Fast Food', 'approved', '2025-07-29 21:40:02', '2025-07-29 21:41:47'),
+(10, 'Resto adit 4', 'adityasukma67@gmail.com', '081355189353', 'Karpel Lor', 'restaurant_applications/PvKByFhbxQlis0DBOR8gahEHeKmwQ3garKFYzcJS.png', 'Restoran Keluarga', 'Fast Food', 'approved', '2025-07-29 22:05:55', '2025-07-29 22:06:03');
 
 -- --------------------------------------------------------
 
@@ -726,7 +738,9 @@ INSERT INTO `users` (`id`, `name`, `address`, `photo`, `phone`, `email`, `passwo
 (26, 'Rudi Supir2', '-', NULL, '', 'rudi.driver3@example.com', '$2y$12$0GOTWX83gjO5tsYtTwBxguI8rj3WzWG2v8xF2dN/UCBBUuXHKha82', '', '2025-06-30 08:36:17', '2025-06-30 08:36:17', NULL, NULL, NULL),
 (27, 'Rudi Supir2', '-', NULL, '', 'rudi.driver4@example.com', '$2y$12$ReMcDaaaPr.3sHorwigjf.o5W0a7/MJzfQ.OLd.Q1eC2qxLdELivu', '', '2025-06-30 08:37:01', '2025-06-30 08:37:01', NULL, NULL, NULL),
 (28, 'seblak karpel', '', NULL, '089534988199', 'seblakkarpel@gmail.com', '$2y$12$y68pQiH0Ij7fU/24VzCk.e8jQ6SixUEB5qOStO1vU3l91Un3HDbpu', '', '2025-07-15 18:42:29', '2025-07-15 18:42:29', NULL, NULL, NULL),
-(29, 'seblak karpel', '', NULL, '0852491838274', 'seblakkarpel2@gmail.com', '$2y$12$iYBOmZTSGcQ/s9hJVIxRPODVriJbh1OABl4OjwoWBOzNf0Uu8GfMC', '', '2025-07-15 19:10:06', '2025-07-15 19:10:06', NULL, NULL, NULL);
+(29, 'seblak karpel', '', NULL, '0852491838274', 'seblakkarpel2@gmail.com', '$2y$12$iYBOmZTSGcQ/s9hJVIxRPODVriJbh1OABl4OjwoWBOzNf0Uu8GfMC', '', '2025-07-15 19:10:06', '2025-07-15 19:10:06', NULL, NULL, NULL),
+(30, 'Tes Resto', 'Karangampel lor', NULL, '+62895340891989', 'aprilbilekk@gmail.com', '$2y$12$HHGGvfKEKZOfLxTZFVa5meIq0hbUlhWwXZSrY9pTSYs7tnb3xqWFG', 'owner', '2025-07-29 21:41:47', '2025-07-29 21:41:47', NULL, NULL, NULL),
+(35, 'Resto adit 4', 'Karpel Lor', NULL, '081355189353', 'adityasukma67@gmail.com', '$2y$12$.KE0kY/QZ99ybB/bToX27eTJtY/bfB5Hrlh0lg29N6q..e548XRqO', 'owner', '2025-07-29 22:06:03', '2025-07-29 22:06:03', NULL, NULL, NULL);
 
 --
 -- Indexes for dumped tables
@@ -853,7 +867,7 @@ ALTER TABLE `item_categories`
 -- AUTO_INCREMENT for table `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=46;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=47;
 
 --
 -- AUTO_INCREMENT for table `notifications`
@@ -877,25 +891,25 @@ ALTER TABLE `order_items`
 -- AUTO_INCREMENT for table `personal_access_tokens`
 --
 ALTER TABLE `personal_access_tokens`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=212;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=213;
 
 --
 -- AUTO_INCREMENT for table `restaurants`
 --
 ALTER TABLE `restaurants`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `restaurant_applications`
 --
 ALTER TABLE `restaurant_applications`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
 
 --
 -- Constraints for dumped tables

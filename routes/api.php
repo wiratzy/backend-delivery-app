@@ -13,15 +13,18 @@ use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\RestaurantItemController;
-use App\Http\Controllers\Admin\AdminRestaurantController;
 use App\Http\Controllers\Owner\RestaurantController;
 use App\Http\Controllers\Admin\AdminAccountController;
 use App\Http\Controllers\Admin\ItemCategoryController;
 use App\Http\Controllers\UserController\HomeController;
+use App\Http\Controllers\Admin\AdminRestaurantController;
+use App\Http\Controllers\RestaurantApplicationController;
 use App\Http\Controllers\UserController\UserOrderController;
 
 Route::post('/register', [AuthController::class, 'register'])->middleware('guest')->name('register');
 Route::post('/login', [AuthController::class, 'login'])->middleware('guest')->name('login');
+Route::post('/restaurant-applications', [RestaurantApplicationController::class, 'store']);
+
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
 
@@ -87,6 +90,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('/users/customer/{id}', [AdminAccountController::class, 'delete']);
         Route::get('/users', [AdminAccountController::class, 'index']);
         Route::get('/admin/restaurants', [AdminRestaurantController::class, 'index']);
+
+
         Route::prefix('/admin')->group(function () {
             Route::get('/restaurants', [AdminRestaurantController::class, 'index']);
             Route::post('/restaurants', [AdminRestaurantController::class, 'store']);
@@ -99,6 +104,13 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::get('/{id}', [ItemController::class, 'show']);
             Route::post('/{id}', [ItemController::class, 'storeForAdmin']);
             Route::put('/{id}', [ItemController::class, 'update']);
+        });
+
+
+        Route::prefix('admin')->group(function () {
+            Route::get('/restaurant-applications', [RestaurantApplicationController::class, 'index']);
+            Route::post('/restaurant-applications/{id}/approve', [RestaurantApplicationController::class, 'approve']);
+            Route::post('/restaurant-applications/{id}/reject', [RestaurantApplicationController::class, 'reject']);
         });
         // Route::apiResource('orders', RestoOrderController::class)->only(['index', 'show']);
         // Route::put('/orders/{id}/assign-driver', [RestoOrderController::class, 'assignDriver']);

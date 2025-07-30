@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\RestaurantApplicationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,8 +14,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return "cihuyyy";
-});
+Route::get('/', fn() => view('landing'));
+Route::post('/restaurant-application', [RestaurantApplicationController::class, 'store'])->name('restaurant-application.store');
 
 require __DIR__.'/auth.php';

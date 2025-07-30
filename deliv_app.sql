@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Jul 19, 2025 at 10:03 AM
+-- Generation Time: Jul 29, 2025 at 07:34 PM
 -- Server version: 8.0.30
 -- PHP Version: 7.4.33
 
@@ -215,7 +215,9 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (40, '2025_07_04_000008_add_deleted_at_to_restaurants_table', 13),
 (41, '2025_07_04_000009_add_deleted_at_to_drivers_table', 13),
 (42, '2025_07_04_000009_add_deleted_at_to_users_table', 13),
-(43, '2025_07_13_034114_add_ratings_to_orders_table', 14);
+(43, '2025_07_13_034114_add_ratings_to_orders_table', 14),
+(44, '2025_07_28_105414_update_users_remove_driver_column_and_enum', 15),
+(45, '2025_07_28_121526_create_restaurant_applications_table', 16);
 
 -- --------------------------------------------------------
 
@@ -602,7 +604,13 @@ INSERT INTO `personal_access_tokens` (`id`, `tokenable_type`, `tokenable_id`, `n
 (202, 'App\\Models\\User', 5, 'auth_token', '058dc1c70e631838f199c2d0d7063f6332c0e1b498832224cebc6f73c049dc68', '[\"*\"]', '2025-07-15 20:06:52', NULL, '2025-07-15 20:06:34', '2025-07-15 20:06:52'),
 (203, 'App\\Models\\User', 4, 'auth_token', '1645370bb62162ce6e39945e73cabffbbd2df90d56a7973750b4705f06a94b7d', '[\"*\"]', NULL, NULL, '2025-07-17 14:56:48', '2025-07-17 14:56:48'),
 (204, 'App\\Models\\User', 4, 'auth_token', '60090ce06399d6100b7170f18cc06a7e076f177f20ceff97c0b00b3334ce8e88', '[\"*\"]', '2025-07-19 09:50:40', NULL, '2025-07-17 15:45:30', '2025-07-19 09:50:40'),
-(205, 'App\\Models\\User', 4, 'auth_token', 'd576d599076ab32f1cb2c0fe6bc723a577e047a634c1759ac265ee9f66aa5441', '[\"*\"]', '2025-07-19 09:24:00', NULL, '2025-07-19 09:19:58', '2025-07-19 09:24:00');
+(205, 'App\\Models\\User', 4, 'auth_token', 'd576d599076ab32f1cb2c0fe6bc723a577e047a634c1759ac265ee9f66aa5441', '[\"*\"]', '2025-07-19 09:24:00', NULL, '2025-07-19 09:19:58', '2025-07-19 09:24:00'),
+(206, 'App\\Models\\User', 4, 'auth_token', 'd328d90234a81e69a33c6ee1109b1ef827a60a993f4ea1529109cb908c3ddba0', '[\"*\"]', '2025-07-28 18:56:10', NULL, '2025-07-24 22:43:24', '2025-07-28 18:56:10'),
+(207, 'App\\Models\\User', 4, 'auth_token', 'd88f1a8e78ac669b3bc042dfdcd7c14b738f7bf63d17cbe44436bc1053a17264', '[\"*\"]', '2025-07-24 23:07:56', NULL, '2025-07-24 23:06:32', '2025-07-24 23:07:56'),
+(208, 'App\\Models\\User', 1, 'auth_token', '92708967230ac42ef695fbac24b2d81460ddef36be2cd29a3219d48ffb73b5cc', '[\"*\"]', '2025-07-28 18:42:28', NULL, '2025-07-28 18:17:13', '2025-07-28 18:42:28'),
+(209, 'App\\Models\\User', 1, 'auth_token', '2311a1ffed7343efa19c0e6342fa7b74fb236e7056957e95e3995c80966432a9', '[\"*\"]', '2025-07-29 18:43:53', NULL, '2025-07-28 18:49:23', '2025-07-29 18:43:53'),
+(210, 'App\\Models\\User', 1, 'auth_token', 'c60da792a5028a3e248a94f0743dde47aaedd80b2e20319afc8253c9a27b74bc', '[\"*\"]', '2025-07-29 19:04:31', NULL, '2025-07-28 18:56:24', '2025-07-29 19:04:31'),
+(211, 'App\\Models\\User', 1, 'auth_token', 'e03df52d06665236f8eb18e8b9f45a08fdbabb242db78fa602ef3915170ca34c', '[\"*\"]', '2025-07-29 19:32:21', NULL, '2025-07-29 19:19:27', '2025-07-29 19:32:21');
 
 -- --------------------------------------------------------
 
@@ -640,6 +648,32 @@ INSERT INTO `restaurants` (`id`, `name`, `image`, `rate`, `rating`, `type`, `foo
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `restaurant_applications`
+--
+
+CREATE TABLE `restaurant_applications` (
+  `id` bigint UNSIGNED NOT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `phone` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `location` text COLLATE utf8mb4_unicode_ci,
+  `image` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `status` enum('pending','approved','rejected') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'pending',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `restaurant_applications`
+--
+
+INSERT INTO `restaurant_applications` (`id`, `name`, `email`, `phone`, `location`, `image`, `status`, `created_at`, `updated_at`) VALUES
+(1, 'Courtney Townsend', 'wynusixa@mailinator.com', '+1 (964) 864-5853', 'Voluptas eum libero', 'restaurants/IDNrZf3HDH39kV6UYnN5fpSNEV4erkClxzxuw0Yd.png', 'pending', '2025-07-28 06:07:21', '2025-07-28 06:07:21'),
+(4, 'Michael Reeves', 'qocuguhyry@mailinator.com', '+1 (195) 945-4832', 'Saepe eos accusanti', NULL, 'pending', '2025-07-28 18:01:59', '2025-07-28 18:01:59');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `users`
 --
 
@@ -651,8 +685,7 @@ CREATE TABLE `users` (
   `phone` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `password` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `role` enum('customer','admin','restaurant_owner','driver') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'customer',
-  `is_active_driver` tinyint(1) NOT NULL DEFAULT '0',
+  `role` enum('admin','customer','owner') COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   `address_latitude` double DEFAULT NULL,
@@ -664,36 +697,36 @@ CREATE TABLE `users` (
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`id`, `name`, `address`, `photo`, `phone`, `email`, `password`, `role`, `is_active_driver`, `created_at`, `updated_at`, `address_latitude`, `address_longitude`, `deleted_at`) VALUES
-(1, 'Admin User', 'Admin Address', NULL, '111111111', 'admin@gmail.com', '$2y$12$aRT4tRzAI2VwYhhVJdjUSebDCbfbRV3AqCpVl6i1K8LCcfit6XEAm', 'admin', 0, '2025-05-12 15:03:56', '2025-05-12 15:03:56', NULL, NULL, NULL),
-(2, 'adit updated', 'Jl. Baru No. 123', NULL, '085312345678', 'aditupdated@example.com', '$2y$12$T3KzY66N5uMwmouGl41iuuWRSDRhQ6MJN5yv8WSe1RAHz9o/Ds8rK', 'customer', 0, '2025-05-12 15:04:07', '2025-06-21 05:24:28', -6.327, 108.323, NULL),
-(3, 'April', 'indramayu Kota', NULL, '081234567890', 'april@gmail.com', '$2y$12$AZz2PTq9bARBCAPGLuDwr.xs7zHW4FCdZfT5v9FSnQS57bHN3l9MW', 'restaurant_owner', 0, '2025-05-12 15:07:51', '2025-05-12 15:07:51', NULL, NULL, NULL),
-(4, 'wirantooo', 'Jalan Ketapang, Indramayu, Jawa Barat, Jawa, 45211, Indonesia', 'user_4.jpg', '0895340891989', 'wiranto@gmail.com', '$2y$12$W7U5RW2BxpiqTSe5LNg40ufRChQCjeVtlxr9ILBXDpRr2f5m1EkEm', 'customer', 0, '2025-05-13 13:38:37', '2025-07-14 12:37:09', -6.321279, 108.3220598, NULL),
-(5, 'Resto Sarul Gih', 'indramayu Kota', NULL, '0812929222', 'Sarul@gmail.com', '$2y$12$K7/5462qimEwQu5Qrx6ScOYnraEFmIYAL4.W22hTdUUQ9HoiNnlm6', 'restaurant_owner', 0, '2025-05-26 00:52:24', '2025-07-15 19:38:54', NULL, NULL, NULL),
-(6, 'parhan', 'teluk agung', NULL, '085461265481', 'parhan@gmail.com', '$2y$12$D2OAq7eH3xTYMfwn/fUFpeNG37DRzzlpaHuzvB/WJ7V9Yc82qzS1G', 'customer', 0, '2025-06-13 08:11:21', '2025-06-13 08:11:21', NULL, NULL, NULL),
-(7, 'riyan', 'H7WJ+XVH, Lohbener, Kecamatan Lohbener', NULL, '08546162532', 'riyan@gmail.com', '$2y$12$M.T.VLYCQ9UildiU4AQA6uQuu/yJfCh.pj.zIxeIB/vxN2ymsnGVq', 'customer', 0, '2025-06-19 11:42:46', '2025-06-19 11:42:46', NULL, NULL, NULL),
-(8, 'adit', 'indramayu', NULL, '085398389383', 'adit22@gmail.com', '$2y$12$h7TyDeGffMWOA0OoLRVdKeeXfvWD4goykIZXdI2bamVK0sGjOV.wi', 'customer', 0, '2025-06-19 12:24:52', '2025-06-19 12:24:52', NULL, NULL, NULL),
-(9, 'adit', 'indramayu', NULL, '085398389383', 'adit223@gmail.com', '$2y$12$tdwJbrSPjcUMo0EylmLrG.mLJwcznHJCmt.3P90Ndgox7pL5hPE3C', 'customer', 0, '2025-06-19 12:27:28', '2025-06-19 12:27:28', NULL, NULL, NULL),
-(10, 'adit', 'indramayu', NULL, '085398389383', 'adit2232@gmail.com', '$2y$12$tlWynmvog6NntftEauJl0uzRCN70wjhoAC0Cf4y.W2YG4zOENfOxS', 'customer', 0, '2025-06-19 12:28:41', '2025-06-19 12:28:41', NULL, NULL, NULL),
-(11, 'adit', 'indramayu', NULL, '085398389383', 'adit22323@gmail.com', '$2y$12$J/d80TEjmCd4mlbHBOuDhOXLi67bzbFcmzX5RpIggntxPTo16bqC6', 'customer', 0, '2025-06-19 12:28:58', '2025-06-19 12:28:58', NULL, NULL, NULL),
-(12, 'adit', 'indramayu', NULL, '085398389383', 'adit223231@gmail.com', '$2y$12$5vxhusIwpE4L.YvKU4SVtO8JHeGKef6LCpsOEbZ.XiibTxjj.4WtC', 'customer', 0, '2025-06-19 12:34:37', '2025-06-19 12:34:37', NULL, NULL, NULL),
-(13, 'adit', 'indramayu', NULL, '085398389383', 'adit2232313@gmail.com', '$2y$12$JoMD3xLH2j482hvwEOhEx.pAgswXBYY8ork50wMDTvhZc.bucPU22', 'customer', 0, '2025-06-19 12:37:02', '2025-06-19 12:37:02', NULL, NULL, NULL),
-(14, 'riyan', 'Jl. Raya Lohbener Lama Blok Celo No.31, Lohbener, Kecamatan Lohbener', NULL, '0854311654', 'riyannn@gmail.com', '$2y$12$E1sIfcV.arkdDoZ7Udu8MuTuygjNMqAhKxB6FHRD4mWTBbdKRZYQW', 'customer', 0, '2025-06-19 13:23:27', '2025-06-19 13:23:27', NULL, NULL, NULL),
-(15, 'adit', 'indramayu', NULL, '085398389383', 'adit2232312333@gmail.com', '$2y$12$Kst2xeYVi5oS5h/8ikn2fuAlutjmDP0pg17gQvB0LeU5btLDTZP9a', 'customer', 0, '2025-06-19 13:24:19', '2025-06-19 13:24:19', NULL, NULL, NULL),
-(16, 'adit', 'indramayu', NULL, '085398389383', 'adit22323123333@gmail.com', '$2y$12$uXvcs0HmdPHC0.YlpXS1i.xlQDVmpEjvemcCbmWBd8l6ge7OS004e', 'customer', 0, '2025-06-19 13:41:27', '2025-06-19 13:41:27', NULL, NULL, NULL),
-(17, 'adit', 'indramayu', NULL, '085398389383', 'adit223231233323@gmail.com', '$2y$12$vbKfQ0QURic.Q7nAnJwP3eeGSWdFOpAX.SNbMmD0IsUx6ZR31Fx2O', 'customer', 0, '2025-06-19 13:42:22', '2025-06-19 13:42:22', NULL, NULL, NULL),
-(18, 'adit', 'indramayu', NULL, '085398389383', 'adit2232312933323@gmail.com', '$2y$12$J1otIccuWPq//v3.4ujh3Of6aXU9VLZhKLiC7nwgiyUqgiiRVVp02', 'customer', 0, '2025-06-19 13:47:41', '2025-06-19 13:47:41', -6.3, 108.323, NULL),
-(19, 'adit', 'indramayu', NULL, '085398389383', 'adit22323123332223@gmail.com', '$2y$12$HxlMbBs6DzDtVGfxrtmO0OTCi3tbF6TbnK2hfyLD64dRrLbJwjhAW', 'customer', 0, '2025-06-19 13:50:53', '2025-06-19 13:50:53', NULL, NULL, NULL),
-(20, 'adit', 'indramayu', NULL, '085398389383', 'adit223223332223@gmail.com', '$2y$12$7HWw4wgF.de2S8rBnDRSTeJFHAfgqAbtOR79uNU2oqyKZfkdJLswi', 'customer', 0, '2025-06-19 13:51:39', '2025-06-19 13:51:39', -6.3, 108.323, NULL),
-(21, 'tesss', 'H7WJ+XVH, Lohbener, Kecamatan Lohbener', NULL, '05498642826', 'twssss@gmail.com', '$2y$12$AcZ6DMjb/f95qfWDA2ugX.fiErcefEvFQeTSnV2D0ottncHPh0U.K', 'customer', 0, '2025-06-19 13:55:14', '2025-06-19 13:55:14', -6.4024746, 108.2822715, NULL),
-(22, 'amel', 'H7WJ+XVH, Lohbener, Kecamatan Lohbener', 'user_22.jpg', '08549761542', 'amel@gmail.com', '$2y$12$lStxomfmre7dxptETxNCruw02.3V2/XVf/BleNPvtB1PmKRYFfOA.', 'customer', 0, '2025-06-21 01:06:32', '2025-06-21 05:28:51', -6.402482, 108.2822567, NULL),
-(23, 'rista', 'M83H+2GX, Kepandean, Kecamatan Indramayu', NULL, '08975734600', 'rista@gmail.com', '$2y$12$0.8MuA0Po7tHNVYdPvbmiuNFxxhgdO/c5o4WcGBW8DD1gvHJEBDIW', 'customer', 0, '2025-06-26 10:37:58', '2025-06-26 10:37:58', -6.3465831989407, 108.32778482963, NULL),
-(24, 'Rudi Supir', 'Jalan Mangga No.12', NULL, '08953413932', 'rudi.driver@example.com', '$2y$12$yqwNOVNnqkN41LWp0mR2seFBU/O5w4wmpW7Hu9e4/r4bzdG6BJl4e', 'driver', 0, '2025-06-30 07:05:26', '2025-06-30 07:05:26', NULL, NULL, NULL),
-(25, 'Rudi Supir2', '-', NULL, '', 'rudi.driver2@example.com', '$2y$12$IQjlo8lEZ6PtPyyCKpe38u8o8PeUax/viAXne9iBoYUDPd4Uyk/0q', 'driver', 0, '2025-06-30 08:35:01', '2025-06-30 08:35:01', NULL, NULL, NULL),
-(26, 'Rudi Supir2', '-', NULL, '', 'rudi.driver3@example.com', '$2y$12$0GOTWX83gjO5tsYtTwBxguI8rj3WzWG2v8xF2dN/UCBBUuXHKha82', 'driver', 0, '2025-06-30 08:36:17', '2025-06-30 08:36:17', NULL, NULL, NULL),
-(27, 'Rudi Supir2', '-', NULL, '', 'rudi.driver4@example.com', '$2y$12$ReMcDaaaPr.3sHorwigjf.o5W0a7/MJzfQ.OLd.Q1eC2qxLdELivu', 'driver', 0, '2025-06-30 08:37:01', '2025-06-30 08:37:01', NULL, NULL, NULL),
-(28, 'seblak karpel', '', NULL, '089534988199', 'seblakkarpel@gmail.com', '$2y$12$y68pQiH0Ij7fU/24VzCk.e8jQ6SixUEB5qOStO1vU3l91Un3HDbpu', 'restaurant_owner', 0, '2025-07-15 18:42:29', '2025-07-15 18:42:29', NULL, NULL, NULL),
-(29, 'seblak karpel', '', NULL, '0852491838274', 'seblakkarpel2@gmail.com', '$2y$12$iYBOmZTSGcQ/s9hJVIxRPODVriJbh1OABl4OjwoWBOzNf0Uu8GfMC', 'restaurant_owner', 0, '2025-07-15 19:10:06', '2025-07-15 19:10:06', NULL, NULL, NULL);
+INSERT INTO `users` (`id`, `name`, `address`, `photo`, `phone`, `email`, `password`, `role`, `created_at`, `updated_at`, `address_latitude`, `address_longitude`, `deleted_at`) VALUES
+(1, 'Admin User', 'Admin Address', NULL, '111111111', 'admin@gmail.com', '$2y$12$aRT4tRzAI2VwYhhVJdjUSebDCbfbRV3AqCpVl6i1K8LCcfit6XEAm', 'admin', '2025-05-12 15:03:56', '2025-05-12 15:03:56', NULL, NULL, NULL),
+(2, 'adit updated', 'Jl. Baru No. 123', NULL, '085312345678', 'aditupdated@example.com', '$2y$12$T3KzY66N5uMwmouGl41iuuWRSDRhQ6MJN5yv8WSe1RAHz9o/Ds8rK', 'customer', '2025-05-12 15:04:07', '2025-06-21 05:24:28', -6.327, 108.323, NULL),
+(3, 'April', 'indramayu Kota', NULL, '081234567890', 'april@gmail.com', '$2y$12$AZz2PTq9bARBCAPGLuDwr.xs7zHW4FCdZfT5v9FSnQS57bHN3l9MW', '', '2025-05-12 15:07:51', '2025-05-12 15:07:51', NULL, NULL, NULL),
+(4, 'wirantooo', 'Jalan Ketapang, Indramayu, Jawa Barat, Jawa, 45211, Indonesia', 'user_4.jpg', '0895340891989', 'wiranto@gmail.com', '$2y$12$W7U5RW2BxpiqTSe5LNg40ufRChQCjeVtlxr9ILBXDpRr2f5m1EkEm', 'customer', '2025-05-13 13:38:37', '2025-07-14 12:37:09', -6.321279, 108.3220598, NULL),
+(5, 'Resto Sarul Gih', 'indramayu Kota', NULL, '0812929222', 'Sarul@gmail.com', '$2y$12$K7/5462qimEwQu5Qrx6ScOYnraEFmIYAL4.W22hTdUUQ9HoiNnlm6', '', '2025-05-26 00:52:24', '2025-07-15 19:38:54', NULL, NULL, NULL),
+(6, 'parhan', 'teluk agung', NULL, '085461265481', 'parhan@gmail.com', '$2y$12$D2OAq7eH3xTYMfwn/fUFpeNG37DRzzlpaHuzvB/WJ7V9Yc82qzS1G', 'customer', '2025-06-13 08:11:21', '2025-06-13 08:11:21', NULL, NULL, NULL),
+(7, 'riyan', 'H7WJ+XVH, Lohbener, Kecamatan Lohbener', NULL, '08546162532', 'riyan@gmail.com', '$2y$12$M.T.VLYCQ9UildiU4AQA6uQuu/yJfCh.pj.zIxeIB/vxN2ymsnGVq', 'customer', '2025-06-19 11:42:46', '2025-06-19 11:42:46', NULL, NULL, NULL),
+(8, 'adit', 'indramayu', NULL, '085398389383', 'adit22@gmail.com', '$2y$12$h7TyDeGffMWOA0OoLRVdKeeXfvWD4goykIZXdI2bamVK0sGjOV.wi', 'customer', '2025-06-19 12:24:52', '2025-06-19 12:24:52', NULL, NULL, NULL),
+(9, 'adit', 'indramayu', NULL, '085398389383', 'adit223@gmail.com', '$2y$12$tdwJbrSPjcUMo0EylmLrG.mLJwcznHJCmt.3P90Ndgox7pL5hPE3C', 'customer', '2025-06-19 12:27:28', '2025-06-19 12:27:28', NULL, NULL, NULL),
+(10, 'adit', 'indramayu', NULL, '085398389383', 'adit2232@gmail.com', '$2y$12$tlWynmvog6NntftEauJl0uzRCN70wjhoAC0Cf4y.W2YG4zOENfOxS', 'customer', '2025-06-19 12:28:41', '2025-06-19 12:28:41', NULL, NULL, NULL),
+(11, 'adit', 'indramayu', NULL, '085398389383', 'adit22323@gmail.com', '$2y$12$J/d80TEjmCd4mlbHBOuDhOXLi67bzbFcmzX5RpIggntxPTo16bqC6', 'customer', '2025-06-19 12:28:58', '2025-06-19 12:28:58', NULL, NULL, NULL),
+(12, 'adit', 'indramayu', NULL, '085398389383', 'adit223231@gmail.com', '$2y$12$5vxhusIwpE4L.YvKU4SVtO8JHeGKef6LCpsOEbZ.XiibTxjj.4WtC', 'customer', '2025-06-19 12:34:37', '2025-06-19 12:34:37', NULL, NULL, NULL),
+(13, 'adit', 'indramayu', NULL, '085398389383', 'adit2232313@gmail.com', '$2y$12$JoMD3xLH2j482hvwEOhEx.pAgswXBYY8ork50wMDTvhZc.bucPU22', 'customer', '2025-06-19 12:37:02', '2025-06-19 12:37:02', NULL, NULL, NULL),
+(14, 'riyan', 'Jl. Raya Lohbener Lama Blok Celo No.31, Lohbener, Kecamatan Lohbener', NULL, '0854311654', 'riyannn@gmail.com', '$2y$12$E1sIfcV.arkdDoZ7Udu8MuTuygjNMqAhKxB6FHRD4mWTBbdKRZYQW', 'customer', '2025-06-19 13:23:27', '2025-06-19 13:23:27', NULL, NULL, NULL),
+(15, 'adit', 'indramayu', NULL, '085398389383', 'adit2232312333@gmail.com', '$2y$12$Kst2xeYVi5oS5h/8ikn2fuAlutjmDP0pg17gQvB0LeU5btLDTZP9a', 'customer', '2025-06-19 13:24:19', '2025-06-19 13:24:19', NULL, NULL, NULL),
+(16, 'adit', 'indramayu', NULL, '085398389383', 'adit22323123333@gmail.com', '$2y$12$uXvcs0HmdPHC0.YlpXS1i.xlQDVmpEjvemcCbmWBd8l6ge7OS004e', 'customer', '2025-06-19 13:41:27', '2025-06-19 13:41:27', NULL, NULL, NULL),
+(17, 'adit', 'indramayu', NULL, '085398389383', 'adit223231233323@gmail.com', '$2y$12$vbKfQ0QURic.Q7nAnJwP3eeGSWdFOpAX.SNbMmD0IsUx6ZR31Fx2O', 'customer', '2025-06-19 13:42:22', '2025-06-19 13:42:22', NULL, NULL, NULL),
+(18, 'adit', 'indramayu', NULL, '085398389383', 'adit2232312933323@gmail.com', '$2y$12$J1otIccuWPq//v3.4ujh3Of6aXU9VLZhKLiC7nwgiyUqgiiRVVp02', 'customer', '2025-06-19 13:47:41', '2025-06-19 13:47:41', -6.3, 108.323, NULL),
+(19, 'adit', 'indramayu', NULL, '085398389383', 'adit22323123332223@gmail.com', '$2y$12$HxlMbBs6DzDtVGfxrtmO0OTCi3tbF6TbnK2hfyLD64dRrLbJwjhAW', 'customer', '2025-06-19 13:50:53', '2025-06-19 13:50:53', NULL, NULL, NULL),
+(20, 'adit', 'indramayu', NULL, '085398389383', 'adit223223332223@gmail.com', '$2y$12$7HWw4wgF.de2S8rBnDRSTeJFHAfgqAbtOR79uNU2oqyKZfkdJLswi', 'customer', '2025-06-19 13:51:39', '2025-06-19 13:51:39', -6.3, 108.323, NULL),
+(21, 'tesss', 'H7WJ+XVH, Lohbener, Kecamatan Lohbener', NULL, '05498642826', 'twssss@gmail.com', '$2y$12$AcZ6DMjb/f95qfWDA2ugX.fiErcefEvFQeTSnV2D0ottncHPh0U.K', 'customer', '2025-06-19 13:55:14', '2025-06-19 13:55:14', -6.4024746, 108.2822715, NULL),
+(22, 'amel', 'H7WJ+XVH, Lohbener, Kecamatan Lohbener', 'user_22.jpg', '08549761542', 'amel@gmail.com', '$2y$12$lStxomfmre7dxptETxNCruw02.3V2/XVf/BleNPvtB1PmKRYFfOA.', 'customer', '2025-06-21 01:06:32', '2025-06-21 05:28:51', -6.402482, 108.2822567, NULL),
+(23, 'rista', 'M83H+2GX, Kepandean, Kecamatan Indramayu', NULL, '08975734600', 'rista@gmail.com', '$2y$12$0.8MuA0Po7tHNVYdPvbmiuNFxxhgdO/c5o4WcGBW8DD1gvHJEBDIW', 'customer', '2025-06-26 10:37:58', '2025-06-26 10:37:58', -6.3465831989407, 108.32778482963, NULL),
+(24, 'Rudi Supir', 'Jalan Mangga No.12', NULL, '08953413932', 'rudi.driver@example.com', '$2y$12$yqwNOVNnqkN41LWp0mR2seFBU/O5w4wmpW7Hu9e4/r4bzdG6BJl4e', '', '2025-06-30 07:05:26', '2025-06-30 07:05:26', NULL, NULL, NULL),
+(25, 'Rudi Supir2', '-', NULL, '', 'rudi.driver2@example.com', '$2y$12$IQjlo8lEZ6PtPyyCKpe38u8o8PeUax/viAXne9iBoYUDPd4Uyk/0q', '', '2025-06-30 08:35:01', '2025-06-30 08:35:01', NULL, NULL, NULL),
+(26, 'Rudi Supir2', '-', NULL, '', 'rudi.driver3@example.com', '$2y$12$0GOTWX83gjO5tsYtTwBxguI8rj3WzWG2v8xF2dN/UCBBUuXHKha82', '', '2025-06-30 08:36:17', '2025-06-30 08:36:17', NULL, NULL, NULL),
+(27, 'Rudi Supir2', '-', NULL, '', 'rudi.driver4@example.com', '$2y$12$ReMcDaaaPr.3sHorwigjf.o5W0a7/MJzfQ.OLd.Q1eC2qxLdELivu', '', '2025-06-30 08:37:01', '2025-06-30 08:37:01', NULL, NULL, NULL),
+(28, 'seblak karpel', '', NULL, '089534988199', 'seblakkarpel@gmail.com', '$2y$12$y68pQiH0Ij7fU/24VzCk.e8jQ6SixUEB5qOStO1vU3l91Un3HDbpu', '', '2025-07-15 18:42:29', '2025-07-15 18:42:29', NULL, NULL, NULL),
+(29, 'seblak karpel', '', NULL, '0852491838274', 'seblakkarpel2@gmail.com', '$2y$12$iYBOmZTSGcQ/s9hJVIxRPODVriJbh1OABl4OjwoWBOzNf0Uu8GfMC', '', '2025-07-15 19:10:06', '2025-07-15 19:10:06', NULL, NULL, NULL);
 
 --
 -- Indexes for dumped tables
@@ -775,6 +808,13 @@ ALTER TABLE `restaurants`
   ADD KEY `restaurants_owner_id_foreign` (`owner_id`);
 
 --
+-- Indexes for table `restaurant_applications`
+--
+ALTER TABLE `restaurant_applications`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `restaurant_applications_email_unique` (`email`);
+
+--
 -- Indexes for table `users`
 --
 ALTER TABLE `users`
@@ -813,7 +853,7 @@ ALTER TABLE `item_categories`
 -- AUTO_INCREMENT for table `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=44;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=46;
 
 --
 -- AUTO_INCREMENT for table `notifications`
@@ -837,13 +877,19 @@ ALTER TABLE `order_items`
 -- AUTO_INCREMENT for table `personal_access_tokens`
 --
 ALTER TABLE `personal_access_tokens`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=206;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=212;
 
 --
 -- AUTO_INCREMENT for table `restaurants`
 --
 ALTER TABLE `restaurants`
   MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
+-- AUTO_INCREMENT for table `restaurant_applications`
+--
+ALTER TABLE `restaurant_applications`
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `users`

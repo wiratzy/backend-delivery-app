@@ -11,29 +11,35 @@ use Illuminate\Support\Facades\Storage;
 
 class AdminRestaurantController extends Controller
 {
-    public function index()
+     public function index(Request $request)
     {
-        $restaurants = Restaurant::with('owner')->latest()->get();
-    $data = $restaurants->map(function ($r) {
-        return [
-            'id' => $r->id,
-            'name' => $r->name,
-            'location' => $r->location,
-            'phone' => $r->phone,
-            'rate' => $r->rate,
-            'rating' => $r->rating,
-            'image' => $r->image ? $r->image : null,
-            'type' => $r->type,
-            'food_type' => $r->food_type,
-            'email' => $r->owner->email ?? null,   // <-- Tambahkan ini
-            // 'password' tidak boleh ditampilkan
-        ];
-    });
+        $limit = $request->get('limit', 10);
+        $searchQuery = $request->get('search');
 
-    return response()->json([
-        'success' => true,
-        'data' => $data
-    ]);
+        // Menggunakan eager loading 'owner'
+        $query = Restaurant::with('owner'); // <-- Tambahkan eager loading ini
+
+        if ($searchQuery) {
+            $query->where(function ($q) use ($searchQuery) {
+                $q->where('name', 'like', "%{$searchQuery}%")
+                  ->orWhere('location', 'like', "%{$searchQuery}%")
+                  ->orWhere('type', 'like', "%{$searchQuery}%")
+                  ->orWhere('food_type', 'like', "%{$searchQuery}%");
+                // Jika ingin mencari berdasarkan nama/email owner
+                $q->orWhereHas('owner', function ($q) use ($searchQuery) {
+                    $q->where('name', 'like', "%{$searchQuery}%")
+                      ->orWhere('email', 'like', "%{$searchQuery}%");
+                });
+            });
+        }
+
+        $restaurants = $query->paginate($limit);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Daftar restoran berhasil diambil.',
+            'data' => $restaurants
+        ]);
     }
 
     public function show($id)

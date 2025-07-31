@@ -65,7 +65,7 @@
         <h2 class="mb-4" style="color: #333;">Selamat Datang di Aplikasi KarPel Food Delivery</h2>
 
         <div class="d-grid gap-3 col-8 mx-auto">
-            <a href="{{ asset('storage/apk/app-release.apk') }}" class="btn btn-primary btn-lg mb-3">
+            <a href="{{ asset('storage/apk/karpel_food_delivery.apk') }}" class="btn btn-primary btn-lg mb-3">
                 <i class="fas fa-download me-2"></i> Download Aplikasi Pengguna
             </a>
             <button class="btn btn-success btn-lg" data-bs-toggle="modal" data-bs-target="#restaurantModal">

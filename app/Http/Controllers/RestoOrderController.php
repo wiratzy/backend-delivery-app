@@ -127,7 +127,7 @@ class RestoOrderController extends Controller
 
         $order = Order::findOrFail($id);
         // Optional: Validasi role user yang boleh update (misal hanya resto)
-        if ($request->user()->role !== 'restaurant_owner') {
+        if ($request->user()->role !== 'owner') {
             return response()->json([
                 'message' => 'Unauthorized Role User: ' . $request->user()->role,
             ], 403);

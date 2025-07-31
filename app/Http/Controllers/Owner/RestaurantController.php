@@ -65,7 +65,7 @@ class RestaurantController extends Controller
             if ($restaurant->owner_id !== $request->user()->id) {
                 Log::warning('Restaurant does not belong to this owner', [
                     'restaurant_id' => $id,
-                    'restaurant_owner_id' => $restaurant->owner_id,
+                    'owner_id' => $restaurant->owner_id,
                     'logged_in_user_id' => $request->user()->id
                 ]);
                 return response()->json([
@@ -96,7 +96,7 @@ class RestaurantController extends Controller
     Log::info('storeRestaurant called', ['user_id' => $userId, 'request' => $request->all()]);
 
     // Periksa peran pengguna
-    if ($request->user()->role !== 'restaurant_owner') {
+    if ($request->user()->role !== 'owner') {
         Log::warning('Unauthorized attempt to create restaurant', ['user_id' => $userId]);
         return response()->json([
             'success' => false,

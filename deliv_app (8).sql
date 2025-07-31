@@ -665,7 +665,7 @@ CREATE TABLE `users` (
   `phone` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `password` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `role` enum('customer','admin','restaurant_owner','driver') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'customer',
+  `role` enum('customer','admin','owner','driver') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'customer',
   `is_active_driver` tinyint(1) NOT NULL DEFAULT '0',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
@@ -681,9 +681,9 @@ CREATE TABLE `users` (
 INSERT INTO `users` (`id`, `name`, `address`, `photo`, `phone`, `email`, `password`, `role`, `is_active_driver`, `created_at`, `updated_at`, `address_latitude`, `address_longitude`, `deleted_at`) VALUES
 (1, 'Admin User', 'Admin Address', NULL, '111111111', 'admin@gmail.com', '$2y$12$aRT4tRzAI2VwYhhVJdjUSebDCbfbRV3AqCpVl6i1K8LCcfit6XEAm', 'admin', 0, '2025-05-12 15:03:56', '2025-05-12 15:03:56', NULL, NULL, NULL),
 (2, 'adit updated', 'Jl. Baru No. 123', NULL, '085312345678', 'aditupdated@example.com', '$2y$12$T3KzY66N5uMwmouGl41iuuWRSDRhQ6MJN5yv8WSe1RAHz9o/Ds8rK', 'customer', 0, '2025-05-12 15:04:07', '2025-06-21 05:24:28', -6.327, 108.323, NULL),
-(3, 'April', 'indramayu Kota', NULL, '081234567890', 'april@gmail.com', '$2y$12$AZz2PTq9bARBCAPGLuDwr.xs7zHW4FCdZfT5v9FSnQS57bHN3l9MW', 'restaurant_owner', 0, '2025-05-12 15:07:51', '2025-05-12 15:07:51', NULL, NULL, NULL),
+(3, 'April', 'indramayu Kota', NULL, '081234567890', 'april@gmail.com', '$2y$12$AZz2PTq9bARBCAPGLuDwr.xs7zHW4FCdZfT5v9FSnQS57bHN3l9MW', 'owner', 0, '2025-05-12 15:07:51', '2025-05-12 15:07:51', NULL, NULL, NULL),
 (4, 'wirantooo', 'Jalan Ketapang, Indramayu, Jawa Barat, Jawa, 45211, Indonesia', 'user_4.jpg', '0895340891989', 'wiranto@gmail.com', '$2y$12$W7U5RW2BxpiqTSe5LNg40ufRChQCjeVtlxr9ILBXDpRr2f5m1EkEm', 'customer', 0, '2025-05-13 13:38:37', '2025-07-14 12:37:09', -6.321279, 108.3220598, NULL),
-(5, 'Resto Sarul Gih', 'indramayu Kota', NULL, '0812929222', 'Sarul@gmail.com', '$2y$12$K7/5462qimEwQu5Qrx6ScOYnraEFmIYAL4.W22hTdUUQ9HoiNnlm6', 'restaurant_owner', 0, '2025-05-26 00:52:24', '2025-07-15 19:38:54', NULL, NULL, NULL),
+(5, 'Resto Sarul Gih', 'indramayu Kota', NULL, '0812929222', 'Sarul@gmail.com', '$2y$12$K7/5462qimEwQu5Qrx6ScOYnraEFmIYAL4.W22hTdUUQ9HoiNnlm6', 'owner', 0, '2025-05-26 00:52:24', '2025-07-15 19:38:54', NULL, NULL, NULL),
 (6, 'parhan', 'teluk agung', NULL, '085461265481', 'parhan@gmail.com', '$2y$12$D2OAq7eH3xTYMfwn/fUFpeNG37DRzzlpaHuzvB/WJ7V9Yc82qzS1G', 'customer', 0, '2025-06-13 08:11:21', '2025-06-13 08:11:21', NULL, NULL, NULL),
 (7, 'riyan', 'H7WJ+XVH, Lohbener, Kecamatan Lohbener', NULL, '08546162532', 'riyan@gmail.com', '$2y$12$M.T.VLYCQ9UildiU4AQA6uQuu/yJfCh.pj.zIxeIB/vxN2ymsnGVq', 'customer', 0, '2025-06-19 11:42:46', '2025-06-19 11:42:46', NULL, NULL, NULL),
 (8, 'adit', 'indramayu', NULL, '085398389383', 'adit22@gmail.com', '$2y$12$h7TyDeGffMWOA0OoLRVdKeeXfvWD4goykIZXdI2bamVK0sGjOV.wi', 'customer', 0, '2025-06-19 12:24:52', '2025-06-19 12:24:52', NULL, NULL, NULL),
@@ -706,8 +706,8 @@ INSERT INTO `users` (`id`, `name`, `address`, `photo`, `phone`, `email`, `passwo
 (25, 'Rudi Supir2', '-', NULL, '', 'rudi.driver2@example.com', '$2y$12$IQjlo8lEZ6PtPyyCKpe38u8o8PeUax/viAXne9iBoYUDPd4Uyk/0q', 'driver', 0, '2025-06-30 08:35:01', '2025-06-30 08:35:01', NULL, NULL, NULL),
 (26, 'Rudi Supir2', '-', NULL, '', 'rudi.driver3@example.com', '$2y$12$0GOTWX83gjO5tsYtTwBxguI8rj3WzWG2v8xF2dN/UCBBUuXHKha82', 'driver', 0, '2025-06-30 08:36:17', '2025-06-30 08:36:17', NULL, NULL, NULL),
 (27, 'Rudi Supir2', '-', NULL, '', 'rudi.driver4@example.com', '$2y$12$ReMcDaaaPr.3sHorwigjf.o5W0a7/MJzfQ.OLd.Q1eC2qxLdELivu', 'driver', 0, '2025-06-30 08:37:01', '2025-06-30 08:37:01', NULL, NULL, NULL),
-(28, 'seblak karpel', '', NULL, '089534988199', 'seblakkarpel@gmail.com', '$2y$12$y68pQiH0Ij7fU/24VzCk.e8jQ6SixUEB5qOStO1vU3l91Un3HDbpu', 'restaurant_owner', 0, '2025-07-15 18:42:29', '2025-07-15 18:42:29', NULL, NULL, NULL),
-(29, 'seblak karpel', '', NULL, '0852491838274', 'seblakkarpel2@gmail.com', '$2y$12$iYBOmZTSGcQ/s9hJVIxRPODVriJbh1OABl4OjwoWBOzNf0Uu8GfMC', 'restaurant_owner', 0, '2025-07-15 19:10:06', '2025-07-15 19:10:06', NULL, NULL, NULL);
+(28, 'seblak karpel', '', NULL, '089534988199', 'seblakkarpel@gmail.com', '$2y$12$y68pQiH0Ij7fU/24VzCk.e8jQ6SixUEB5qOStO1vU3l91Un3HDbpu', 'owner', 0, '2025-07-15 18:42:29', '2025-07-15 18:42:29', NULL, NULL, NULL),
+(29, 'seblak karpel', '', NULL, '0852491838274', 'seblakkarpel2@gmail.com', '$2y$12$iYBOmZTSGcQ/s9hJVIxRPODVriJbh1OABl4OjwoWBOzNf0Uu8GfMC', 'owner', 0, '2025-07-15 19:10:06', '2025-07-15 19:10:06', NULL, NULL, NULL);
 
 --
 -- Indexes for dumped tables

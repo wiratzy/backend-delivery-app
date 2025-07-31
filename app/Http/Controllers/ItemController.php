@@ -24,8 +24,8 @@ class ItemController extends Controller
             ], 404);
         }
 
-        // Jika pengguna adalah restaurant_owner, pastikan mereka hanya mengakses restoran mereka
-        if ($request->user() && $request->user()->role === 'restaurant_owner') {
+        // Jika pengguna adalah owner, pastikan mereka hanya mengakses restoran mereka
+        if ($request->user() && $request->user()->role === 'owner') {
             if ($restaurant->owner_id !== $request->user()->id) {
                 Log::warning('Unauthorized access to restaurant items', [
                     'user_id' => $request->user()->id,
@@ -264,7 +264,7 @@ class ItemController extends Controller
         ]);
 
         try {
-            if ($request->user()->role === 'restaurant_owner') {
+            if ($request->user()->role === 'owner') {
                 $item = Item::whereHas('restaurant', function ($query) use ($request) {
                     $query->where('owner_id', $request->user()->id);
                 })->findOrFail($id);
@@ -308,7 +308,7 @@ class ItemController extends Controller
         Log::info('destroy called', ['item_id' => $id, 'user_id' => $request->user()->id, 'role' => $request->user()->role]);
 
         try {
-            if ($request->user()->role === 'restaurant_owner') {
+            if ($request->user()->role === 'owner') {
                 $item = Item::whereHas('restaurant', function ($query) use ($request) {
                     $query->where('owner_id', $request->user()->id);
                 })->findOrFail($id);

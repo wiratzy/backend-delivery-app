@@ -117,7 +117,7 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     // Routes untuk Restaurant Owner
-    Route::middleware('role:restaurant_owner')->group(function () {
+    Route::middleware('role:owner')->group(function () {
         Route::prefix('restaurants')->group(function () {
             Route::get('/drivers', [DriverController::class, 'index']);
             Route::post('/drivers', [DriverController::class, 'store']);

@@ -9,10 +9,11 @@ use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Storage; // Tambahkan ini untuk menghapus gambar jika ditolak/error
-use Illuminate\Support\Facades\Mail; // Untuk notifikasi email
-use App\Mail\RestaurantApplicationStatusMail; // Model Mailable yang akan dibuat
-use Illuminate\Support\Facades\Http; // Untuk notifikasi WhatsApp
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\RestaurantApplicationStatusMail;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Str; // Tambahkan ini untuk Str::random()
 
 class RestaurantApplicationController extends Controller
 {
@@ -46,21 +47,22 @@ class RestaurantApplicationController extends Controller
             $imagePath = null;
 
             if ($request->hasFile('image')) {
+                // Simpan gambar di folder 'restaurant_applications'
                 $imagePath = $request->file('image')->store('restaurant_applications', 'public');
                 $data['image'] = $imagePath;
             }
 
-            // Normalisasi nomor telepon sebelum disimpan
-            // $normalizedPhone = $data['phone'];
-            // if (str_starts_with($normalizedPhone, '08')) {
-            //     $normalizedPhone = '+62' . substr($normalizedPhone, 1);
-            // }
-            // $data['phone'] = $normalizedPhone;
+            // Normalisasi nomor telepon sebelum disimpan (jika diperlukan, aktifkan kembali)
+            /*
+            $normalizedPhone = $data['phone'];
+            if (str_starts_with($normalizedPhone, '08')) {
+                $normalizedPhone = '+62' . substr($normalizedPhone, 1);
+            }
+            $data['phone'] = $normalizedPhone;
+            */
 
-            // Pastikan nama kolom di $data sesuai dengan kolom di tabel `restaurant_applications`
-            // yang sudah ditambahkan melalui migrasi.
-            $data['type'] = $data['restaurant_type']; // Ambil dari input form 'restaurant_type'
-            unset($data['restaurant_type']); // Hapus dari $data karena tidak ada kolom itu di model
+            $data['type'] = $data['restaurant_type'];
+            unset($data['restaurant_type']);
 
             RestaurantApplication::create($data);
 
@@ -112,7 +114,7 @@ class RestaurantApplicationController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Belum ada pengajuan restoran.',
-                'data' => $applications // Tetap kembalikan paginator object
+                'data' => $applications
             ], 200);
         } elseif ($applications->isEmpty() && $statusFilter && $statusFilter != 'all') {
             return response()->json([
@@ -134,7 +136,6 @@ class RestaurantApplicationController extends Controller
         try {
             $app = RestaurantApplication::findOrFail($id);
 
-            // Periksa apakah email sudah terdaftar sebagai pengguna lain atau pemilik restoran
             if (User::where('email', $app->email)->exists()) {
                 return response()->json([
                     'success' => false,
@@ -142,7 +143,6 @@ class RestaurantApplicationController extends Controller
                 ], 409);
             }
 
-            // Buat akun user baru dengan role 'owner'
             $user = User::create([
                 'name' => $app->name,
                 'email' => $app->email,
@@ -153,20 +153,24 @@ class RestaurantApplicationController extends Controller
             ]);
 
             $newImagePath = null;
+            // Perbaikan di sini: Salin file dan beri nama acak
             if ($app->image && Storage::disk('public')->exists($app->image)) {
                 $originalExtension = pathinfo($app->image, PATHINFO_EXTENSION);
-                $imageFilename = 'restaurant_' . $user->id . '.' . $originalExtension;
-                $newImagePath = 'restaurants/' . $imageFilename;
+                // Buat nama file acak yang unik
+                $randomFileName = Str::random(40) . '.' . $originalExtension; // 40 karakter acak
+                $newImagePath = 'restaurants/' . $randomFileName;
 
-                Storage::disk('public')->move($app->image, $newImagePath);
+                // Salin file dari lokasi lama ke lokasi baru
+                Storage::disk('public')->copy($app->image, $newImagePath);
+                // Penting: Gambar asli di 'restaurant_applications' tetap ada
             } else {
                 $newImagePath = 'default_restaurant.png';
             }
-            // Buat data restoran
+
             Restaurant::create([
                 'owner_id' => $user->id,
                 'name' => $app->name,
-                'image' => $app->image,
+                'image' => $newImagePath, // Gunakan path gambar yang baru disalin
                 'type' => $app->type,
                 'food_type' => $app->food_type,
                 'location' => $app->location,
@@ -212,8 +216,6 @@ class RestaurantApplicationController extends Controller
 
             $app->update(['status' => 'rejected']);
 
-            // --- Notifikasi ---
-            // 1. Notifikasi Email
             Mail::to($app->email)->send(new RestaurantApplicationStatusMail(
                 $app->name,
                 $app->email,
@@ -221,7 +223,6 @@ class RestaurantApplicationController extends Controller
                 'rejected'
             ));
 
-            // 2. Notifikasi WhatsApp (contoh sederhana via API pihak ketiga)
             $this->sendWhatsAppNotification($app->phone, $app->name, 'rejected');
 
             return response()->json([
@@ -237,10 +238,9 @@ class RestaurantApplicationController extends Controller
         }
     }
 
-
     private function sendWhatsAppNotification(string $phoneNumber, string $restaurantName, string $status): bool
     {
-        $targetPhoneNumber = str_replace('+', '', $phoneNumber); // Hapus tanda '+'
+        $targetPhoneNumber = str_replace('+', '', $phoneNumber);
 
         $message = '';
         if ($status == 'approved') {
@@ -249,21 +249,19 @@ class RestaurantApplicationController extends Controller
             $message = "Halo *$restaurantName*,\n\nKami ingin memberitahukan bahwa pengajuan akun restoran Anda *ditolak*.\n\nMohon maaf, kami tidak dapat memproses pengajuan Anda saat ini. Jika Anda memiliki pertanyaan lebih lanjut, silakan hubungi tim dukungan kami. Terima kasih.";
         }
 
-        // --- INTEGRASI DENGAN FONNTE API ---
         $fonnteApiUrl = env('FONNTE_API_URL', 'https://api.fonnte.com/send');
-        $fonnteApiKey = env('FONNTE_API_KEY'); // Pastikan ini diatur di .env
+        $fonnteApiKey = env('FONNTE_API_KEY');
 
-        // Validasi jika API Key atau URL tidak diatur
         if (empty($fonnteApiKey) || empty($fonnteApiUrl)) {
             \Log::warning("Fonnte API Key or URL is not set in .env. WhatsApp notification skipped for {$restaurantName}.");
             return false;
         }
 
         try {
-            $response = Http::asForm()->withHeaders([ // Menggunakan asForm() untuk form-urlencoded
-                'Authorization' => $fonnteApiKey, // Header Authorization
+            $response = Http::asForm()->withHeaders([
+                'Authorization' => $fonnteApiKey,
             ])->post($fonnteApiUrl, [
-                        'target' => $targetPhoneNumber, // Nomor tujuan tanpa '+'
+                        'target' => $targetPhoneNumber,
                         'message' => $message,
                     ]);
 
@@ -278,6 +276,5 @@ class RestaurantApplicationController extends Controller
             \Log::error("Exception sending WhatsApp notification via Fonnte to {$targetPhoneNumber}: " . $e->getMessage());
             return false;
         }
-        // --- AKHIR INTEGRASI FONNTE ---
     }
 }

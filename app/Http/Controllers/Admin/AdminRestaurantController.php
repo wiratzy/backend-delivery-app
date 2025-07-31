@@ -76,13 +76,13 @@ class AdminRestaurantController extends Controller
             'image'       => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
-        // Simpan user dengan role restaurant_owner
+        // Simpan user dengan role owner
         $user = User::create([
             'name'     => $request->name,
             'email'    => $request->email,
             'phone'    => $request->phone,
             'password' => Hash::make($request->password),
-            'role'     => 'restaurant_owner',
+            'role'     => 'owner',
         ]);
 
         // Upload image jika ada

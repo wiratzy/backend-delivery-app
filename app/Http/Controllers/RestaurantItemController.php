@@ -74,7 +74,7 @@ class RestaurantItemController extends Controller
         ]);
 
         try {
-            if ($request->user()->role === 'restaurant_owner') {
+            if ($request->user()->role === 'owner') {
                 $restaurant = $request->user()->restaurant;
                 if (!$restaurant || $restaurant->id != $request->restaurant_id) {
                     return response()->json([
@@ -165,7 +165,7 @@ class RestaurantItemController extends Controller
         Log::info("DEBUG:: RESTAURANT ID ITEM: " . $item->restaurant_id);
 
         // Cek apakah user adalah owner restoran terkait
-        if ($request->user()->role === 'restaurant_owner') {
+        if ($request->user()->role === 'owner') {
             $restaurant = $request->user()->restaurant;
             if (!$restaurant || $restaurant->id != $item->restaurant_id) {
                 return response()->json([
@@ -214,7 +214,7 @@ class RestaurantItemController extends Controller
         Log::info('destroy called', ['item_id' => $id, 'user_id' => $request->user()->id, 'role' => $request->user()->role]);
 
         try {
-            if ($request->user()->role === 'restaurant_owner') {
+            if ($request->user()->role === 'owner') {
                 $item = Item::whereHas('restaurant', function ($query) use ($request) {
                     $query->where('owner_id', $request->user()->id);
                 })->findOrFail($id);

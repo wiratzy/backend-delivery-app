@@ -14,4 +14,9 @@ class RestaurantApplication extends Model
         'status' => 'string',
     ];
 
+
+    public function getImageAttribute($value)
+    {
+        return url('storage/' . $value);
+    }
 }

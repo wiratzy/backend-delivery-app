@@ -137,7 +137,7 @@ class AdminAccountController extends Controller
                 'phone' => $request->phone,
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
-                'role' => 'restaurant_owner', // Tetapkan role sesuai enum
+                'role' => 'owner', // Tetapkan role sesuai enum
             ]);
 
             Log::info('Restaurant owner created', ['user' => $user]);
@@ -170,7 +170,7 @@ class AdminAccountController extends Controller
         try {
             $user = User::findOrFail($id);
 
-            if ($user->role !== 'restaurant_owner') {
+            if ($user->role !== 'owner') {
                 return response()->json([
                     'success' => false,
                     'message' => 'User is not a restaurant owner',
@@ -208,7 +208,7 @@ class AdminAccountController extends Controller
         try {
             $user = User::findOrFail($id);
 
-            if ($user->role !== 'restaurant_owner') {
+            if ($user->role !== 'owner') {
                 return response()->json([
                     'success' => false,
                     'message' => 'User is not a restaurant owner',

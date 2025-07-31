@@ -15,7 +15,7 @@
                 $table->string('phone');
                 $table->string('email')->unique();
                 $table->string('password');
-                $table->enum('role', ['customer', 'admin', 'restaurant_owner', 'driver'])->default('customer');
+                $table->enum('role', ['customer', 'admin', 'owner', 'driver'])->default('customer');
                 $table->timestamps();
             });
         }

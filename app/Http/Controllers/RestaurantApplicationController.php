@@ -154,18 +154,20 @@ class RestaurantApplicationController extends Controller
 
             $newImagePath = null;
             // Perbaikan di sini: Salin file dan beri nama acak
-            if ($app->image && Storage::disk('public')->exists($app->image)) {
-                $originalExtension = pathinfo($app->image, PATHINFO_EXTENSION);
-                // Buat nama file acak yang unik
-                $randomFileName = Str::random(40) . '.' . $originalExtension; // 40 karakter acak
-                $newImagePath = 'restaurants/' . $randomFileName;
+            \Log::info("Image path from DB: " . $app->image);
+            \Log::info("File exists: " . (Storage::disk('public')->exists($app->getRawOriginal('image')) ? 'yes' : 'no'));
+            if ($app->image && Storage::disk('public')->exists($app->getRawOriginal('image'))) {
+                $originalExtension = pathinfo($app->getRawOriginal('image'), PATHINFO_EXTENSION);
 
-                // Salin file dari lokasi lama ke lokasi baru
-                Storage::disk('public')->copy($app->image, $newImagePath);
-                // Penting: Gambar asli di 'restaurant_applications' tetap ada
+                $randomFileName = Str::random(40) . '.' . $originalExtension;
+                $newImagePath = $randomFileName;
+
+                Storage::disk('public')->copy($app->getRawOriginal('image'), $newImagePath);
+
             } else {
                 $newImagePath = 'default_restaurant.png';
             }
+
 
             Restaurant::create([
                 'owner_id' => $user->id,

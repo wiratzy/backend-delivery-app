@@ -237,8 +237,8 @@
                         confirmButtonColor: '#d33',
                     });
                 } finally {
-                    submitBtn.disabled = false; // Aktifkan kembali tombol
-                    submitBtn.innerHTML = 'Kirim Pengajuan'; // Kembalikan teks tombol
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = 'Kirim Pengajuan';
                 }
             });
         });

@@ -165,7 +165,7 @@ class AdminRestaurantController extends Controller
                     $path = $request->file('image');
                     $originalExtension = pathinfo($path->getRawOriginal('image'), PATHINFO_EXTENSION);
 
-                    $restaurant->image = $path;
+                    $restaurant->image = $originalExtension;
                 }
 
                 $restaurant->save();

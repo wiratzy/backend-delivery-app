@@ -162,14 +162,13 @@ class AdminRestaurantController extends Controller
                         Storage::disk('public')->delete($restaurant->image);
                     }
                     // Simpan gambar baru dan update path
-                    $path = $request->file('image')->store('restaurants', 'public');
+                    $path = $request->file('image')->store('public/restaurants');
                     $restaurant->image = $path;
                 }
 
                 $restaurant->save();
             });
 
-            // Muat ulang relasi owner untuk memastikan data yang dikembalikan adalah yang terbaru
             $restaurant->load('owner');
 
             return response()->json([

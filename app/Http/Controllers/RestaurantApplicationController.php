@@ -152,7 +152,6 @@ class RestaurantApplicationController extends Controller
                 'address' => $app->location,
             ]);
 
-            $newImagePath = null;
             // Perbaikan di sini: Salin file dan beri nama acak
             \Log::info("Image path from DB: " . $app->image);
             \Log::info("File exists: " . (Storage::disk('public')->exists($app->getRawOriginal('image')) ? 'yes' : 'no'));
@@ -182,9 +181,10 @@ class RestaurantApplicationController extends Controller
             Restaurant::create([
                 'owner_id' => $user->id,
                 'name' => $app->name,
-                'image' => $newImagePath, // Gunakan path gambar yang baru disalin
+                'image' => $newImageFilename, // Gunakan path gambar yang baru disalin
                 'type' => $app->type,
                 'food_type' => $app->food_type,
+                'phone' => $app->phone, // Sinkronisasi no telp
                 'location' => $app->location,
                 'delivery_fee' => 5000.00,
                 'is_most_popular' => false,

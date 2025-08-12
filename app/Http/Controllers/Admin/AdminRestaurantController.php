@@ -163,6 +163,8 @@ class AdminRestaurantController extends Controller
                     }
                     // Simpan gambar baru dan update path
                     $path = $request->file('image');
+                    $originalExtension = pathinfo($path->getRawOriginal('image'), PATHINFO_EXTENSION);
+
                     $restaurant->image = $path;
                 }
 

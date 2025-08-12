@@ -162,10 +162,14 @@ class AdminRestaurantController extends Controller
                         Storage::disk('public')->delete($restaurant->image);
                     }
                     // Simpan gambar baru dan update path
-                    $path = $request->file('image');
-                    $originalExtension = pathinfo($path->getRawOriginal('image'), PATHINFO_EXTENSION);
+                    $fullPath = $request->file('image')->store('restaurants', 'public');
 
-                    $restaurant->image = $originalExtension;
+                    // ===== PERBAIKAN DI SINI =====
+                    // Ambil hanya nama filenya saja dari path lengkap
+                    $filename = basename($fullPath);
+
+                    // Simpan HANYA NAMA FILE ke database
+                    $restaurant->image = $filename;
                 }
 
                 $restaurant->save();

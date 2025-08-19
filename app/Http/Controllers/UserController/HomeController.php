@@ -138,24 +138,21 @@ class HomeController extends Controller
                 });
 
             // Ambil restoran populer (tetap sama)
-            $popularRestaurants = Restaurant::select('restaurants.*')
-                ->join('items', 'restaurants.id', '=', 'items.restaurant_id')
-                ->join('order_items', 'items.id', '=', 'order_items.item_id')
-                ->groupBy('restaurants.id')
-                ->orderByRaw('COUNT(order_items.id) DESC')
-                ->take(10)
-                ->get()
-                ->map(function ($restaurant) {
-                    return [
-                        'id' => $restaurant->id,
-                        'name' => $restaurant->name,
-                        'image' => $restaurant->image ? $restaurant->image : 'default_restaurant.png',
-                        'rate' => number_format((float) $restaurant->rate, 1),
-                        'rating' => $restaurant->rating,
-                        'type' => $restaurant->type ?? 'Unknown',
-                        'food_type' => $restaurant->food_type ?? 'Unknown',
-                    ];
-                });
+            // Ambil restoran terbaru
+    $popularRestaurants = Restaurant::orderBy('created_at', 'desc')
+    ->take(10) // Ambil 10 restoran yang paling baru ditambahkan
+    ->get()
+    ->map(function ($restaurant) {
+        return [
+            'id' => $restaurant->id,
+            'name' => $restaurant->name,
+            'image' => $restaurant->image ? $restaurant->image : 'default_restaurant.png',
+            'rate' => number_format((float) $restaurant->rate, 1),
+            'rating' => $restaurant->rating,
+            'type' => $restaurant->type ?? 'Unknown',
+            'food_type' => $restaurant->food_type ?? 'Unknown',
+        ];
+    });
 
             // Ambil item terbaru (tetap sama)
             $recentItems = Item::select('id', 'name', 'image', 'rate', 'rating', 'type', 'price', 'item_category_id', 'restaurant_id', 'created_at', 'updated_at')

@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Storage;
 
 class AdminRestaurantController extends Controller
 {
-    public function index(Request $request)
+ public function index(Request $request)
     {
         $limit = $request->get('limit', 10);
         $searchQuery = $request->get('search');
@@ -42,6 +42,7 @@ class AdminRestaurantController extends Controller
             'data' => $restaurants
         ]);
     }
+
 
     public function show($id)
     {

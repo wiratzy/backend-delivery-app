@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\Restaurant;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
@@ -49,7 +50,8 @@ class RestaurantApplicationController extends Controller
             if ($request->hasFile('image')) {
                 // Simpan gambar di folder 'restaurant_applications'
                 $imagePath = $request->file('image')->store('restaurant_applications', 'public');
-                $data['image'] = $imagePath;
+                // Ambil hanya nama file tanpa path
+                $data['image'] = basename($imagePath);
             }
 
             // Normalisasi nomor telepon sebelum disimpan (jika diperlukan, aktifkan kembali)
@@ -131,90 +133,114 @@ class RestaurantApplicationController extends Controller
         ], 200);
     }
 
-    public function approve($id)
-    {
-        try {
-            $app = RestaurantApplication::findOrFail($id);
+  public function approve($id)
+{
+    try {
+        $app = RestaurantApplication::findOrFail($id);
 
-            if (User::where('email', $app->email)->exists()) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Email ini sudah terdaftar sebagai pengguna lain atau pemilik restoran. Mohon gunakan email berbeda.'
-                ], 409);
-            }
-
-            $user = User::create([
-                'name' => $app->name,
-                'email' => $app->email,
-                'password' => Hash::make('password123'),
-                'role' => 'owner',
-                'phone' => $app->phone,
-                'address' => $app->location,
-            ]);
-
-            // Perbaikan di sini: Salin file dan beri nama acak
-            \Log::info("Image path from DB: " . $app->image);
-            \Log::info("File exists: " . (Storage::disk('public')->exists($app->getRawOriginal('image')) ? 'yes' : 'no'));
-            $newImageFilename = 'default_restaurant.png'; // Nilai default
-
-            $originalImagePath = $app->image; // Path gambar dari pengajuan
-
-            // Cek jika gambar ada di storage
-            if ($originalImagePath && Storage::disk('public')->exists($originalImagePath)) {
-                // Dapatkan ekstensi dari path asli
-                $originalExtension = pathinfo($originalImagePath, PATHINFO_EXTENSION);
-
-                // Buat nama file acak yang baru
-                $newRandomFilename = Str::random(40) . '.' . $originalExtension;
-
-                // Tentukan path tujuan LENGKAP (termasuk folder 'restaurants')
-                $newDestinationPath = 'restaurants/' . $newRandomFilename;
-
-                // Salin file dari lokasi lama (pengajuan) ke lokasi baru (restoran)
-                Storage::disk('public')->copy($originalImagePath, $newDestinationPath);
-
-                // Simpan HANYA nama filenya saja untuk database
-                $newImageFilename = $newRandomFilename;
-            }
-
-
-            Restaurant::create([
-                'owner_id' => $user->id,
-                'name' => $app->name,
-                'image' => $newImageFilename, // Gunakan path gambar yang baru disalin
-                'type' => $app->type,
-                'food_type' => $app->food_type,
-                'phone' => $app->phone, // Sinkronisasi no telp
-                'location' => $app->location,
-                'delivery_fee' => 5000.00,
-                'is_most_popular' => false,
-                'rate' => 0.0,
-                'rating' => 0,
-            ]);
-
-            $app->update(['status' => 'approved']);
-
-            Mail::to($app->email)->send(new RestaurantApplicationStatusMail(
-                $app->name,
-                $app->email,
-                $app->phone,
-                'approved'
-            ));
-
-            $this->sendWhatsAppNotification($app->phone, $app->name, 'approved');
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Pengajuan berhasil disetujui, akun restoran dibuat, dan notifikasi terkirim.'
-            ], 200);
-        } catch (\Exception $e) {
-            \Log::error("Error approving restaurant application ID {$id}: " . $e->getMessage(), ['exception' => $e]);
+        // 1. Cek email sudah terdaftar atau belum
+        if (User::where('email', $app->email)->exists()) {
             return response()->json([
                 'success' => false,
-                'message' => 'Gagal menyetujui pengajuan: ' . $e->getMessage()
-            ], 500);
+                'message' => 'Email ini sudah terdaftar sebagai pengguna lain atau pemilik restoran. Mohon gunakan email berbeda.'
+            ], 409);
         }
+
+        // 2. Buat akun owner
+        $user = User::create([
+            'name' => $app->name,
+            'email' => $app->email,
+            'password' => Hash::make('password123'),
+            'role' => 'owner',
+            'phone' => $app->phone,
+            'address' => $app->location,
+        ]);
+
+        // 3. Logging awal
+        \Log::info("=== APPROVE RESTAURANT DEBUG ===");
+        \Log::info("Image value from DB: " . $app->image);
+
+        $newImageFilename = 'default_restaurant.png'; // fallback default
+        $originalImagePath = $app->image;
+
+        // 4. Fix path kalau yang disimpan adalah URL
+        if ($originalImagePath && filter_var($originalImagePath, FILTER_VALIDATE_URL)) {
+            $parsedUrlPath = parse_url($originalImagePath, PHP_URL_PATH); 
+            // hasil: "/storage/restaurant_applications/xxx.jpg"
+            $originalImagePath = ltrim(str_replace('/storage/', '', $parsedUrlPath), '/'); 
+            // hasil: "restaurant_applications/xxx.jpg"
+            \Log::info("Converted URL to relative path: " . $originalImagePath);
+        }
+
+        // 5. Kalau cuma nama file tanpa folder, tambahin folder default
+        if ($originalImagePath && !str_contains($originalImagePath, 'restaurant_applications/')) {
+            $originalImagePath = 'restaurant_applications/' . $originalImagePath;
+            \Log::info("Added default folder path: " . $originalImagePath);
+        }
+
+        // 6. Cek keberadaan file
+        $fileExists = Storage::disk('public')->exists($originalImagePath);
+        \Log::info("Path checked in Storage: " . $originalImagePath);
+        \Log::info("File exists? " . ($fileExists ? 'YES' : 'NO'));
+
+        // 7. Kalau file ada → copy
+        if ($fileExists) {
+            $originalExtension = pathinfo($originalImagePath, PATHINFO_EXTENSION);
+            $newRandomFilename = Str::random(40) . '.' . $originalExtension;
+            $newDestinationPath = 'restaurants/' . $newRandomFilename;
+
+            $copySuccess = Storage::disk('public')->copy($originalImagePath, $newDestinationPath);
+            \Log::info("Copy file from {$originalImagePath} to {$newDestinationPath} => " . ($copySuccess ? 'SUCCESS' : 'FAILED'));
+
+            if ($copySuccess) {
+                $newImageFilename = $newRandomFilename;
+            }
+        } else {
+            \Log::warning("Original image file not found, using default_restaurant.png");
+        }
+
+        // 8. Buat restoran
+        Restaurant::create([
+            'owner_id' => $user->id,
+            'name' => $app->name,
+            'image' => $newImageFilename,
+            'type' => $app->type,
+            'food_type' => $app->food_type,
+            'phone' => $app->phone,
+            'location' => $app->location,
+            'delivery_fee' => 5000.00,
+            'is_most_popular' => false,
+            'rate' => 0.0,
+            'rating' => 0,
+        ]);
+
+        // 9. Update status pengajuan
+        $app->update(['status' => 'approved']);
+
+        // 10. Kirim email & WhatsApp
+        Mail::to($app->email)->send(new RestaurantApplicationStatusMail(
+            $app->name,
+            $app->email,
+            $app->phone,
+            'approved'
+        ));
+
+        $this->sendWhatsAppNotification($app->phone, $app->name, 'approved');
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Pengajuan berhasil disetujui, akun restoran dibuat, dan notifikasi terkirim.'
+        ], 200);
+
+    } catch (\Exception $e) {
+        \Log::error("Error approving restaurant application ID {$id}: " . $e->getMessage(), ['exception' => $e]);
+        return response()->json([
+            'success' => false,
+            'message' => 'Gagal menyetujui pengajuan: ' . $e->getMessage()
+        ], 500);
     }
+}
+
 
     public function reject($id)
     {
